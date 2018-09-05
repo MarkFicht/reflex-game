@@ -1,0 +1,19 @@
+$colors: (
+        c1: #f9df76,
+        c2: #4c1d15,
+        c3: #993b2a,
+        c4: tomato,
+        c5: #ffc0b5,
+);
+
+$widthGame: 800px;
+$heightGame: 600px;
+$width: 200px; /* Stosunek h/w: 5:1 */
+$height: 40px;
+$rootSize: 16px;
+
+$panelColor:      map_get($colors, c1);
+$textColor:       map_get($colors, c2);
+$borderColor:     map_get($colors, c3);
+$backgroundColor: map_get($colors, c4);
+$inputColor:      map_get($colors, c5);

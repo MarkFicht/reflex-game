@@ -1,0 +1,121 @@
+.div-game {
+  //background-color: $panelColor;
+
+  background: url("../images/mr2.jpg") no-repeat center;
+  background-size: cover;
+
+  width: $widthGame;
+  height: $heightGame;
+  margin: 15vh auto;
+  border: 3px solid $borderColor;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-around;
+}
+
+.timer {
+  font-size: 2rem;
+  font-weight: bold;
+  position: absolute;
+  top: 190px;
+  color: $panelColor;
+}
+
+.half-field {
+  width: 50%;
+  height: $heightGame;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+
+.half-field > p {
+  height: 20%;
+  font-size: 3rem;
+  font-style: italic;
+  font-family: 'Permanent Marker', cursive;
+  font-weight: bold;
+  padding-top: 3rem;
+}
+
+.half-field > .btns, .half-field > .scores {
+  height: 12.5%;
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.scores p {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.half-field > .player {
+  height: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 4rem;
+}
+
+//---
+.player-img {
+  background: url("../images/mr3.jpg") no-repeat center;
+  background-size: cover;
+  border-radius: 50%;
+  height: 200px;
+  width: 225px;
+  border: 5px solid $borderColor;
+}
+
+//---
+.connection-info {
+  position: absolute;
+  z-index: 4;
+  top: $heightGame/3;
+  left: auto;
+  height: $heightGame/5;
+  width: $widthGame/1.5;
+  border: 3px solid $borderColor;
+  border-radius: 10px;
+  background-color: $inputColor;
+  color: $textColor;
+  animation: info-scale 2s 1s infinite linear;
+
+  p {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding-top: 15px;
+  }
+}
+
+.prepare {
+  position: absolute;
+  z-index: 5;
+  top: $heightGame/3;
+  left: auto;
+  color: $textColor;
+  animation: prepare-count infinite 1s linear;
+
+  p {
+    font-size: 7rem;
+    letter-spacing: 2px;
+    font-weight: bold;
+  }
+}
+
+@keyframes info-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes prepare-count {
+  from { transform: scale(0.15); }
+  to { transform: scale(1.5); }
+}

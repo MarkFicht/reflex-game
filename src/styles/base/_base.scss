@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: $rootSize;
+}
+
+body {
+  //background-color: $backgroundColor;
+
+  //background: url("../stars.jpeg") no-repeat center center fixed;
+  //background-size: cover;
+
+  background: url("../images/tomato-bg.jpg");
+
+  //font-family: 'Permanent Marker', cursive;
+  font-family: 'VT323', monospace;
+
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard syntax */
+  text-align: center;
+}
+
+p {
+  color: $textColor;
+}
+

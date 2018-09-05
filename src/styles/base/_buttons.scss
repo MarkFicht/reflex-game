@@ -1,0 +1,74 @@
+//--- btns in Login ---//
+.btn-login {
+  width: $width;
+  height: $height;
+  margin-top: 10px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  font-size: 1.3rem;
+  font-family: 'Permanent Marker', cursive;
+  background-color: $backgroundColor;
+  color: $textColor;
+  outline: none;
+  border: 0;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all .3s;
+
+  &:hover {
+    transform: scale(1.05);
+    color: lighten($textColor, 10%);
+    background-color: lighten($backgroundColor, 4%);
+  }
+
+  &:last-child {
+    margin-bottom: 25px;
+  }
+}
+
+//--- btns in game ---//
+.btn-game {
+  width: $height*1.5;
+  height: $height*1.5;
+  font-weight: 900;
+  font-size: 2rem;
+  font-family: 'Permanent Marker', cursive;
+  background-color: $backgroundColor;
+  color: $textColor;
+  outline: none;
+  border: 3px solid $textColor;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all .3s;
+
+  &:hover {
+    transform: scale(1.05);
+    color: lighten($textColor, 10%);
+    background-color: lighten($backgroundColor, 4%);
+    border: 5px solid lighten($textColor, 10%);
+  }
+}
+
+//--- btns in gameover ---//
+.btn-gameover {
+  width: $width*2;
+  height: $height*1.5;
+  margin: 50px auto;
+  font-weight: bold;
+  letter-spacing: 3px;
+  font-size: 1.8rem;
+  font-family: 'Permanent Marker', cursive;
+  background-color: $backgroundColor;
+  color: $textColor;
+  outline: none;
+  border: 0;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all .3s;
+
+  &:hover {
+    transform: scale(1.05);
+    color: lighten($textColor, 10%);
+    background-color: lighten($backgroundColor, 4%);
+  }
+}
