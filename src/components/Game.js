@@ -128,7 +128,7 @@ class Game extends React.Component {
                         </div>
 
                         <div className="btns">
-                            <button className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id)}>X</button>
+                            <button disabled={this.state.gameStart ? false : true} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id)}>X</button>
                             <button className='btn-game'>Y</button>
                             <button className='btn-game'>Z</button>
                         </div>
@@ -146,7 +146,7 @@ class Game extends React.Component {
                         </div>
 
                         <div className="btns">
-                            <button className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id)}>X</button>
+                            <button disabled={this.state.gameStart ? false : true} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id)}>X</button>
                             <button className='btn-game'>Y</button>
                             <button className='btn-game'>Z</button>
                         </div>

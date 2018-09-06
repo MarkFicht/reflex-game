@@ -36,16 +36,20 @@
   background-color: $backgroundColor;
   color: $textColor;
   outline: none;
-  border: 3px solid $textColor;
+  border: 4px solid $textColor;
   border-radius: 5px;
   cursor: pointer;
-  transition: all .3s;
+  transition: all .2s;
 
   &:hover {
-    transform: scale(1.05);
+    box-shadow: 0 0 3px black;
+  }
+
+  &:active {
+    transform: scale(.85);
     color: lighten($textColor, 10%);
     background-color: lighten($backgroundColor, 4%);
-    border: 5px solid lighten($textColor, 10%);
+    border: 4px solid lighten($textColor, 10%);
   }
 }
 
