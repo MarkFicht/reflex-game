@@ -51,9 +51,11 @@ class Login extends Component {
         }
         return (
             <div>
-                <h1 className="logo">
+                <div className='fixed-logo'>
+                    <h1 className="logo">
                     Reflex game
-                </h1>
+                    </h1>
+                </div>
 
                 <div className="div-login">
                     <p>Podaj Nick: </p>

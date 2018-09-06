@@ -23,6 +23,10 @@ body {
 p {
   color: #4c1d15; }
 
+.fixed-logo {
+  width: 800px;
+  margin: 0 auto; }
+
 h1.logo {
   font-size: 3.5rem;
   font-family: 'Permanent Marker', cursive;
@@ -59,11 +63,13 @@ h1.logo {
   border: 0;
   border-radius: 15px;
   cursor: pointer;
-  transition: all .3s; }
+  transition: background-color .3s, color .3s; }
   .btn-login:hover {
-    transform: scale(1.05);
+    transform: scale(1.01);
     color: #742c20;
     background-color: #ff745b; }
+  .btn-login:active {
+    transform: scale(0.95); }
   .btn-login:last-child {
     margin-bottom: 25px; }
 
@@ -102,11 +108,13 @@ h1.logo {
   border: 0;
   border-radius: 15px;
   cursor: pointer;
-  transition: all .3s; }
+  transition: background-color .3s, color .3s; }
   .btn-gameover:hover {
-    transform: scale(1.05);
+    transform: scale(1.01);
     color: #742c20;
     background-color: #ff745b; }
+  .btn-gameover:active {
+    transform: scale(0.95); }
 
 .div-login {
   background-color: #f9df76;
