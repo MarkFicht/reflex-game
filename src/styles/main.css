@@ -158,30 +158,44 @@ p.create-by {
     color: #993b2a; }
 
 .instruction {
-  display: none;
-  width: 100vw;
-  height: 100vh;
   position: fixed;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.25); }
-  .instruction div {
-    background-color: #f9df76;
-    width: 500px;
-    height: 500px;
-    margin: 170px auto;
-    color: #333;
-    position: relative; }
-    .instruction div h2 {
-      padding-top: 60px;
-      font-size: 2.5rem; }
-    .instruction div .close-instruction {
-      width: 50px;
-      height: 50px;
-      background-color: #333;
-      position: absolute;
-      top: -30%;
-      right: 5%; }
+
+div.instruction-center {
+  background-color: #f9df76;
+  width: 500px;
+  height: 500px;
+  margin: 12vh auto;
+  color: #333;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; }
+  div.instruction-center h2 {
+    font-size: 3rem; }
+  div.instruction-center ol {
+    font-size: 40px;
+    list-style: none;
+    text-align: start; }
+    div.instruction-center ol li {
+      padding: 25px 40px; }
+
+.close-instruction {
+  width: 65px;
+  height: 65px;
+  font-size: 65px;
+  position: absolute;
+  top: 0;
+  right: 0; }
+  .close-instruction:hover {
+    text-shadow: 0 0 3px;
+    cursor: pointer; }
+  .close-instruction:active {
+    transform: scale(1.25); }
 
 .div-game {
   background: url("../images/mr2.jpg") no-repeat center;

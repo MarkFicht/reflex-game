@@ -38,7 +38,7 @@ class Login extends Component {
 
     showInstruction = e => {
         this.setState({
-            instruction: true,
+            instruction: !this.state.instruction,
         })
     }
 
@@ -73,9 +73,14 @@ class Login extends Component {
                 </div>
 
                 <div className='instruction' style={{ display: this.state.instruction ? 'block' : 'none'}}>
-                    <div>
-                        <div className='close-instruction'></div>
+                    <div className='instruction-center'>
+                        <div className='close-instruction' onClick={this.showInstruction}>x</div>
                         <h2>Zasady gry:</h2>
+                        <ol>
+                            <li>1. Jakis tekst dfdfdfdfdfdfdfdfdfdfdf.</li>
+                            <li>2. Jakis tekst dfdfdfdfdfdfdfdfdfdfdf.</li>
+                            <li>3. Jakis tekst dfdfdfdfdfdfdfdfdfdfdf.</li>
+                        </ol>
                     </div>
                 </div>
 
