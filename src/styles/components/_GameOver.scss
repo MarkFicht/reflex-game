@@ -1,7 +1,7 @@
 .div-gameover {
   //background-color: $panelColor;
 
-  background: url("../images/mr6.png") no-repeat center;
+  background: url("../images/background/bg-dbz3.jpg") no-repeat center;
   background-size: cover;
 
   width: $widthGame;
@@ -16,8 +16,8 @@
 }
 
 .game-over {
-  padding: 70px 0;
-  font-size: 8rem;
+  padding: 50px 0;
+  font-size: 9rem;
   font-weight: bold;
   letter-spacing: 3px;
   animation: game-over-animation 2.5s 1s alternate forwards;

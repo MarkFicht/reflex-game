@@ -62,8 +62,15 @@ class Login extends Component {
                     <input type='text' value={this.state.name} onChange={this.handleTextPlayer}/>
                     <p className="nick-validation" style={ styles }>{ this.state.name.length > 3 && this.state.name.length < 10 ? 'Poprawny nick :)' : 'Nick musi zawierac od 4 do 9 znakow!' }</p>
                     <div>
+                        <select className='select-player'>
+                            <option value="0">Bardock</option>
+                            <option value="1">c18</option>
+                            <option value="2">GokuSsj3</option>
+                            <option value="3">Vegeta</option>
+                        </select>
                         <button className='btn-login' onClick={this.handleClick}>{ 'GRAJ' }</button>
                         <button className='btn-login' onClick={this.showInstruction}>{ 'Instrukcja' }</button>
+                        <button className='btn-login'>{ 'Rekordy' }</button>
                     </div>
 
                     <p className="create-by">
@@ -79,9 +86,9 @@ class Login extends Component {
                         <div className='close-instruction' onClick={this.showInstruction}>x</div>
                         <h2>Zasady gry:</h2>
                         <ol>
-                            <li>1. Jakis tekst dfdfdfdfdfdfdfdfdfdfdf.</li>
-                            <li>2. Jakis tekst dfdfdfdfdfdfdfdfdfdfdf.</li>
-                            <li>3. Jakis tekst dfdfdfdfdfdfdfdfdfdfdf.</li>
+                            <li>1. Jest to wersja Beta. W trakcie budowy.</li>
+                            <li>2. Dziala tylko przycisk X podczas gry.</li>
+                            <li>3. Wygrywa ten. kto wiecej wyklika, w krotszym czasie.</li>
                         </ol>
                     </div>
                 </div>

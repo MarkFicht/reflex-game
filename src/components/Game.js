@@ -9,9 +9,9 @@ class Game extends React.Component {
         super(props);
         this.state = {
             ready: false,
-            readyTime: 1,
+            readyTime: 3,
             gameStart: false,
-            gameTime: 2,
+            gameTime: 10,
             users: [],
             pending: true,
             startGame: false,
@@ -127,14 +127,16 @@ class Game extends React.Component {
                             <p>SCORE: {this.state.users[0].points}</p>
                         </div>
 
+                        <div className="random-char">?</div>
+
                         <div className="btns">
-                            <button disabled={this.state.gameStart ? false : true} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id)}>X</button>
+                            <button disabled={this.state.gameStart ? false : true} style={{cursor: this.state.gameStart ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id)}>X</button>
                             <button className='btn-game'>Y</button>
                             <button className='btn-game'>Z</button>
                         </div>
 
                         <div className='player'>
-                            <div className="player-img"></div>
+                            <div className="player-img1"></div>
                         </div>
                     </div>
 
@@ -145,14 +147,16 @@ class Game extends React.Component {
                             <p>SCORE: {this.state.users[1] ? this.state.users[1].points : null}</p>
                         </div>
 
+                        <div className="random-char">?</div>
+
                         <div className="btns">
-                            <button disabled={this.state.gameStart ? false : true} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id)}>X</button>
+                            <button disabled={this.state.gameStart ? false : true} style={{cursor: this.state.gameStart ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id)}>X</button>
                             <button className='btn-game'>Y</button>
                             <button className='btn-game'>Z</button>
                         </div>
 
                         <div className='player'>
-                            <div className="player-img"></div>
+                            <div className="player-img2"></div>
                         </div>
                     </div>
 

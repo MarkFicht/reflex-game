@@ -5,7 +5,7 @@
   //background-size: cover;
 
   width: 2*$width;
-  height: 9*$height;
+  height: 11*$height;
   margin: 50px auto;
   border: 3px solid $borderColor;
   border-radius: 15px;
@@ -16,7 +16,7 @@
 }
 
 //---
-.div-login input[type='text'] {
+.div-login input[type='text'], .select-player {
   width: $width;
   height: $height;
   margin: 0 auto;
@@ -40,8 +40,8 @@
 }
 
 .div-login p.nick-validation {
-  font-size: 1rem;
-  margin: 10px 0 0 0;
+  font-size: 1.2rem;
+  margin: 10px 0;
 }
 
 .div-login div {
@@ -79,6 +79,7 @@ div.instruction-center {
   height: 500px;
   margin: 12vh auto;
   color: #333;
+  border: 5px solid $borderColor;
   position: relative;
   display: flex;
   flex-direction: column;
