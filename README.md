@@ -2,6 +2,7 @@
 
 This project uses the firebase, for prue multi player game in real time. <br />
 [DEMO here](https://gra-reflex.firebaseapp.com/#/)
+Mechanism for game is in BETA, working only X button without without displaying the sequence
 
 ### What's inside?
 * Login panel
