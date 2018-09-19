@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './components/App';
 import * as firebase from 'firebase';
 
-//from firebase.google.com
-// Initialize Firebase
+//--- from firebase.google.com - Initialize Firebase
 var config = {
     apiKey: "AIzaSyCruoelLHKNisLfqpSXKRBbw3b7aLfoDYQ",
     authDomain: "gra-reflex.firebaseapp.com",
@@ -15,5 +14,6 @@ var config = {
 };
 firebase.initializeApp(config);
 
+//---
 ReactDOM.render(<App />, document.getElementById('root'));
 

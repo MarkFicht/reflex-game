@@ -23,24 +23,28 @@ class Game extends React.Component {
         this.gameTime = null;
     }
 
+
     componentDidMount() {
         let active = true;
 
+        //--- Downloading data from Firebase
         firebase.database().ref('users').on('value', snap => {
             const val = snap.val();
-
             console.log(val);
+
+            //--- Preparing to save in setState
             const usersTable = [];
 
             for (var key in val) {
                 usersTable.push({
                     nickname: val[key].nickname,
                     id: key,
-                    points: val[key].points
+                    points: val[key].points,
+                    imgPlayer: val[key].imgPlayer
                 })
             }
 
-
+            //--- Preparing counter animation
             if(active && usersTable.length === 2) {
                 this.pauseTime = setTimeout(() => {
                     this.setState({
@@ -65,7 +69,7 @@ class Game extends React.Component {
                             })
                         }
                     }, 1000)
-                }, 1500)
+                }, 1500);
 
                 this.gameTime = setInterval( () => {
 
@@ -86,13 +90,15 @@ class Game extends React.Component {
                 active = false;
             }
 
+            //--- Current local data from Firebase
             this.setState({
                 users: usersTable,
                 pending: false,
                 startGame: usersTable.length === 2
             })
-        })
+        }, error => { console.log('Error: ' + error.code); })
     }
+
 
     componentWillUnmount() {
         // clearTimeout(this.pauseTime);
@@ -101,13 +107,17 @@ class Game extends React.Component {
 
         // error, rozgryzc
         // firebase.database().ref('/users').remove();
-    }
+    };
+
 
     handleClick = (e, id) => {
-        firebase.database().ref('/users/' + id).update({ // .find robi tablice jednoelementowa
-            points: this.state.users.find((user) => user.id === id).points + 1
+
+        firebase.database().ref('/users/' + id).update({
+            points: this.state.users.find( (user) => user.id === id ).points + 1
+            // .find() - robi tablice jednoelementowa
         })
-    }
+    };
+
 
     render() {
 
@@ -118,7 +128,7 @@ class Game extends React.Component {
         return (
             <div>
                 <div className="div-game">
-                    <div className="timer">{`TIME: ${this.state.gameTime}`}</div>
+                    <div className="timer">{`TIME:${this.state.gameTime}`}</div>
 
                     <div className="half-field">
                         <p>{this.state.users[0].nickname}</p>
@@ -136,6 +146,7 @@ class Game extends React.Component {
                         </div>
 
                         <div className='player'>
+                            {/*<div className="player-img1" style={{ background: `url("../images/player/${ this.state.users[0].imgPlayer }.gif") no-repeat center` }}></div>*/}
                             <div className="player-img1"></div>
                         </div>
                     </div>
@@ -144,7 +155,7 @@ class Game extends React.Component {
                         <p>{this.state.users[1] ? this.state.users[1].nickname : '-'}</p>
 
                         <div className="scores">
-                            <p>SCORE: {this.state.users[1] ? this.state.users[1].points : null}</p>
+                            <p>SCORE: {this.state.users[1] ? this.state.users[1].points : '-'}</p>
                         </div>
 
                         <div className="random-char">?</div>
@@ -178,7 +189,7 @@ class Game extends React.Component {
                     }
                 </div>
             </div>
-        );
+        )
     }
 }
 

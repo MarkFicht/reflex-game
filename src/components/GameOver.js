@@ -9,11 +9,13 @@ class GameOver extends React.Component {
         this.state = {
             players: [],
             pending: true
-
         }
     }
 
+
     componentDidMount() {
+
+        //--- Downloading data and checking for Redirection
         firebase.database().ref('/users').on('value', snap => {
             const value = snap.val();
 
@@ -31,17 +33,17 @@ class GameOver extends React.Component {
                 pending: false
             })
         });
-    }
+    };
+
 
     playAgain = () => {
         firebase.database().ref('/users').remove();
-    }
+    };
+
 
     render() {
 
-        if (this.state.pending) {
-            return null
-        }
+        if (this.state.pending) { return null; }
 
         return (
             <div>

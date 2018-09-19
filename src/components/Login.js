@@ -13,42 +13,46 @@ class Login extends Component {
 
         this.state = {
             name: '',
+            value: 'c18',
             validation: false,
             instruction: false,
-        }
-    }
+        };
+    };
+
 
     handleTextPlayer = e => {
-        this.setState({
-            name: e.target.value,
-        })
-    }
+        this.setState({ name: e.target.value })
+    };
 
-    handleClick = e => {
+
+    handleSelectTag = e => {
+        this.setState({ value: e.target.value })
+    };
+
+
+    showInstruction = e => {
+        this.setState({ instruction: !this.state.instruction })
+    };
+
+    //--- Add new player to Firebase
+    //--- Redirection
+    handleClickGame = e => {
 
         if (this.state.name.length > 3 && this.state.name.length < 10) {
-            //przekierowanie
 
             firebase.database().ref('/users').push({
                 nickname: this.state.name,
-                points: 0
-            }).then( (e) => this.props.history.push('/game'))
+                points: 0,
+                imgPlayer: this.state.value
+            }).then( (e) => this.props.history.push('/game') )
         }
-    }
+    };
 
-    showInstruction = e => {
-        this.setState({
-            instruction: !this.state.instruction,
-        })
-    }
 
     render() {
 
-        // const checkValidation = this.state.name.length > 3 && this.state.name.length < 10;
+        const styles = { color: this.state.name.length > 3 && this.state.name.length < 10 ? '#5c7b1e' : 'red' };
 
-        const styles = {
-            color: this.state.name.length > 3 && this.state.name.length < 10 ? '#5c7b1e' : 'red'
-        }
         return (
             <div>
                 <div className='fixed-logo'>
@@ -58,17 +62,24 @@ class Login extends Component {
                 </div>
 
                 <div className="div-login">
-                    <p>Podaj Nick: </p>
-                    <input type='text' value={this.state.name} onChange={this.handleTextPlayer}/>
-                    <p className="nick-validation" style={ styles }>{ this.state.name.length > 3 && this.state.name.length < 10 ? 'Poprawny nick :)' : 'Nick musi zawierac od 4 do 9 znakow!' }</p>
-                    <div>
-                        <select className='select-player'>
-                            <option value="0">Bardock</option>
-                            <option value="1">c18</option>
-                            <option value="2">GokuSsj3</option>
-                            <option value="3">Vegeta</option>
+                    <label>
+                        <p>Podaj Nick: </p>
+                        <input placeholder='Nickname' type='text' value={this.state.name} onChange={this.handleTextPlayer}/>
+                        <p className="nick-validation" style={ styles }>{ this.state.name.length > 3 && this.state.name.length < 10 ? 'Poprawny nick :)' : 'Nick musi zawierac od 4 do 9 znakow!' }</p>
+                    </label>
+
+                    <label>
+                        <p>Wybierz postać: </p>
+                        <select className='select-player' value={this.state.value} onChange={this.handleSelectTag}>
+                            <option value="bardock">Bardock</option>
+                            <option value="c18">c18</option>
+                            <option value="gokussj3">GokuSsj3</option>
+                            <option value="vegeta">Vegeta</option>
                         </select>
-                        <button className='btn-login' onClick={this.handleClick}>{ 'GRAJ' }</button>
+                    </label>
+
+                    <div>
+                        <button className='btn-login' onClick={this.handleClickGame}>{ 'GRAJ' }</button>
                         <button className='btn-login' onClick={this.showInstruction}>{ 'Instrukcja' }</button>
                         <button className='btn-login'>{ 'Rekordy' }</button>
                     </div>

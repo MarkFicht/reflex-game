@@ -2,7 +2,7 @@
   //background-color: $panelColor;
 
   background: url("../images/background/bg-dbz2.png") no-repeat center;
-  background-size: cover;
+  background-size: 1175px;
 
   width: $widthGame;
   height: $heightGame;
@@ -16,9 +16,11 @@
 }
 
 .timer {
-  font-size: 2.3rem;
+  font-size: 2.5rem;
   font-weight: bold;
   position: absolute;
+  text-shadow: 0 0 2px black;
+  letter-spacing: 4px;
   top: 100px;
   color: $textColor;
 }
@@ -40,7 +42,7 @@
   font-weight: bold;
   padding-top: 3rem;
   color: $borderColor;
-  text-shadow: 0 0 5px black;
+  text-shadow: 0 0 15px black, 0 0 25px black;
 }
 
 .half-field > .btns, .half-field > .scores {
@@ -53,6 +55,7 @@
 
 .scores p {
   font-size: 2rem;
+  text-shadow: 1px 1px black;
   font-weight: bold;
 }
 
@@ -77,14 +80,14 @@
 
 //---
 .player-img1 {
-  background: url("../images/player/bardock.gif") no-repeat center;
+  background: url("../images/player/c18.gif") no-repeat center;
   background-size: contain;
   height: 170px;
   width: 170px;
 }
 
 .player-img2 {
-  background: url("../images/player/c18.gif") no-repeat center;
+  background: url("../images/player/vegeta.gif") no-repeat center;
   background-size: contain;
   transform: rotateY(180deg);
   height: 170px;

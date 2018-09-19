@@ -25,6 +25,10 @@
     transform: scale(.95);
   }
 
+  &:nth-child(2) {
+    margin-top: 20px;
+  }
+
   &:last-child {
     margin-bottom: 25px;
   }
@@ -43,10 +47,11 @@
   border: 4px solid $textColor;
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 0 5px black;
   transition: all .2s;
 
   &:hover {
-    box-shadow: 0 0 3px black;
+    box-shadow: 0 0 15px black;
   }
 
   &:active {

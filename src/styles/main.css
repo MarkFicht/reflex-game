@@ -71,6 +71,8 @@ h1.logo {
     background-color: #ff745b; }
   .btn-login:active {
     transform: scale(0.95); }
+  .btn-login:nth-child(2) {
+    margin-top: 20px; }
   .btn-login:last-child {
     margin-bottom: 25px; }
 
@@ -86,9 +88,10 @@ h1.logo {
   border: 4px solid #4c1d15;
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 0 5px black;
   transition: all .2s; }
   .btn-game:hover {
-    box-shadow: 0 0 3px black; }
+    box-shadow: 0 0 15px black; }
   .btn-game:active {
     transform: scale(0.85);
     color: #742c20;
@@ -120,7 +123,7 @@ h1.logo {
 .div-login {
   background-color: #f9df76;
   width: 400px;
-  height: 440px;
+  height: 480px;
   margin: 50px auto;
   border: 3px solid #993b2a;
   border-radius: 15px;
@@ -174,7 +177,7 @@ p.create-by {
   height: 100%;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.25); }
+  background-color: rgba(0, 0, 0, 0.6); }
 
 div.instruction-center {
   background-color: #f9df76;
@@ -211,7 +214,7 @@ div.instruction-center {
 
 .div-game {
   background: url("../images/background/bg-dbz2.png") no-repeat center;
-  background-size: cover;
+  background-size: 1175px;
   width: 800px;
   height: 600px;
   margin: 15vh auto;
@@ -223,9 +226,11 @@ div.instruction-center {
   justify-content: space-around; }
 
 .timer {
-  font-size: 2.3rem;
+  font-size: 2.5rem;
   font-weight: bold;
   position: absolute;
+  text-shadow: 0 0 2px black;
+  letter-spacing: 4px;
   top: 100px;
   color: #4c1d15; }
 
@@ -245,7 +250,7 @@ div.instruction-center {
   font-weight: bold;
   padding-top: 3rem;
   color: #993b2a;
-  text-shadow: 0 0 5px black; }
+  text-shadow: 0 0 15px black, 0 0 25px black; }
 
 .half-field > .btns, .half-field > .scores {
   height: 12.5%;
@@ -256,6 +261,7 @@ div.instruction-center {
 
 .scores p {
   font-size: 2rem;
+  text-shadow: 1px 1px black;
   font-weight: bold; }
 
 .half-field > .player {
@@ -275,13 +281,13 @@ div.instruction-center {
   margin-bottom: 15px; }
 
 .player-img1 {
-  background: url("../images/player/bardock.gif") no-repeat center;
+  background: url("../images/player/c18.gif") no-repeat center;
   background-size: contain;
   height: 170px;
   width: 170px; }
 
 .player-img2 {
-  background: url("../images/player/c18.gif") no-repeat center;
+  background: url("../images/player/vegeta.gif") no-repeat center;
   background-size: contain;
   transform: rotateY(180deg);
   height: 170px;
