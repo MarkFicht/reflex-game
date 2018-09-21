@@ -9,7 +9,7 @@ var config = {
     authDomain: "gra-reflex.firebaseapp.com",
     databaseURL: "https://gra-reflex.firebaseio.com",
     projectId: "gra-reflex",
-    storageBucket: "",
+    storageBucket: "gra-reflex.appspot.com",
     messagingSenderId: "442302034181"
 };
 firebase.initializeApp(config);

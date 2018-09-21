@@ -71,7 +71,7 @@ h1.logo {
     background-color: #ff745b; }
   .btn-login:active {
     transform: scale(0.95); }
-  .btn-login:nth-child(2) {
+  .btn-login:nth-child(1) {
     margin-top: 20px; }
   .btn-login:last-child {
     margin-bottom: 25px; }
@@ -281,13 +281,16 @@ div.instruction-center {
   margin-bottom: 15px; }
 
 .player-img1 {
-  background: url("../images/player/c18.gif") no-repeat center;
+  background-repeat: no-repeat;
+  background-position: center;
   background-size: contain;
+  transform: rotateY(0deg);
   height: 170px;
   width: 170px; }
 
 .player-img2 {
-  background: url("../images/player/vegeta.gif") no-repeat center;
+  background-repeat: no-repeat;
+  background-position: center;
   background-size: contain;
   transform: rotateY(180deg);
   height: 170px;

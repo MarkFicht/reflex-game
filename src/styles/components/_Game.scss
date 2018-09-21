@@ -79,19 +79,21 @@
 }
 
 //---
-.player-img1 {
-  background: url("../images/player/c18.gif") no-repeat center;
+@mixin imgForPlayers($rotate) {
+  //background-image: url("../images/player/c18.gif");
+  background-repeat: no-repeat;
+  background-position: center;
   background-size: contain;
+  transform: rotateY($rotate);
   height: 170px;
   width: 170px;
 }
+.player-img1 {
+  @include imgForPlayers(0deg);
+}
 
 .player-img2 {
-  background: url("../images/player/vegeta.gif") no-repeat center;
-  background-size: contain;
-  transform: rotateY(180deg);
-  height: 170px;
-  width: 170px;
+  @include imgForPlayers(180deg);
 }
 
 //---

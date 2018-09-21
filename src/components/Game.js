@@ -146,8 +146,7 @@ class Game extends React.Component {
                         </div>
 
                         <div className='player'>
-                            {/*<div className="player-img1" style={{ background: `url("../images/player/${ this.state.users[0].imgPlayer }.gif") no-repeat center` }}></div>*/}
-                            <div className="player-img1"></div>
+                            <div className="player-img1" style={{ backgroundImage: `url("${ this.state.users[0].imgPlayer }")` }}></div>
                         </div>
                     </div>
 
@@ -167,7 +166,7 @@ class Game extends React.Component {
                         </div>
 
                         <div className='player'>
-                            <div className="player-img2"></div>
+                            <div className="player-img2" style={{ backgroundImage: this.state.users[1] && `url("${ this.state.users[1].imgPlayer }")` }}></div>
                         </div>
                     </div>
 
