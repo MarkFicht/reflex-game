@@ -13,28 +13,27 @@ class Login extends Component {
 
         this.state = {
             name: '',
-            img: 'bardock',
+            value: 'bardock',
             urlImg: '',
             validation: false,
             instruction: false,
         };
     };
 
-    componentDidMount() {
-
-        const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
-        storageImgPlayer.child(`${this.state.img}.gif`).getDownloadURL().then( (url) => {
-            console.log(url);
-
-            this.setState({
-                img: this.state.value,
-                urlImg:  url
-            })
-
-        } ).catch( (error) => {
-            // console.log(`Error: ${ error.code }`)
-        } )
-    }
+    // componentDidMount() {
+    //
+    //     const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
+    //     storageImgPlayer.child(`${this.state.img}.gif`).getDownloadURL().then( (url) => {
+    //         console.log(url);
+    //
+    //         this.setState({
+    //             urlImg:  url
+    //         })
+    //
+    //     } ).catch( (error) => {
+    //         // console.log(`Error: ${ error.code }`)
+    //     } )
+    // }
 
 
     handleTextPlayer = e => {
@@ -44,18 +43,19 @@ class Login extends Component {
 
     handleSelectTag = e => {
 
-        this.setState({ img: e.target.value })
+        this.setState({ value: e.target.value });
+        console.log(this.state.value);
 
-        const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
-        // console.log(storage.child(`${this.state.img}.gif`).getDownloadURL());
-
-        storageImgPlayer.child(`${this.state.img}.gif`).getDownloadURL().then( (url) => {
-            console.log(url);
-
-            this.setState({ urlImg:  url})
-        } ).catch( (error) => {
-            // console.log(`Error: ${ error.code }`)
-        } )
+        // const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
+        // // console.log(storage.child(`${this.state.img}.gif`).getDownloadURL());
+        //
+        // storageImgPlayer.child(`${this.state.img}.gif`).getDownloadURL().then( (url) => {
+        //     console.log(url);
+        //
+        //     this.setState({ urlImg:  url})
+        // } ).catch( (error) => {
+        //     // console.log(`Error: ${ error.code }`)
+        // } )
     };
 
 
@@ -63,17 +63,37 @@ class Login extends Component {
         this.setState({ instruction: !this.state.instruction })
     };
 
+
     //--- Add new player to Firebase
     //--- Redirection
     handleClickGame = e => {
 
         if (this.state.name.length > 3 && this.state.name.length < 10) {
 
-            firebase.database().ref('/users').push({
-                nickname: this.state.name,
-                points: 0,
-                imgPlayer: this.state.urlImg
-            }).then( (e) => this.props.history.push('/game') )
+            const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
+            // console.log(storage.child(`${this.state.img}.gif`).getDownloadURL());
+
+            storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
+                console.log(url);
+
+                this.setState({ urlImg:  url})
+
+                firebase.database().ref('/users').push({
+                    nickname: this.state.name,
+                    points: 0,
+                    imgPlayer: this.state.urlImg
+                }).then( (e) => this.props.history.push('/game') )
+
+            } ).catch( (error) => {
+                // console.log(`Error: ${ error.code }`)
+            } )
+
+
+            // firebase.database().ref('/users').push({
+            //     nickname: this.state.name,
+            //     points: 0,
+            //     imgPlayer: this.state.urlImg
+            // }).then( (e) => this.props.history.push('/game') )
         }
     };
 
@@ -99,7 +119,7 @@ class Login extends Component {
 
                     <label>
                         <p>Wybierz postać: </p>
-                        <select className='select-player' value={this.state.value} onClick={this.handleSelectTag}>
+                        <select className='select-player' value={this.state.value} onChange={this.handleSelectTag}>
                             <option value="bardock">Bardock</option>
                             <option value="c18">c18</option>
                             <option value="gokussj3">GokuSsj3</option>
