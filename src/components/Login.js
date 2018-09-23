@@ -20,42 +20,18 @@ class Login extends Component {
         };
     };
 
-    // componentDidMount() {
-    //
-    //     const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
-    //     storageImgPlayer.child(`${this.state.img}.gif`).getDownloadURL().then( (url) => {
-    //         console.log(url);
-    //
-    //         this.setState({
-    //             urlImg:  url
-    //         })
-    //
-    //     } ).catch( (error) => {
-    //         // console.log(`Error: ${ error.code }`)
-    //     } )
-    // }
-
 
     handleTextPlayer = e => {
         this.setState({ name: e.target.value })
     };
 
 
+    //--- I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
     handleSelectTag = e => {
-
         this.setState({ value: e.target.value });
-        console.log(this.state.value);
 
-        // const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
-        // // console.log(storage.child(`${this.state.img}.gif`).getDownloadURL());
-        //
-        // storageImgPlayer.child(`${this.state.img}.gif`).getDownloadURL().then( (url) => {
-        //     console.log(url);
-        //
-        //     this.setState({ urlImg:  url})
-        // } ).catch( (error) => {
-        //     // console.log(`Error: ${ error.code }`)
-        // } )
+        //--- Shows the previous value - FIXED
+        console.log(this.state.value);
     };
 
 
@@ -64,36 +40,27 @@ class Login extends Component {
     };
 
 
-    //--- Add new player to Firebase
-    //--- Redirection
+    //--- Add new player to Firebase / Redirection / Choosing avatar in game
     handleClickGame = e => {
 
         if (this.state.name.length > 3 && this.state.name.length < 10) {
 
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
-            // console.log(storage.child(`${this.state.img}.gif`).getDownloadURL());
-
             storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
+
                 console.log(url);
+                this.setState({ urlImg:  url});
 
-                this.setState({ urlImg:  url})
-
+                //---
                 firebase.database().ref('/users').push({
                     nickname: this.state.name,
                     points: 0,
                     imgPlayer: this.state.urlImg
                 }).then( (e) => this.props.history.push('/game') )
 
-            } ).catch( (error) => {
+            }).catch( (error) => {
                 // console.log(`Error: ${ error.code }`)
-            } )
-
-
-            // firebase.database().ref('/users').push({
-            //     nickname: this.state.name,
-            //     points: 0,
-            //     imgPlayer: this.state.urlImg
-            // }).then( (e) => this.props.history.push('/game') )
+            })
         }
     };
 
