@@ -9,8 +9,9 @@ class Game extends React.Component {
             prepare: false,
             prepareTime: 3,
             game: false,
-            gameTime: 10,
+            gameTime: 20,
             users: [],
+            chars: ['x', 'x'],
             pending: true,
         };
         //construktor odswieza caly komponent, dlatego to jest poza
@@ -21,6 +22,22 @@ class Game extends React.Component {
 
 
     componentDidMount() {
+
+        switch ( Math.floor( Math.random() * 3 + 1 ) ) {
+            case 1:
+                this.state.chars[0] = 'x'
+                this.state.chars[1] = 'y'
+                break;
+            case 2:
+                this.state.chars[0] ='y'
+                this.state.chars[1] ='z'
+                break;
+            case 3:
+                this.state.chars[0] = 'z'
+                this.state.chars[1] = 'x'
+                break;
+        }
+
         let active = true;
 
         //--- Reference to Database
@@ -90,20 +107,43 @@ class Game extends React.Component {
     }
 
 
-    // componentWillUnmount() {
-    //     clearTimeout(this.pauseTime);
-    //     clearInterval(this.readyInterval);
-    //     clearInterval(this.gameTime);
-    // };
+    //--- The mechanism of the game
+    handleClick = (e, id, char_player, nr_player) => {
+
+        // Add point
+        if (char_player === this.state.chars[nr_player]) {
+
+            firebase.database().ref('/users/' + id).update({
+                points: this.state.users.find( (user) => user.id === id ).points + 1
+                // .find() - robi tablice jednoelementowa
+            })
+
+            let nr = Math.floor( Math.random() * 3 + 1 );
+            switch (nr) {
+                case 1:
+                    this.state.chars[nr_player] = 'x'
+                    break;
+                case 2:
+                    this.state.chars[nr_player] ='y'
+                    break;
+                case 3:
+                    this.state.chars[nr_player] = 'z'
+                    break;
+            }
+        }
+        // Subtract point
+        else {
+            firebase.database().ref('/users/' + id).update({
+                points: this.state.users.find( (user) => user.id === id ).points - 1
+            })
+        }
+    };
 
 
-    handleClick = (e, id, char) => {
-        console.log(char);
-
-        firebase.database().ref('/users/' + id).update({
-            points: this.state.users.find( (user) => user.id === id ).points + 1
-            // .find() - robi tablice jednoelementowa
-        })
+    componentWillUnmount() {
+        clearTimeout(this.pauseTime);
+        clearInterval(this.readyInterval);
+        clearInterval(this.gameTime);
     };
 
 
@@ -127,12 +167,12 @@ class Game extends React.Component {
                             <p>SCORE: {this.state.users[0].points}</p>
                         </div>
 
-                        <div className="random-char">?</div>
+                        <div className="random-char">{ this.state.game ? this.state.chars[0] : '?' }</div>
 
                         <div className="btns">
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'x')}>X</button>
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'y')}>Y</button>
-                            <button className='btn-game'>Z</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'x', 0)}>X</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'y', 0)}>Y</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'z', 0)}>Z</button>
                         </div>
 
                         <div className='player'>
@@ -147,12 +187,12 @@ class Game extends React.Component {
                             <p>SCORE: {this.state.users[1] ? this.state.users[1].points : '-'}</p>
                         </div>
 
-                        <div className="random-char">?</div>
+                        <div className="random-char">{ this.state.game ? this.state.chars[0] : '?' }</div>
 
                         <div className="btns">
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'x')}>X</button>
-                            <button className='btn-game'>Y</button>
-                            <button className='btn-game'>Z</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'x', 1)}>X</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'y', 1)}>Y</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'z', 1)}>Z</button>
                         </div>
 
                         <div className='player'>
