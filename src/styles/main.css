@@ -297,7 +297,6 @@ div.instruction-center {
   width: 170px; }
 
 .connection-info {
-  display: none;
   position: absolute;
   z-index: 4;
   top: 120px;
@@ -320,8 +319,8 @@ div.instruction-center {
   z-index: 5;
   top: 200px;
   left: auto;
-  color: #4c1d15;
-  animation: prepare-count infinite 1s linear; }
+  text-shadow: 3px 3px black;
+  animation: prepare-count forwards 3s linear; }
   .prepare p {
     font-size: 7rem;
     letter-spacing: 2px;

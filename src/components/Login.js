@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-// import './Login.css'; // Stary zapis, gdzie mialem w strukturze pliki scss i css w folderze z Komponentem.js.
-// Wtedy musialem robic niepotrzebna redundancje na zmienne z kolorami itp.
-
-import { Link } from 'react-router-dom';
 import * as firebase from 'firebase';
+import { Link } from 'react-router-dom';
 import song from '../sound/music1.wav';
 
 //---

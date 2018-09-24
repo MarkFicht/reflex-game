@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-// import './Game.css'; // Stary zapis, gdzie mialem w strukturze pliki scss i css w folderze z Komponentem.js
-
 import * as firebase from 'firebase'
 
 class Game extends React.Component {
@@ -8,14 +6,12 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            ready: false,
-            readyTime: 3,
-            gameStart: false,
+            prepare: false,
+            prepareTime: 3,
+            game: false,
             gameTime: 10,
             users: [],
             pending: true,
-            startGame: false,
-            startInterval: false
         };
         //construktor odswieza caly komponent, dlatego to jest poza
         this.pauseTime = null;
@@ -27,14 +23,13 @@ class Game extends React.Component {
     componentDidMount() {
         let active = true;
 
-        //--- Downloading data from Firebase
+        //--- Reference to Database
         firebase.database().ref('users').on('value', snap => {
             const val = snap.val();
             console.log(val);
 
             //--- Preparing to save in setState
             const usersTable = [];
-
             for (var key in val) {
                 usersTable.push({
                     nickname: val[key].nickname,
@@ -44,44 +39,40 @@ class Game extends React.Component {
                 })
             }
 
-            //--- Preparing counter animation
-            if(active && usersTable.length === 2) {
+            //--- Counters
+            if (active && usersTable.length === 2) {
+
+                // Prepare counter
                 this.pauseTime = setTimeout(() => {
-                    this.setState({
-                        ready: true,
-                    })
+                    this.setState({ prepare: true })
 
                     this.readyInterval = setInterval(() => {
-
-                        if (this.state.readyTime === 0) {
+                        if (this.state.prepareTime === 0) {
                             clearInterval(this.readyInterval);
 
                             //--- Hide div prepare
                             this.setState({
-                                ready: false,
-                                gameStart: true,
+                                prepare: false,
+                                game: true,
                             })
                         }
 
-                        if (this.state.users.length > 1 && this.state.ready) {
-                            this.setState({
-                                readyTime: this.state.readyTime - 1,
-                            })
+                        if (this.state.users.length > 1 && this.state.prepare) {
+                            this.setState({ prepareTime: this.state.prepareTime - 1 })
                         }
                     }, 1000)
                 }, 1500);
 
+                // Game counter and redirection to GameOver
                 this.gameTime = setInterval( () => {
 
-                    if (this.state.gameStart) {
+                    if (this.state.game) {
                         if (this.state.gameTime === 0) {
                             clearInterval(this.gameTime);
                             this.props.history.push('/gameover')
                         }
 
-                        this.setState({
-                            gameTime: this.state.gameTime - 1,
-                        })
+                        this.setState({ gameTime: this.state.gameTime - 1 })
                     }
                 }, 1000 )
             }
@@ -90,27 +81,24 @@ class Game extends React.Component {
                 active = false;
             }
 
-            //--- Current local data from Firebase
+            //--- Loading current local data from Firebase
             this.setState({
                 users: usersTable,
                 pending: false,
-                startGame: usersTable.length === 2
             })
         }, error => { console.log('Error: ' + error.code); })
     }
 
 
-    componentWillUnmount() {
-        // clearTimeout(this.pauseTime);
-        // clearInterval(this.readyInterval);
-        // clearInterval(this.gameTime);
-
-        // error, rozgryzc
-        // firebase.database().ref('/users').remove();
-    };
+    // componentWillUnmount() {
+    //     clearTimeout(this.pauseTime);
+    //     clearInterval(this.readyInterval);
+    //     clearInterval(this.gameTime);
+    // };
 
 
-    handleClick = (e, id) => {
+    handleClick = (e, id, char) => {
+        console.log(char);
 
         firebase.database().ref('/users/' + id).update({
             points: this.state.users.find( (user) => user.id === id ).points + 1
@@ -124,6 +112,8 @@ class Game extends React.Component {
         if (this.state.pending) {
             return null;
         }
+
+        let prepareClass = 'prepare';
 
         return (
             <div>
@@ -140,8 +130,8 @@ class Game extends React.Component {
                         <div className="random-char">?</div>
 
                         <div className="btns">
-                            <button disabled={this.state.gameStart ? false : true} style={{cursor: this.state.gameStart ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id)}>X</button>
-                            <button className='btn-game'>Y</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'x')}>X</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'y')}>Y</button>
                             <button className='btn-game'>Z</button>
                         </div>
 
@@ -160,7 +150,7 @@ class Game extends React.Component {
                         <div className="random-char">?</div>
 
                         <div className="btns">
-                            <button disabled={this.state.gameStart ? false : true} style={{cursor: this.state.gameStart ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id)}>X</button>
+                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'x')}>X</button>
                             <button className='btn-game'>Y</button>
                             <button className='btn-game'>Z</button>
                         </div>
@@ -179,9 +169,9 @@ class Game extends React.Component {
                         : null
                     }
 
-                    {this.state.users.length > 1 && this.state.ready
-                        ? <div className="prepare">
-                            <p>{this.state.readyTime === 0 ? 'start' : this.state.readyTime}</p>
+                    {this.state.users.length > 1 && this.state.prepare
+                        ? <div className={ prepareClass }>
+                            <p>{this.state.prepareTime === 0 ? 'start' : this.state.prepareTime}</p>
                         </div>
 
                         : null

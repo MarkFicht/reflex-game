@@ -98,7 +98,7 @@
 
 //---
 .connection-info {
-  display: none;
+  //display: none;
   position: absolute;
   z-index: 4;
   top: $heightGame/5;
@@ -124,8 +124,8 @@
   z-index: 5;
   top: $heightGame/3;
   left: auto;
-  color: $textColor;
-  animation: prepare-count infinite 1s linear;
+  text-shadow: 3px 3px darken($textColor, 20%);
+  animation: prepare-count forwards 3s linear;
 
   p {
     font-size: 7rem;

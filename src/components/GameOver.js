@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-// import './GameOver.css'; // Stary zapis, gdzie mialem w strukturze pliki scss i css w folderze z Komponentem.js
-
 import * as firebase from 'firebase'
 
 class GameOver extends React.Component {
