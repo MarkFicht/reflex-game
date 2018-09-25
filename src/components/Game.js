@@ -158,7 +158,7 @@ class Game extends React.Component {
         return (
             <div>
                 <div className="div-game">
-                    <div className="timer">{`TIME:${this.state.gameTime}`}</div>
+                    <div className="timer">{`TIME: ${this.state.gameTime}`}</div>
 
                     <div className="half-field">
                         <p>{this.state.users[0].nickname}</p>
@@ -187,7 +187,7 @@ class Game extends React.Component {
                             <p>SCORE: {this.state.users[1] ? this.state.users[1].points : '-'}</p>
                         </div>
 
-                        <div className="random-char">{ this.state.game ? this.state.chars[0] : '?' }</div>
+                        <div className="random-char">{ this.state.game ? this.state.chars[1] : '?' }</div>
 
                         <div className="btns">
                             <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'x', 1)}>X</button>

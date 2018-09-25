@@ -25,7 +25,7 @@ p {
   color: #4c1d15; }
 
 .fixed-logo {
-  width: 800px;
+  width: 400px;
   margin: 0 auto; }
 
 h1.logo {
@@ -213,7 +213,7 @@ div.instruction-center {
     transform: scale(1.25); }
 
 .div-game {
-  background: url("../images/background/bg-dbz2.png") no-repeat center;
+  background: url("../images/background/bg-dbz2.png") no-repeat -220px;
   background-size: 1175px;
   width: 800px;
   height: 600px;
@@ -226,11 +226,11 @@ div.instruction-center {
   justify-content: space-around; }
 
 .timer {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: bold;
   position: absolute;
   text-shadow: 0 0 2px black;
-  letter-spacing: 4px;
+  letter-spacing: 1px;
   top: 100px;
   color: #4c1d15; }
 
@@ -243,58 +243,62 @@ div.instruction-center {
   flex-direction: column; }
 
 .half-field > p {
-  height: 20%;
-  font-size: 3rem;
+  height: 15%;
+  font-size: 3.5rem;
   font-style: italic;
   font-family: 'Permanent Marker', cursive;
   font-weight: bold;
-  padding-top: 3rem;
-  color: #993b2a;
-  text-shadow: 0 0 15px black, 0 0 25px black; }
+  margin-top: 3rem;
+  letter-spacing: 5px;
+  color: tomato;
+  text-shadow: 0 0 0.2em black, 0 0 0.2em black, 0 0 0.2em black; }
 
 .half-field > .btns, .half-field > .scores {
-  height: 12.5%;
+  height: 20%;
   width: 60%;
   display: flex;
   justify-content: space-around;
   align-items: center; }
 
 .scores p {
-  font-size: 2rem;
-  text-shadow: 1px 1px black;
-  font-weight: bold; }
+  font-size: 2.3rem;
+  text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black;
+  font-weight: bold;
+  color: tomato;
+  letter-spacing: 3px; }
 
 .half-field > .player {
-  height: 55%;
+  height: 45%;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding-bottom: 4rem; }
+  margin-bottom: 3.5rem; }
 
 .random-char {
   width: 60px;
-  height: 60px;
-  background-color: black;
+  height: 12%;
+  margin-bottom: 15px;
+  font-size: 37px;
+  background-color: #4c1d15;
   border-radius: 5px;
-  color: white;
-  font-size: 45px;
-  margin-bottom: 15px; }
+  border: 5px solid #993b2a;
+  color: #f9df76; }
 
 .player-img1 {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
   transform: rotateY(0deg);
-  height: 170px;
-  width: 170px; }
+  height: 160px;
+  width: 160px; }
 
 .player-img2 {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
   transform: rotateY(180deg);
-  height: 170px;
-  width: 170px; }
+  height: 160px;
+  width: 160px; }
 
 .connection-info {
   position: absolute;
