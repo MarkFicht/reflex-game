@@ -110,9 +110,11 @@ class Login extends Component {
                         <div className='close-instruction' onClick={this.showInstruction}>x</div>
                         <h2>Zasady gry:</h2>
                         <ol>
-                            <li>1. Jest to wersja Beta. W trakcie budowy.</li>
-                            <li>2. Dziala tylko przycisk X podczas gry.</li>
-                            <li>3. Wygrywa ten. kto wiecej wyklika, w krotszym czasie.</li>
+                            <li><strong>1.</strong> Jest to wersja Beta. Brakuje zabezpieczeń, przekierowań, itp.</li>
+                            <li><strong>2.</strong> Aktualnie korzystamy tylko z myszki.</li>
+                            <li><strong>3.</strong> Gra polega na kliknięciu właściwego znaku, który wyświetlany jest losowo nad przyciskami: X Y Z.</li>
+                            <li><strong>4.</strong> Punkty mogą być odejmowane!</li>
+                            <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 20 sek.</li>
                         </ol>
                     </div>
                 </div>

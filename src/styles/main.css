@@ -191,21 +191,20 @@ div.instruction-center {
   flex-direction: column;
   justify-content: center; }
   div.instruction-center h2 {
-    font-size: 3rem; }
+    font-size: 2.4rem;
+    margin-bottom: 12px; }
   div.instruction-center ol {
-    font-size: 40px;
+    font-size: 28px;
     list-style: none;
     text-align: start; }
     div.instruction-center ol li {
-      padding: 25px 40px; }
+      padding: 10px 40px; }
 
 .close-instruction {
-  width: 65px;
-  height: 65px;
   font-size: 65px;
   position: absolute;
-  top: 0;
-  right: 0; }
+  top: -10px;
+  right: 15px; }
   .close-instruction:hover {
     text-shadow: 0 0 3px;
     cursor: pointer; }
@@ -226,7 +225,7 @@ div.instruction-center {
   justify-content: space-around; }
 
 .timer {
-  font-size: 2.8rem;
+  font-size: 2.7rem;
   font-weight: bold;
   position: absolute;
   text-shadow: 0 0 2px black;
@@ -244,12 +243,12 @@ div.instruction-center {
 
 .half-field > p {
   height: 15%;
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   font-style: italic;
   font-family: 'Permanent Marker', cursive;
   font-weight: bold;
-  margin-top: 3rem;
-  letter-spacing: 5px;
+  margin-top: 2.5rem;
+  letter-spacing: 8px;
   color: tomato;
   text-shadow: 0 0 0.2em black, 0 0 0.2em black, 0 0 0.2em black; }
 
