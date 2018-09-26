@@ -74,7 +74,7 @@ h1.logo {
   .btn-login:nth-child(1) {
     margin-top: 20px; }
   .btn-login:last-child {
-    margin-bottom: 25px; }
+    margin-bottom: 12px; }
 
 .btn-game {
   width: 60px;
@@ -123,7 +123,7 @@ h1.logo {
 .div-login {
   background-color: #f9df76;
   width: 400px;
-  height: 480px;
+  height: 520px;
   margin: 50px auto;
   border: 3px solid #993b2a;
   border-radius: 15px;

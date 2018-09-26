@@ -97,6 +97,10 @@ class Login extends Component {
                         <button className='btn-login'>{ 'Rekordy' }</button>
                     </div>
 
+                    <div>
+                        <p>ONLINE PLAYERS: { console.log(firebase.database().ref('/users')), '0' }/2</p>
+                    </div>
+
                     <p className="create-by">
                         Game create by <span><i>Marek Ficht</i></span>
                     </p>
