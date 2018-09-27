@@ -14,8 +14,25 @@ class Login extends Component {
             urlImg: '',
             validation: false,
             instruction: false,
+            onlinePlayer: 0
         };
     };
+
+
+    componentDidMount() {
+        firebase.database().ref('/users').on('value', snap => {
+            const val = snap.val();
+            // console.log(val);
+
+            let currentOnline = [];
+            for (let key in val) {
+                currentOnline.push({ nickname: val[key].nickname })
+            }
+
+            this.setState({ onlinePlayer: currentOnline.length })
+            // console.log(this.state.onlinePlayer);
+        })
+    }
 
 
     handleTextPlayer = e => {
@@ -27,7 +44,7 @@ class Login extends Component {
     handleSelectTag = e => {
         this.setState({ value: e.target.value });
 
-        //--- Shows the previous value - FIXED
+        //--- ******Shows the previous value - FIXED IT****** ---//
         console.log(this.state.value);
     };
 
@@ -98,7 +115,9 @@ class Login extends Component {
                     </div>
 
                     <div>
-                        <p>ONLINE PLAYERS: { console.log(firebase.database().ref('/users')), '0' }/2</p>
+                        <p>ONLINE PLAYERS:
+                            <span style={{ color: this.state.onlinePlayer < 2 ? '#5c7b1e' : 'red' }}> { this.state.onlinePlayer }/2</span>
+                        </p>
                     </div>
 
                     <p className="create-by">
