@@ -85,6 +85,10 @@
       letter-spacing: 1px;
       padding: 6px;
       color: darken($panelColor, 10%);
+
+      &:first-child {
+        color: darken($panelColor, 5%);
+      }
     }
   }
 }

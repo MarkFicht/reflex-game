@@ -12,8 +12,7 @@ class Login extends Component {
             name: '',
             value: 'bardock',
             urlImg: '',
-            validation: false,
-            validationOnline: false,
+            displayValidation: false,
             onlinePlayer: 0,
             instruction: false,
         };
@@ -59,15 +58,15 @@ class Login extends Component {
     //--- Add new player to Firebase / Redirection / Choosing avatar in game
     handleClickGame = e => {
 
-        if (this.state.onlinePlayer >= 2) {
-
-            this.setState({ validationOnline: true })
-
-            this.showValidation = setTimeout( () => {
-                this.setState({ validationOnline: false })
-
-            }, 3000)
-        }
+        // if (this.state.onlinePlayer >= 2) {
+        //
+        //     this.setState({ displayValidation: true })
+        //
+        //     this.showValidation = setTimeout( () => {
+        //         this.setState({ displayValidation: false })
+        //
+        //     }, 3000)
+        // }
 
         if (this.state.name.length > 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
@@ -87,6 +86,14 @@ class Login extends Component {
             }).catch( (error) => {
                 // console.log(`Error: ${ error.code }`)
             })
+        }
+        else {
+            this.setState({ displayValidation: true })
+
+            this.showValidation = setTimeout( () => {
+                this.setState({ displayValidation: false })
+
+            }, 3000)
         }
     };
 
@@ -130,8 +137,15 @@ class Login extends Component {
                         <button className='btn-login' onClick={this.showInstruction}>{ 'Instrukcja' }</button>
                         <button className='btn-login'>{ 'Rekordy' }</button>
 
-                        <div className="info-online" style={{ display: this.state.validationOnline ? 'block' : 'none' }}>
-                            <p>Jest 2 graczy. Poczekaj chwilkę.</p>
+                        <div className="info-online" style={{ display: this.state.displayValidation ? 'block' : 'none' }}>
+                            { this.state.name.length > 3 && this.state.name.length < 10
+                                ? null
+                                : <p>Nick musi zawierac od 4 do 9 znakow!</p>
+                            }
+                            { this.state.onlinePlayer >= 2
+                                ? <p>Jest 2 graczy. Poczekaj chwilkę.</p>
+                                : null
+                            }
                         </div>
                     </div>
 

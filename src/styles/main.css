@@ -191,6 +191,8 @@ h1.logo {
       letter-spacing: 1px;
       padding: 6px;
       color: #f7d445; }
+      .btn-validation .info-online p:first-child {
+        color: #f8d95e; }
 
 .online-players {
   padding-top: 10px; }
