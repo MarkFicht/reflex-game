@@ -6,12 +6,13 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            btnReady: [false, false],
             prepare: false,
             prepareTime: 3,
             game: false,
             gameTime: 20,
             users: [],
-            chars: ['x', 'x'],
+            chars: ['', ''],
             pending: true,
         };
         //construktor odswieza caly komponent, dlatego to jest poza
@@ -39,6 +40,11 @@ class Game extends React.Component {
         }
 
         let active = true;
+
+        // if (this.state.btnReady[0] && this.state.btnReady[1]) {
+        //
+        // }
+        // Nie potrzebnie odliczanie jest w polaczeniu z baza danych. Zrobie to osobno, gdzie bedzie niezalezne od 1 polaczenia z BD.
 
         //--- Reference to Database
         firebase.database().ref('users').on('value', snap => {
@@ -107,6 +113,13 @@ class Game extends React.Component {
     }
 
 
+    //--- Get ready to play
+    checkPlayerReady = (num) => {
+        this.state.btnReady[num] = !this.state.btnReady[num];
+        console.log(this.state.btnReady[num])
+    }
+
+
     //--- The mechanism of the game
     handleClick = (e, id, char_player, nr_player) => {
 
@@ -169,6 +182,11 @@ class Game extends React.Component {
 
                         <div className="random-char">{ this.state.game ? this.state.chars[0] : '?' }</div>
 
+                        { this.state.btnReady[0] === false || this.state.btnReady[1] === false
+                            ? <div className="check-ready" onClick={ e => this.checkPlayerReady(0) }>Ready?</div>
+                            : null
+                        }
+
                         <div className="btns">
                             <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'x', 0)}>X</button>
                             <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'y', 0)}>Y</button>
@@ -188,6 +206,11 @@ class Game extends React.Component {
                         </div>
 
                         <div className="random-char">{ this.state.game ? this.state.chars[1] : '?' }</div>
+
+                        { !this.state.btnReady[0] || !this.state.btnReady[1]
+                            ? <div className="check-ready" onClick={ e => this.checkPlayerReady(1) }>Ready?</div>
+                            : null
+                        }
 
                         <div className="btns">
                             <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'x', 1)}>X</button>

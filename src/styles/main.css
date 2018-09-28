@@ -272,7 +272,8 @@ div.instruction-center {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  flex-direction: column; }
+  flex-direction: column;
+  position: relative; }
 
 .half-field > p {
   height: 15%;
@@ -332,10 +333,28 @@ div.instruction-center {
   height: 160px;
   width: 160px; }
 
+.check-ready {
+  width: 120px;
+  height: 70px;
+  background-color: #f9df76;
+  color: #993b2a;
+  border: 5px solid #993b2a;
+  position: absolute;
+  top: 190px;
+  left: 139px;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 5px; }
+
 .connection-info {
   position: absolute;
   z-index: 4;
-  top: 120px;
+  top: 272.72727px;
   left: auto;
   height: 120px;
   width: 400px;
@@ -372,9 +391,9 @@ div.instruction-center {
 
 @keyframes prepare-count {
   from {
-    transform: scale(0.15); }
+    transform: scale(0.75); }
   to {
-    transform: scale(1.5); } }
+    transform: scale(1.25); } }
 
 .div-gameover {
   background: url("../images/background/bg-dbz3.jpg") no-repeat center;

@@ -32,6 +32,7 @@
   justify-content: space-around;
   align-items: center;
   flex-direction: column;
+  position: relative;
 }
 
 .half-field > p {
@@ -106,11 +107,32 @@
 }
 
 //---
+.check-ready {
+  //visibility: hidden;
+  width: 120px;
+  height: 70px;
+  background-color: $panelColor;
+  color: $borderColor;
+  border: 5px solid $borderColor;
+  position: absolute;
+  top: 190px;
+  left: 139px;
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+//---
 .connection-info {
   //display: none;
   position: absolute;
   z-index: 4;
-  top: $heightGame/5;
+  top: $heightGame/2.2;
   left: auto;
   height: $heightGame/5;
   width: $widthGame/2;
@@ -150,6 +172,6 @@
 }
 
 @keyframes prepare-count {
-  from { transform: scale(0.15); }
-  to { transform: scale(1.5); }
+  from { transform: scale(0.75); }
+  to { transform: scale(1.25); }
 }
