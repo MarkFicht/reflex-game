@@ -13,9 +13,11 @@ class Login extends Component {
             value: 'bardock',
             urlImg: '',
             validation: false,
+            validationOnline: false,
+            onlinePlayer: 0,
             instruction: false,
-            onlinePlayer: 0
         };
+        this.showValidation = null;
     };
 
 
@@ -57,7 +59,17 @@ class Login extends Component {
     //--- Add new player to Firebase / Redirection / Choosing avatar in game
     handleClickGame = e => {
 
-        if (this.state.name.length > 3 && this.state.name.length < 10) {
+        if (this.state.onlinePlayer >= 2) {
+
+            this.setState({ validationOnline: true })
+
+            this.showValidation = setTimeout( () => {
+                this.setState({ validationOnline: false })
+
+            }, 3000)
+        }
+
+        if (this.state.name.length > 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
             storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
@@ -77,6 +89,11 @@ class Login extends Component {
             })
         }
     };
+
+
+    componentWillUnmount() {
+        clearTimeout(this.showValidation);
+    }
 
 
     render() {
@@ -108,13 +125,17 @@ class Login extends Component {
                         </select>
                     </label>
 
-                    <div>
+                    <div className='btn-validation'>
                         <button className='btn-login' onClick={this.handleClickGame}>{ 'GRAJ' }</button>
                         <button className='btn-login' onClick={this.showInstruction}>{ 'Instrukcja' }</button>
                         <button className='btn-login'>{ 'Rekordy' }</button>
+
+                        <div className="info-online" style={{ display: this.state.validationOnline ? 'block' : 'none' }}>
+                            <p>Jest 2 graczy. Poczekaj chwilkę.</p>
+                        </div>
                     </div>
 
-                    <div>
+                    <div className='online-players'>
                         <p>ONLINE PLAYERS:
                             <span style={{ color: this.state.onlinePlayer < 2 ? '#5c7b1e' : 'red' }}> { this.state.onlinePlayer }/2</span>
                         </p>

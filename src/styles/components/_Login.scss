@@ -52,6 +52,48 @@
   flex-direction: column;
 }
 
+.btn-validation {
+  position: relative;
+
+  .info-online {
+    position: absolute;
+    border: 3px solid $borderColor;
+    width: 200px;
+    min-height: 50px;
+    background-color: $backgroundColor;
+    top: 2px;
+    right: -230px;
+    display: none;
+
+    &:after {
+      content: '';
+      box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      border-top: 10px solid transparent;
+      border-left: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid $borderColor;
+      top: 18px;
+      left: -23px;
+    }
+
+    p {
+      font-size: 22px;
+      margin: 0;
+      letter-spacing: 1px;
+      padding: 6px;
+      color: darken($panelColor, 10%);
+    }
+  }
+}
+
+//---
+.online-players {
+  padding-top: 10px;
+}
+
 //---
 p.create-by {
   font-size: 1rem;

@@ -73,8 +73,6 @@ h1.logo {
     transform: scale(0.95); }
   .btn-login:nth-child(1) {
     margin-top: 20px; }
-  .btn-login:last-child {
-    margin-bottom: 12px; }
 
 .btn-game {
   width: 60px;
@@ -163,6 +161,39 @@ h1.logo {
   justify-content: center;
   align-content: center;
   flex-direction: column; }
+
+.btn-validation {
+  position: relative; }
+  .btn-validation .info-online {
+    position: absolute;
+    border: 3px solid #993b2a;
+    width: 200px;
+    min-height: 50px;
+    background-color: tomato;
+    top: 2px;
+    right: -230px;
+    display: none; }
+    .btn-validation .info-online:after {
+      content: '';
+      box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      border-top: 10px solid transparent;
+      border-left: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid #993b2a;
+      top: 18px;
+      left: -23px; }
+    .btn-validation .info-online p {
+      font-size: 22px;
+      margin: 0;
+      letter-spacing: 1px;
+      padding: 6px;
+      color: #f7d445; }
+
+.online-players {
+  padding-top: 10px; }
 
 p.create-by {
   font-size: 1rem;
