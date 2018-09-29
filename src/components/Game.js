@@ -39,19 +39,12 @@ class Game extends React.Component {
                 break;
         }
 
-        let active = true;
-
-        // if (this.state.btnReady[0] && this.state.btnReady[1]) {
-        //
-        // }
-        // Nie potrzebnie odliczanie jest w polaczeniu z baza danych. Zrobie to osobno, gdzie bedzie niezalezne od 1 polaczenia z BD.
-
-        //--- Reference to Database
+        // Reference to Database
         firebase.database().ref('users').on('value', snap => {
             const val = snap.val();
             console.log(val);
 
-            //--- Preparing to save in setState
+            // Preparing to save in setState
             const usersTable = [];
             for (var key in val) {
                 usersTable.push({
@@ -62,49 +55,7 @@ class Game extends React.Component {
                 })
             }
 
-            //--- Counters
-            if (active && usersTable.length === 2) {
-
-                // Prepare counter
-                this.pauseTime = setTimeout(() => {
-                    this.setState({ prepare: true })
-
-                    this.readyInterval = setInterval(() => {
-                        if (this.state.prepareTime === 0) {
-                            clearInterval(this.readyInterval);
-
-                            //--- Hide div prepare
-                            this.setState({
-                                prepare: false,
-                                game: true,
-                            })
-                        }
-
-                        if (this.state.users.length > 1 && this.state.prepare) {
-                            this.setState({ prepareTime: this.state.prepareTime - 1 })
-                        }
-                    }, 1000)
-                }, 1500);
-
-                // Game counter and redirection to GameOver
-                this.gameTime = setInterval( () => {
-
-                    if (this.state.game) {
-                        if (this.state.gameTime === 0) {
-                            clearInterval(this.gameTime);
-                            this.props.history.push('/gameover')
-                        }
-
-                        this.setState({ gameTime: this.state.gameTime - 1 })
-                    }
-                }, 1000 )
-            }
-
-            if (usersTable.length === 2) {
-                active = false;
-            }
-
-            //--- Loading current local data from Firebase
+            // Loading current data from Firebase
             this.setState({
                 users: usersTable,
                 pending: false,
@@ -113,10 +64,48 @@ class Game extends React.Component {
     }
 
 
-    //--- Get ready to play
+    //--- Get ready to play and countdown of time
     checkPlayerReady = (num) => {
-        this.state.btnReady[num] = !this.state.btnReady[num];
-        console.log(this.state.btnReady[num])
+        this.state.btnReady[num] = true;
+        // console.log(this.state.btnReady[num]);
+
+        // Counters
+        if (this.state.btnReady[0] && this.state.btnReady[1]) {
+
+            // Prepare counter
+            this.pauseTime = setTimeout( () => {
+                this.setState({ prepare: true })
+
+                this.readyInterval = setInterval( () => {
+                    if (this.state.prepareTime === 0) {
+                        clearInterval(this.readyInterval);
+
+                        //--- Hide div prepare
+                        this.setState({
+                            prepare: false,
+                            game: true,
+                        })
+                    }
+
+                    if (this.state.users.length > 1 && this.state.prepare) {
+                        this.setState({ prepareTime: this.state.prepareTime - 1 })
+                    }
+                }, 1000)
+            }, 1500);
+
+            // Game counter and redirection to GameOver
+            this.gameTime = setInterval( () => {
+
+                if (this.state.game) {
+                    if (this.state.gameTime === 0) {
+                        clearInterval(this.gameTime);
+                        this.props.history.push('/gameover')
+                    }
+
+                    this.setState({ gameTime: this.state.gameTime - 1 })
+                }
+            }, 1000 )
+        }
     }
 
 
@@ -183,7 +172,9 @@ class Game extends React.Component {
                         <div className="random-char">{ this.state.game ? this.state.chars[0] : '?' }</div>
 
                         { this.state.btnReady[0] === false || this.state.btnReady[1] === false
-                            ? <div className="check-ready" onClick={ e => this.checkPlayerReady(0) }>Ready?</div>
+                            ? <button disabled={ this.state.users.length === 2 ? false : true }
+                                      style={{ cursor: this.state.users.length === 2 ? 'pointer' : 'not-allowed' }}
+                                      className="check-ready" onClick={ e => this.checkPlayerReady(0) }>Ready?</button>
                             : null
                         }
 
@@ -208,7 +199,9 @@ class Game extends React.Component {
                         <div className="random-char">{ this.state.game ? this.state.chars[1] : '?' }</div>
 
                         { !this.state.btnReady[0] || !this.state.btnReady[1]
-                            ? <div className="check-ready" onClick={ e => this.checkPlayerReady(1) }>Ready?</div>
+                            ? <button disabled={this.state.users.length === 2 ? false : true}
+                                      style={{ cursor: this.state.users.length === 2 ? 'pointer' : 'not-allowed' }}
+                                      className="check-ready" onClick={ e => this.checkPlayerReady(1) }>Ready?</button>
                             : null
                         }
 
