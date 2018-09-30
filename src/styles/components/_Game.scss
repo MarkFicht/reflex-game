@@ -107,29 +107,6 @@
 }
 
 //---
-.check-ready {
-  //visibility: hidden;
-  width: 120px;
-  height: 70px;
-  background-color: $panelColor;
-  color: $borderColor;
-  border: 5px solid $borderColor;
-  position: absolute;
-  font-family: 'VT323', monospace;
-  outline: none;
-  top: 190px;
-  left: 139px;
-  font-size: 32px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-//---
 .connection-info {
   //display: none;
   position: absolute;

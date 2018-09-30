@@ -41,12 +41,10 @@ class Login extends Component {
     };
 
 
-    //--- I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
     handleSelectTag = e => {
         this.setState({ value: e.target.value });
-
-        //--- ******Shows the previous value - FIXED IT****** ---//
-        console.log(this.state.value);
+        console.log(this.state.value); // Show prev value, because setState is async
+        // I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
     };
 
 
@@ -57,16 +55,6 @@ class Login extends Component {
 
     //--- Add new player to Firebase / Redirection / Choosing avatar in game
     handleClickGame = e => {
-
-        // if (this.state.onlinePlayer >= 2) {
-        //
-        //     this.setState({ displayValidation: true })
-        //
-        //     this.showValidation = setTimeout( () => {
-        //         this.setState({ displayValidation: false })
-        //
-        //     }, 3000)
-        // }
 
         if (this.state.name.length > 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
@@ -80,7 +68,8 @@ class Login extends Component {
                 firebase.database().ref('/users').push({
                     nickname: this.state.name,
                     points: 0,
-                    imgPlayer: this.state.urlImg
+                    imgPlayer: this.state.urlImg,
+                    readyPlayer: false,
                 }).then( (e) => this.props.history.push('/game') )
 
             }).catch( (error) => {
@@ -89,11 +78,12 @@ class Login extends Component {
         }
         else {
             this.setState({ displayValidation: true })
+            clearTimeout(this.showValidation);
 
             this.showValidation = setTimeout( () => {
                 this.setState({ displayValidation: false })
 
-            }, 3000)
+            }, 2000)
         }
     };
 
@@ -138,13 +128,13 @@ class Login extends Component {
                         <button className='btn-login'>{ 'Rekordy' }</button>
 
                         <div className="info-online" style={{ display: this.state.displayValidation ? 'block' : 'none' }}>
-                            { this.state.name.length > 3 && this.state.name.length < 10
-                                ? null
-                                : <p>Nick musi zawierac od 4 do 9 znakow!</p>
-                            }
                             { this.state.onlinePlayer >= 2
                                 ? <p>Jest 2 graczy. Poczekaj chwilkę.</p>
                                 : null
+                            }
+                            { this.state.name.length > 3 && this.state.name.length < 10
+                                ? null
+                                : <p>Nick musi zawierac od 4 do 9 znakow!</p>
                             }
                         </div>
                     </div>
