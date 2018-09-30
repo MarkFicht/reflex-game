@@ -6,7 +6,7 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            btnReady: [false, false],
+            hideDiv: false,
             prepare: false,
             prepareTime: 3,
             game: false,
@@ -19,6 +19,7 @@ class Game extends React.Component {
         this.pauseTime = null;
         this.readyInterval = null;
         this.gameTime = null;
+        this.test = null;
     }
 
 
@@ -51,7 +52,8 @@ class Game extends React.Component {
                     nickname: val[key].nickname,
                     id: key,
                     points: val[key].points,
-                    imgPlayer: val[key].imgPlayer
+                    imgPlayer: val[key].imgPlayer,
+                    getReady: val[key].getReady,
                 })
             }
 
@@ -60,52 +62,126 @@ class Game extends React.Component {
                 users: usersTable,
                 pending: false,
             })
+
+            this.test = setInterval( () => {
+                // Counters
+                if (this.state.users[0].getReady && this.state.users[1].getReady) {
+                // if (table[0].getReady && table[1].getReady) {
+
+                    this.setState({
+                        hideDiv: this.state.users[0].getReady && this.state.users[1].getReady
+                    })
+
+                    clearTimeout(this.pauseTime);
+                    clearInterval(this.readyInterval);
+                    clearInterval(this.gameTime);
+                    clearInterval(this.test);
+
+                    // Prepare counter
+                    this.pauseTime = setTimeout( () => {
+                        this.setState({ prepare: true })
+
+                        this.readyInterval = setInterval( () => {
+                            if (this.state.prepareTime === 0) {
+                                clearInterval(this.readyInterval);
+
+                                //--- Hide div prepare
+                                this.setState({
+                                    prepare: false,
+                                    game: true,
+                                })
+                            }
+
+                            if (this.state.users.length > 1 && this.state.prepare) {
+                                this.setState({ prepareTime: this.state.prepareTime - 1 })
+                            }
+                        }, 1000)
+                    }, 250);
+
+                    // Game counter and redirection to GameOver
+                    this.gameTime = setInterval( () => {
+
+                        if (this.state.game) {
+                            if (this.state.gameTime === 0) {
+                                clearInterval(this.gameTime);
+                                this.props.history.push('/gameover')
+                            }
+
+                            this.setState({ gameTime: this.state.gameTime - 1 })
+                        }
+                    }, 1000 )
+                }
+            }, 100)
+
         }, error => { console.log('Error: ' + error.code); })
     }
 
 
     //--- Get ready to play and countdown of time
-    checkPlayerReady = (num) => {
-        this.state.btnReady[num] = true;
-        // console.log(this.state.btnReady[num]);
+    checkPlayerReady = (e, id) => {
 
-        // Counters
-        if (this.state.btnReady[0] && this.state.btnReady[1]) {
+        firebase.database().ref('/users/' + id).update({
+            getReady: !this.state.users.find( (user) => user.id === id ).getReady
+        })
 
-            // Prepare counter
-            this.pauseTime = setTimeout( () => {
-                this.setState({ prepare: true })
+        firebase.database().ref('users').on('value', snap => {
+            const val = snap.val();
+            console.log(val);
 
-                this.readyInterval = setInterval( () => {
-                    if (this.state.prepareTime === 0) {
-                        clearInterval(this.readyInterval);
+            let table = [];
+            for (var key in val) {
+                table.push({
+                    getReady: val[key].getReady,
+                })
+            }
 
-                        //--- Hide div prepare
-                        this.setState({
-                            prepare: false,
-                            game: true,
-                        })
+            // Counters
+            // if (this.state.users[0].getReady && this.state.users[1].getReady) {
+            if (table[0].getReady && table[1].getReady) {
+
+                this.setState( prevState => {
+                    hideDiv: table[0].getReady && table[1].getReady
+                })
+
+                clearTimeout(this.pauseTime);
+                clearInterval(this.readyInterval);
+                clearInterval(this.gameTime);
+
+                // Prepare counter
+                this.pauseTime = setTimeout( () => {
+                    this.setState({ prepare: true })
+
+                    this.readyInterval = setInterval( () => {
+                        if (this.state.prepareTime === 0) {
+                            clearInterval(this.readyInterval);
+
+                            //--- Hide div prepare
+                            this.setState({
+                                prepare: false,
+                                game: true,
+                            })
+                        }
+
+                        if (this.state.users.length > 1 && this.state.prepare) {
+                            this.setState({ prepareTime: this.state.prepareTime - 1 })
+                        }
+                    }, 1000)
+                }, 250);
+
+                // Game counter and redirection to GameOver
+                this.gameTime = setInterval( () => {
+
+                    if (this.state.game) {
+                        if (this.state.gameTime === 0) {
+                            clearInterval(this.gameTime);
+                            this.props.history.push('/gameover')
+                        }
+
+                        this.setState({ gameTime: this.state.gameTime - 1 })
                     }
-
-                    if (this.state.users.length > 1 && this.state.prepare) {
-                        this.setState({ prepareTime: this.state.prepareTime - 1 })
-                    }
-                }, 1000)
-            }, 1500);
-
-            // Game counter and redirection to GameOver
-            this.gameTime = setInterval( () => {
-
-                if (this.state.game) {
-                    if (this.state.gameTime === 0) {
-                        clearInterval(this.gameTime);
-                        this.props.history.push('/gameover')
-                    }
-
-                    this.setState({ gameTime: this.state.gameTime - 1 })
-                }
-            }, 1000 )
-        }
+                }, 1000 )
+            }
+        }, error => { console.log('Error: ' + error.code); })
     }
 
 
@@ -155,8 +231,6 @@ class Game extends React.Component {
             return null;
         }
 
-        let prepareClass = 'prepare';
-
         return (
             <div>
                 <div className="div-game">
@@ -171,10 +245,11 @@ class Game extends React.Component {
 
                         <div className="random-char">{ this.state.game ? this.state.chars[0] : '?' }</div>
 
-                        { this.state.btnReady[0] === false || this.state.btnReady[1] === false
+                        { this.state.users[0] && !this.state.hideDiv
                             ? <button disabled={ this.state.users.length === 2 ? false : true }
-                                      style={{ cursor: this.state.users.length === 2 ? 'pointer' : 'not-allowed' }}
-                                      className="check-ready" onClick={ e => this.checkPlayerReady(0) }>Ready?</button>
+                                      style={{ cursor: this.state.users.length === 2 ? 'pointer' : 'not-allowed',
+                                               color: this.state.users[0].getReady ? 'green' : 'red'}}
+                                      className="check-ready" onClick={ e => this.checkPlayerReady(e, this.state.users[0].id) }>Ready?</button>
                             : null
                         }
 
@@ -198,10 +273,11 @@ class Game extends React.Component {
 
                         <div className="random-char">{ this.state.game ? this.state.chars[1] : '?' }</div>
 
-                        { !this.state.btnReady[0] || !this.state.btnReady[1]
+                        { this.state.users[1] && !this.state.hideDiv
                             ? <button disabled={this.state.users.length === 2 ? false : true}
-                                      style={{ cursor: this.state.users.length === 2 ? 'pointer' : 'not-allowed' }}
-                                      className="check-ready" onClick={ e => this.checkPlayerReady(1) }>Ready?</button>
+                                      style={{ cursor: this.state.users.length === 2 ? 'pointer' : 'not-allowed',
+                                               color: this.state.users[1].getReady ? 'green' : 'red'}}
+                                      className="check-ready" onClick={ e => this.checkPlayerReady(e, this.state.users[1].id) }>Ready?</button>
                             : null
                         }
 
@@ -226,7 +302,7 @@ class Game extends React.Component {
                     }
 
                     {this.state.users.length > 1 && this.state.prepare
-                        ? <div className={ prepareClass }>
+                        ? <div className='prepare'>
                             <p>{this.state.prepareTime === 0 ? 'start' : this.state.prepareTime}</p>
                         </div>
 

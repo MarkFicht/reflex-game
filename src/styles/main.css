@@ -377,7 +377,7 @@ div.instruction-center {
   top: 200px;
   left: auto;
   text-shadow: 3px 3px black;
-  animation: prepare-count forwards 3s linear; }
+  animation: prepare-count infinite 1s linear; }
   .prepare p {
     font-size: 7rem;
     letter-spacing: 2px;

@@ -158,7 +158,7 @@
   top: $heightGame/3;
   left: auto;
   text-shadow: 3px 3px darken($textColor, 20%);
-  animation: prepare-count forwards 3s linear;
+  animation: prepare-count infinite 1s linear;
 
   p {
     font-size: 7rem;

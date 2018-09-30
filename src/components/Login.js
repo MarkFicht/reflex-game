@@ -80,7 +80,8 @@ class Login extends Component {
                 firebase.database().ref('/users').push({
                     nickname: this.state.name,
                     points: 0,
-                    imgPlayer: this.state.urlImg
+                    imgPlayer: this.state.urlImg,
+                    getReady: false,
                 }).then( (e) => this.props.history.push('/game') )
 
             }).catch( (error) => {
