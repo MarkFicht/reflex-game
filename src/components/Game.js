@@ -1,46 +1,34 @@
 import React, {Component} from 'react';
-import * as firebase from 'firebase'
+import * as firebase from 'firebase';
+
+import good from '../sound/good.wav';
+import bad from '../sound/wrong.mp3';
 
 class Game extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            users: [],
             prepare: false,
             prepareTime: 3,
             game: false,
             gameTime: 20,
-            users: [],
-            chars: ['', ''],
             pending: true,
         };
         //construktor odswieza caly komponent, dlatego to jest poza
         this.pauseTime = null;
         this.readyInterval = null;
         this.gameTime = null;
+        this.good = new Audio(good);
+        this.bad = new Audio(bad);
     }
 
 
     componentDidMount() {
 
-        switch ( Math.floor( Math.random() * 3 + 1 ) ) {
-            case 1:
-                this.state.chars[0] = 'x'
-                this.state.chars[1] = 'y'
-                break;
-            case 2:
-                this.state.chars[0] ='y'
-                this.state.chars[1] ='z'
-                break;
-            case 3:
-                this.state.chars[0] = 'z'
-                this.state.chars[1] = 'x'
-                break;
-        }
-
-        // Prepare counter
+        // **Prepare counter
         let active = true;
-
 
         // Reference to Database
         firebase.database().ref('users').on('value', snap => {
@@ -56,6 +44,7 @@ class Game extends React.Component {
                     points: val[key].points,
                     imgPlayer: val[key].imgPlayer,
                     readyPlayer: val[key].readyPlayer,
+                    char: val[key].char,
                 })
             }
 
@@ -64,6 +53,7 @@ class Game extends React.Component {
                 this.prepareGameAndTimeGame();
             }
 
+            // **End counter
             if (usersTable.length === 2) {
                 active = false;
             }
@@ -78,46 +68,39 @@ class Game extends React.Component {
     }
 
 
-    // //--- Get ready to play and countdown of time
-    // checkPlayerReady = (num) => {
-    //     this.state.btnReady[num] = true;
-    //     // console.log(this.state.btnReady[num]);
-    //
-    //     // Counters
-    //     if (this.state.btnReady[0] && this.state.btnReady[1]) {
-    //         this.prepareGameAndTimeGame();
-    //     }
-    // }
-
-
     //--- The mechanism of the game
-    handleClick = (e, id, char_player, nr_player) => {
+    handleClick = (e, id, char, nr_player) => {
 
         // Add point
-        if (char_player === this.state.chars[nr_player]) {
+        if (char === this.state.users[nr_player].char) {
 
-            firebase.database().ref('/users/' + id).update({
-                points: this.state.users.find( (user) => user.id === id ).points + 1 // .find() - robi tablice jednoelementowa
-            })
-
-            let nr = Math.floor( Math.random() * 3 + 1 );
-            switch (nr) {
+            let randomChar = '';
+            switch ( Math.floor( Math.random() * 3 + 1 ) ) {
                 case 1:
-                    this.state.chars[nr_player] = 'x'
+                    randomChar = 'x'
                     break;
                 case 2:
-                    this.state.chars[nr_player] ='y'
+                    randomChar = 'y'
                     break;
                 case 3:
-                    this.state.chars[nr_player] = 'z'
+                    randomChar = 'z'
                     break;
             }
+
+            firebase.database().ref('/users/' + id).update({
+                points: this.state.users.find( (user) => user.id === id ).points + 1, // .find() - robi tablice jednoelementowa
+                char: randomChar,
+            })
+
+            this.good.play();
         }
         // Subtract point
         else {
             firebase.database().ref('/users/' + id).update({
                 points: this.state.users.find( (user) => user.id === id ).points - 1
             })
+
+            this.bad.play();
         }
     };
 
@@ -186,7 +169,7 @@ class Game extends React.Component {
                             <p>SCORE: {this.state.users[0].points}</p>
                         </div>
 
-                        <div className="random-char">{ this.state.game ? this.state.chars[0] : '?' }</div>
+                        <div className="random-char">{ this.state.game ? this.state.users[0].char : '?' }</div>
 
                         <div className="btns">
                             <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'x', 0)}>X</button>
@@ -206,7 +189,7 @@ class Game extends React.Component {
                             <p>SCORE: {this.state.users[1] ? this.state.users[1].points : '-'}</p>
                         </div>
 
-                        <div className="random-char">{ this.state.game ? this.state.chars[1] : '?' }</div>
+                        <div className="random-char">{ this.state.game ? this.state.users[1].char : '?' }</div>
 
                         <div className="btns">
                             <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'x', 1)}>X</button>

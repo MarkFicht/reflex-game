@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
+import bgSong from '../sound/bg_dynamic.m4a';
 import { Link } from 'react-router-dom';
-import song from '../sound/music1.wav';
 
 //---
 class Login extends Component {
@@ -17,6 +17,7 @@ class Login extends Component {
             instruction: false,
         };
         this.showValidation = null;
+        this.audio = new Audio(bgSong);
     };
 
 
@@ -64,12 +65,26 @@ class Login extends Component {
                 console.log(url);
                 this.setState({ urlImg:  url});
 
+                let randomChar = '';
+                switch ( Math.floor( Math.random() * 3 + 1 ) ) {
+                    case 1:
+                        randomChar = 'x'
+                        break;
+                    case 2:
+                        randomChar = 'y'
+                        break;
+                    case 3:
+                        randomChar = 'z'
+                        break;
+                }
+
                 //---
                 firebase.database().ref('/users').push({
                     nickname: this.state.name,
                     points: 0,
                     imgPlayer: this.state.urlImg,
                     readyPlayer: false,
+                    char: randomChar,
                 }).then( (e) => this.props.history.push('/game') )
 
             }).catch( (error) => {
@@ -96,6 +111,9 @@ class Login extends Component {
     render() {
 
         const styles = { color: this.state.name.length > 3 && this.state.name.length < 10 ? '#5c7b1e' : 'red' };
+
+        this.audio.loop = true;
+        this.audio.play();
 
         return (
             <div>
@@ -166,8 +184,6 @@ class Login extends Component {
                         </ol>
                     </div>
                 </div>
-
-                {/*<embed src={song} loop="true" style={{opacity: 0}}/>*/}
             </div>
         );
     }
