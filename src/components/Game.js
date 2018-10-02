@@ -13,7 +13,7 @@ class Game extends React.Component {
             prepare: false,
             prepareTime: 3,
             game: false,
-            gameTime: 20,
+            gameTime: 30,
             pending: true,
         };
         //construktor odswieza caly komponent, dlatego to jest poza

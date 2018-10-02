@@ -8,8 +8,8 @@ html {
   font-size: 16px; }
 
 body {
-  background: url("../images/background/bg-dbz.jpg") no-repeat fixed;
-  background-size: cover;
+  background: url("../images/background/bg-dbz.jpg") no-repeat center;
+  background-size: 2400px;
   font-family: 'VT323', monospace;
   -webkit-user-select: none;
   /* Safari 3.1+ */
@@ -118,6 +118,18 @@ h1.logo {
   .btn-gameover:active {
     transform: scale(0.95); }
 
+.audio {
+  position: fixed;
+  top: 35px;
+  left: 35px;
+  width: 50px;
+  height: 50px;
+  line-height: 54px;
+  font-size: 28px;
+  background-color: #f9df76;
+  border-radius: 10px;
+  cursor: pointer; }
+
 .div-login {
   background-color: #f9df76;
   width: 400px;
@@ -148,19 +160,13 @@ h1.logo {
   font-size: 1.5rem;
   letter-spacing: 1px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin: 10px 0 2px 0;
   color: #4c1d15; }
 
-.div-login p.nick-validation {
-  font-size: 1.2rem;
-  margin: 10px 0; }
-
-.div-login div {
-  margin: 5px auto;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column; }
+.nick-validation {
+  position: absolute;
+  top: 75px;
+  right: 65px; }
 
 .btn-validation {
   position: relative; }
@@ -170,8 +176,8 @@ h1.logo {
     width: 200px;
     min-height: 50px;
     background-color: tomato;
-    top: 2px;
-    right: -230px;
+    top: 8px;
+    right: -120px;
     display: none; }
     .btn-validation .info-online:after {
       content: '';
@@ -195,14 +201,18 @@ h1.logo {
         color: #f8d95e; }
 
 .online-players {
-  padding-top: 10px; }
+  padding-top: 5px; }
 
-p.create-by {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #4c1d15; }
-  p.create-by span {
-    color: #993b2a; }
+.create-by {
+  margin-top: 10px; }
+  .create-by p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: tomato; }
+  .create-by span {
+    color: #ff5638;
+    display: inline-block;
+    animation: logo-move infinite 2s linear; }
 
 .instruction {
   position: fixed;

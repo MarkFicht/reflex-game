@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import bgSong from '../sound/bg_dynamic.m4a';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 //---
 class Login extends Component {
@@ -15,9 +16,11 @@ class Login extends Component {
             displayValidation: false,
             onlinePlayer: 0,
             instruction: false,
+            audioMute: true,
         };
         this.showValidation = null;
         this.audio = new Audio(bgSong);
+        this.audio.loop = true;
     };
 
 
@@ -37,6 +40,13 @@ class Login extends Component {
     }
 
 
+    audioOnOff = () => {
+        this.setState( (prevState) => {
+            return { audioMute: !prevState.audioMute };
+        })
+    }
+
+
     handleTextPlayer = e => {
         this.setState({ name: e.target.value })
     };
@@ -49,15 +59,15 @@ class Login extends Component {
     };
 
 
-    showInstruction = e => {
+    showInstruction = () => {
         this.setState({ instruction: !this.state.instruction })
     };
 
 
     //--- Add new player to Firebase / Redirection / Choosing avatar in game
-    handleClickGame = e => {
+    handleClickGame = () => {
 
-        if (this.state.name.length > 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
+        if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
             storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
@@ -110,16 +120,30 @@ class Login extends Component {
 
     render() {
 
-        const styles = { color: this.state.name.length > 3 && this.state.name.length < 10 ? '#5c7b1e' : 'red' };
+        const validationVar = this.state.name.length >= 3 && this.state.name.length < 10;
+        const styles = { color: validationVar ? '#5c7b1e' : 'red' };
 
-        this.audio.loop = true;
-        this.audio.play();
+        if (this.state.audioMute) {
+            this.audio.volume = 0;
+            this.audio.pause();
+        } else {
+            this.audio.volume = 0.65;
+            this.audio.play();
+        }
 
         return (
             <div>
+                <div className="audio" onClick={this.audioOnOff}>
+                    { this.state.audioMute
+                        ? <FontAwesomeIcon icon="volume-off" color='tomato' />
+                        : <FontAwesomeIcon icon="volume-up" color='tomato' />
+
+                    }
+                </div>
+
                 <div className='fixed-logo'>
                     <h1 className="logo">
-                    Reflex game
+                        Reflex game
                     </h1>
                 </div>
 
@@ -127,7 +151,17 @@ class Login extends Component {
                     <label>
                         <p>Podaj Nick: </p>
                         <input placeholder='Nickname' type='text' value={this.state.name} onChange={this.handleTextPlayer}/>
-                        <p className="nick-validation" style={ styles }>{ this.state.name.length > 3 && this.state.name.length < 10 ? 'Poprawny nick :)' : 'Nick musi zawierac od 4 do 9 znakow!' }</p>
+                        <div className="nick-validation">
+                            { validationVar
+                                ? <p>
+                                    <FontAwesomeIcon icon="check-circle" style={ styles } />
+                                </p>
+
+                                : <p>
+                                    <FontAwesomeIcon icon="times-circle" style={ styles } />
+                                </p>
+                            }
+                        </div>
                     </label>
 
                     <label>
@@ -150,9 +184,9 @@ class Login extends Component {
                                 ? <p>Jest 2 graczy. Poczekaj chwilkę.</p>
                                 : null
                             }
-                            { this.state.name.length > 3 && this.state.name.length < 10
+                            { validationVar
                                 ? null
-                                : <p>Nick musi zawierac od 4 do 9 znakow!</p>
+                                : <p>Nick musi zawierac od 3 do 9 znakow!</p>
                             }
                         </div>
                     </div>
@@ -163,12 +197,10 @@ class Login extends Component {
                         </p>
                     </div>
 
-                    <p className="create-by">
-                        Game create by <span><i>Marek Ficht</i></span>
-                    </p>
-                    <p className="create-by">
-                        All rights reserved &copy;
-                    </p>
+                    <div className="create-by">
+                        <p>Game create by <span><i>Marek Ficht</i></span></p>
+                        <p>All rights reserved &copy;</p>
+                    </div>
                 </div>
 
                 <div className='instruction' style={{ display: this.state.instruction ? 'block' : 'none'}}>
@@ -176,11 +208,11 @@ class Login extends Component {
                         <div className='close-instruction' onClick={this.showInstruction}>x</div>
                         <h2>Zasady gry:</h2>
                         <ol>
-                            <li><strong>1.</strong> Jest to wersja Beta. Brakuje zabezpieczeń, przekierowań, itp.</li>
+                            <li><strong>1.</strong> Wersja Beta.</li>
                             <li><strong>2.</strong> Aktualnie korzystamy tylko z myszki.</li>
                             <li><strong>3.</strong> Gra polega na kliknięciu właściwego znaku, który wyświetlany jest losowo nad przyciskami: X Y Z.</li>
                             <li><strong>4.</strong> Punkty mogą być odejmowane!</li>
-                            <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 20 sek.</li>
+                            <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
                         </ol>
                     </div>
                 </div>

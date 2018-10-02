@@ -1,3 +1,16 @@
+.audio {
+  position: fixed;
+  top: 35px;
+  left: 35px;
+  width: 50px;
+  height: 50px;
+  line-height: 54px;
+  font-size: 28px;
+  background-color: $panelColor;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
 .div-login {
   background-color: $panelColor;
 
@@ -35,21 +48,14 @@
   font-size: 1.5rem;
   letter-spacing: 1px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin: 10px 0 2px 0;
   color: $textColor;
 }
 
-.div-login p.nick-validation {
-  font-size: 1.2rem;
-  margin: 10px 0;
-}
-
-.div-login div {
-  margin: 5px auto;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column;
+.nick-validation {
+  position: absolute;
+  top: 75px;
+  right: 65px;
 }
 
 .btn-validation {
@@ -61,8 +67,8 @@
     width: 200px;
     min-height: 50px;
     background-color: $backgroundColor;
-    top: 2px;
-    right: -230px;
+    top: 8px;
+    right: -120px;
     display: none;
 
     &:after {
@@ -95,17 +101,23 @@
 
 //---
 .online-players {
-  padding-top: 10px;
+  padding-top: 5px;
 }
 
 //---
-p.create-by {
-  font-size: 1rem;
-  font-weight: bold;
-  color: $textColor;
+.create-by {
+  margin-top: 10px;
+
+  p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: $backgroundColor;
+  }
 
   span {
-    color: $borderColor;
+    color: darken($backgroundColor, 3%);
+    display: inline-block;
+    animation: logo-move infinite 2s linear;
   }
 }
 
