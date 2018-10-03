@@ -160,7 +160,9 @@ class Game extends React.Component {
         return (
             <div>
                 <div className="div-game">
-                    <div className="timer">{`TIME: ${this.state.gameTime}`}</div>
+                    <div className="timer">
+                        TIME: <span style={{ color: this.state.gameTime <= 10 && 'orange' }} >{ this.state.gameTime }</span>
+                    </div>
 
                     <div className="half-field">
                         <p>{this.state.users[0].nickname}</p>

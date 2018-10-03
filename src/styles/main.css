@@ -273,7 +273,7 @@ div.instruction-center {
   position: absolute;
   text-shadow: 0 0 2px black;
   letter-spacing: 1px;
-  top: 100px;
+  top: 105px;
   color: #4c1d15; }
 
 .half-field {
@@ -388,8 +388,8 @@ div.instruction-center {
     transform: scale(1.25); } }
 
 .div-gameover {
-  background: url("../images/background/bg-dbz3.jpg") no-repeat center;
-  background-size: cover;
+  background: url("../images/background/bg-dbz3.jpg") no-repeat center -405px;
+  background-size: 1500px;
   width: 800px;
   height: 600px;
   margin: 15vh auto;
@@ -398,13 +398,14 @@ div.instruction-center {
   overflow: hidden;
   position: relative;
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  justify-content: flex-start; }
 
 .game-over {
-  padding: 50px 0;
-  font-size: 9rem;
+  margin: 30px 0;
+  font-size: 8rem;
   font-weight: bold;
-  letter-spacing: 3px;
+  letter-spacing: 10px;
   animation: game-over-animation 2.5s 1s alternate forwards;
   color: transparent; }
 
@@ -415,7 +416,15 @@ div.instruction-center {
   color: #4c1d15; }
 
 .text-winner {
-  text-shadow: 0 0 0.1em tomato, 0 0 0.1em tomato, 0 0 0.1em tomato; }
+  text-shadow: 4px 0 0.1em tomato, 0 4px 0.1em tomato, -4px 0 0.1em tomato, 0 -4px 0.1em tomato;
+  font-size: 3rem;
+  color: #f5c814;
+  letter-spacing: 5px; }
+
+.text-looser {
+  font-size: 2.6rem;
+  color: #941600;
+  letter-spacing: 5px; }
 
 @keyframes game-over-animation {
   0% {
@@ -429,4 +438,5 @@ div.instruction-center {
     color: #4c1d15; }
   100% {
     transform: rotate(0) scale(1);
-    color: tomato; } }
+    color: tomato;
+    text-shadow: 5px 0 1px #993b2a, 0 5px 1px #993b2a, -5px 0 1px #993b2a, 0 -5px 1px #993b2a; } }
