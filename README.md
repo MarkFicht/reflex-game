@@ -1,6 +1,6 @@
 # Multi player reflex game.
 
-This project uses the firebase, for prue multi player game in real time. <br />
+This project uses the firebase, for multiplayer game in real time. <br />
 [DEMO here](https://gra-reflex.firebaseapp.com/#/) <br />
 Mechanism for game is in BETA, working only X button without displaying the sequence
 
