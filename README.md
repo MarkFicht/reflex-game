@@ -14,6 +14,11 @@ Mechanism for game is in BETA, working only X button without displaying the sequ
 * Drop database, after gameover
 * Score board (in the future)
 
+### Under construction
+- Divide main component on components
+- Drop player from game after disconnect / leaving
+- Score board
+
 ### Installation and configuration
 
 1. Install Node.js -> [NodeJS](https://nodejs.org/en/)
