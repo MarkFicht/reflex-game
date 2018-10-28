@@ -24,10 +24,6 @@ body {
 p {
   color: #4c1d15; }
 
-.fixed-logo {
-  width: 400px;
-  margin: 0 auto; }
-
 h1.logo {
   font-size: 3.5rem;
   font-family: 'Permanent Marker', cursive;
@@ -35,8 +31,9 @@ h1.logo {
   text-shadow: 0 0 0.1em tomato, 0 0 0.1em tomato, 0 0 0.1em tomato;
   font-weight: bold;
   color: #4c1d15;
-  margin-top: 60px;
-  animation: logo-move infinite 2s linear; }
+  margin: 60px auto 0 auto;
+  animation: logo-move infinite 2s linear;
+  width: 400px; }
 
 @keyframes logo-move {
   0% {
@@ -53,7 +50,7 @@ h1.logo {
 .btn-login {
   width: 200px;
   height: 40px;
-  margin-top: 10px;
+  margin: 7px 0;
   font-weight: bold;
   letter-spacing: 3px;
   font-size: 1.3rem;
@@ -65,14 +62,14 @@ h1.logo {
   border-radius: 15px;
   cursor: pointer;
   transition: background-color .3s, color .3s; }
+  .btn-login:nth-child(6) {
+    margin-top: 20px; }
   .btn-login:hover {
     transform: scale(1.01);
     color: #742c20;
     background-color: #ff745b; }
   .btn-login:active {
     transform: scale(0.95); }
-  .btn-login:nth-child(1) {
-    margin-top: 20px; }
 
 .btn-game {
   width: 60px;
@@ -135,14 +132,24 @@ h1.logo {
   width: 400px;
   height: 520px;
   margin: 50px auto;
+  padding: 20px;
   border: 3px solid #993b2a;
   border-radius: 15px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
+  align-items: center;
   position: relative; }
 
-.div-login input[type='text'], .select-player {
+.div-login label {
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  font-weight: bold;
+  margin: 20px 0 5px 0;
+  color: #4c1d15; }
+
+.div-login input[type='text'],
+.select-player {
   width: 200px;
   height: 40px;
   margin: 0 auto;
@@ -154,57 +161,53 @@ h1.logo {
   color: #4c1d15;
   border-radius: 5px;
   border: 2px solid #993b2a;
-  outline: none; }
-
-.div-login p {
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-  font-weight: bold;
-  margin: 10px 0 2px 0;
-  color: #4c1d15; }
-
-.nick-validation {
-  position: absolute;
-  top: 75px;
-  right: 65px; }
-
-.btn-validation {
+  outline: none;
   position: relative; }
-  .btn-validation .info-online {
+
+.validation-icon {
+  position: absolute;
+  font-size: 30px;
+  top: 75px;
+  right: 60px; }
+
+.validation {
+  position: absolute;
+  border: 3px solid #993b2a;
+  width: 200px;
+  min-height: 62px;
+  background-color: tomato;
+  top: 207px;
+  right: -120px;
+  display: none; }
+  .validation:after {
+    content: '';
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
     position: absolute;
-    border: 3px solid #993b2a;
-    width: 200px;
-    min-height: 50px;
-    background-color: tomato;
-    top: 8px;
-    right: -120px;
-    display: none; }
-    .btn-validation .info-online:after {
-      content: '';
-      box-sizing: border-box;
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      border-top: 10px solid transparent;
-      border-left: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 10px solid #993b2a;
-      top: 18px;
-      left: -23px; }
-    .btn-validation .info-online p {
-      font-size: 22px;
-      margin: 0;
-      letter-spacing: 1px;
-      padding: 6px;
-      color: #f7d445; }
-      .btn-validation .info-online p:first-child {
-        color: #f8d95e; }
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid #993b2a;
+    top: 18px;
+    left: -23px; }
+  .validation p {
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: 1px;
+    padding: 6px;
+    color: #f7d445; }
+    .validation p:first-child {
+      color: #f8d95e; }
 
 .online-players {
-  padding-top: 5px; }
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 2px; }
 
 .create-by {
-  margin-top: 10px; }
+  margin-top: 12px; }
   .create-by p {
     font-size: 1.5rem;
     font-weight: bold;
@@ -222,7 +225,7 @@ h1.logo {
   left: 0;
   background-color: rgba(0, 0, 0, 0.6); }
 
-div.instruction-center {
+.instruction-center {
   background-color: #f9df76;
   width: 500px;
   height: 500px;
@@ -233,26 +236,28 @@ div.instruction-center {
   display: flex;
   flex-direction: column;
   justify-content: center; }
-  div.instruction-center h2 {
+  .instruction-center h2 {
     font-size: 2.4rem;
     margin-bottom: 12px; }
-  div.instruction-center ol {
+  .instruction-center ol {
     font-size: 28px;
     list-style: none;
     text-align: start; }
-    div.instruction-center ol li {
+    .instruction-center ol li {
       padding: 10px 40px; }
 
 .close-instruction {
-  font-size: 65px;
   position: absolute;
-  top: -10px;
-  right: 15px; }
+  font-size: 65px;
+  top: 12vh;
+  right: calc(50% - 210px);
+  transform: translate(50%);
+  z-index: 1; }
   .close-instruction:hover {
     text-shadow: 0 0 3px;
     cursor: pointer; }
   .close-instruction:active {
-    transform: scale(1.25); }
+    transform: translate(50%) scale(1.25); }
 
 .div-game {
   background: url("../images/background/bg-dbz2.png") no-repeat -220px;
