@@ -62,8 +62,8 @@ h1.logo {
   border-radius: 15px;
   cursor: pointer;
   transition: background-color .3s, color .3s; }
-  .btn-login:nth-child(6) {
-    margin-top: 20px; }
+  .btn-login:nth-child(3) {
+    margin-top: 15px; }
   .btn-login:hover {
     transform: scale(1.01);
     color: #742c20;
@@ -140,19 +140,25 @@ h1.logo {
   flex-direction: column;
   align-items: center;
   position: relative; }
+  .div-login > div {
+    min-height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; }
+    .div-login > div:first-child {
+      margin-top: 20px; }
 
 .div-login label {
   font-size: 1.5rem;
   letter-spacing: 1px;
   font-weight: bold;
-  margin: 20px 0 5px 0;
   color: #4c1d15; }
 
 .div-login input[type='text'],
 .select-player {
   width: 200px;
   height: 40px;
-  margin: 0 auto;
   font-size: 1.3rem;
   font-family: 'VT323', monospace;
   padding: 0 15px;
@@ -167,10 +173,10 @@ h1.logo {
 .validation-icon {
   position: absolute;
   font-size: 30px;
-  top: 75px;
+  top: 77px;
   right: 60px; }
 
-.validation {
+div.validation {
   position: absolute;
   border: 3px solid #993b2a;
   width: 200px;
@@ -179,7 +185,7 @@ h1.logo {
   top: 207px;
   right: -120px;
   display: none; }
-  .validation:after {
+  div.validation:after {
     content: '';
     box-sizing: border-box;
     width: 20px;
@@ -191,13 +197,13 @@ h1.logo {
     border-right: 10px solid #993b2a;
     top: 18px;
     left: -23px; }
-  .validation p {
+  div.validation p {
     font-size: 22px;
     margin: 0;
     letter-spacing: 1px;
     padding: 6px;
     color: #f7d445; }
-    .validation p:first-child {
+    div.validation p:first-child {
       color: #f8d95e; }
 
 .online-players {
@@ -206,16 +212,15 @@ h1.logo {
   font-weight: bold;
   letter-spacing: 2px; }
 
-.create-by {
-  margin-top: 12px; }
-  .create-by p {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: tomato; }
-  .create-by span {
-    color: #ff5638;
-    display: inline-block;
-    animation: logo-move infinite 2s linear; }
+.create-by p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: tomato; }
+
+.create-by span {
+  color: #ff5638;
+  display: inline-block;
+  animation: logo-move infinite 2s linear; }
 
 .instruction {
   position: fixed;

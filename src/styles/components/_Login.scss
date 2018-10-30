@@ -24,13 +24,25 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+
+  & > div {
+    //border: 1px solid black;
+    min-height: 2*$height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    &:first-child {
+      margin-top: 20px;
+    }
+  }
 }
 
 .div-login label {
   font-size: 1.5rem;
   letter-spacing: 1px;
   font-weight: bold;
-  margin: 20px 0 5px 0;
   color: $textColor;
 }
 
@@ -39,7 +51,6 @@
 {
   width: $width;
   height: $height;
-  margin: 0 auto;
   font-size: 1.3rem;
   font-family: 'VT323', monospace;
   padding: 0 15px;
@@ -55,12 +66,12 @@
 .validation-icon {
   position: absolute;
   font-size: 30px;
-  top: 75px;
+  top: 77px;
   right: 60px;
 }
 
 //************************
-.validation {
+div.validation {
   position: absolute;
   border: 3px solid $borderColor;
   width: 200px;
@@ -107,7 +118,6 @@
 
 //************************
 .create-by {
-  margin-top: 12px;
 
   p {
     font-size: 1.5rem;

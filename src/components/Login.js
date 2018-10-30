@@ -4,7 +4,7 @@ import * as firebase from 'firebase';
 import bgSong from '../sound/bg_dynamic.m4a';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-//--- JSX TAG
+//--- JSX TAG - Static text
 const Logo = <h1 className="logo">Reflex game</h1>;
 
 const CreateBy = (
@@ -14,18 +14,6 @@ const CreateBy = (
     </div>
 );
 
-const InstructionText = (
-    <div className='instruction-center'>
-        <h2>Zasady gry:</h2>
-        <ol>
-            <li><strong>1.</strong> Wersja Beta.</li>
-            <li><strong>2.</strong> Aktualnie korzystamy tylko z myszki.</li>
-            <li><strong>3.</strong> Gra polega na kliknięciu właściwego znaku, który wyświetlany jest losowo nad przyciskami: X Y Z.</li>
-            <li><strong>4.</strong> Punkty mogą być odejmowane!</li>
-            <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
-        </ol>
-    </div>
-);
 
 //--- REACT COMPONENTS
 class Music extends Component {
@@ -60,6 +48,97 @@ class Music extends Component {
 }
 
 //---
+class ChooseNick extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: '',
+        }
+    }
+
+    validation = (arg) => {
+        if(arg) { return <FontAwesomeIcon icon="check-circle" style={{ color: '#5c7b1e' }} /> }
+        else { return <FontAwesomeIcon icon="times-circle" style={{ color: 'red' }} /> }
+    }
+
+    inputNick = e => {
+        if (typeof this.props.sendMethod === "function") {
+            this.props.sendMethod(e);
+        }
+        this.setState({ name: e.target.value });
+    }
+
+    render() {
+        return (
+            <div>
+                <label htmlFor="nick">Podaj Nick:</label>
+                <input id='nick' placeholder='Nickname' type='text' value={this.state.name} onChange={this.inputNick}/>
+                <div className="validation-icon">{ this.validation(this.props.nickValidation) }</div>
+            </div>
+        );
+    }
+}
+
+//---
+class SelectAvatar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: 'bardock',
+        }
+    }
+
+    selectAvatar = e => {
+        if (typeof this.props.sendMethod === "function") {
+            this.props.sendMethod(e);
+        }
+        this.setState({ value: e.target.value }); // I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
+    }
+
+    render() {
+        return (
+            <div>
+                <label htmlFor="selectAvatar">Wybierz postać:</label>
+                <select id='selectAvatar' className='select-player' value={this.state.value} onChange={this.selectAvatar}>
+                    <option value="bardock">Bardock</option>
+                    <option value="c18">c18</option>
+                    <option value="gokussj3">GokuSsj3</option>
+                    <option value="vegeta">Vegeta</option>
+                </select>
+            </div>
+        );
+    }
+}
+
+//---
+class Instruction extends Component {
+
+    hideInstruction = e => {
+        if(typeof this.props.sendMethod === "function") {
+            this.props.sendMethod(false);
+        }
+    }
+
+    render() {
+        return (
+            <div className='instruction'>
+                <div className='close-instruction' onClick={this.hideInstruction}> x </div>
+                <div className='instruction-center'>
+                    <h2>Zasady gry:</h2>
+                    <ol>
+                        <li><strong>1.</strong> Wersja Beta.</li>
+                        <li><strong>2.</strong> Aktualnie korzystamy tylko z myszki.</li>
+                        <li><strong>3.</strong> Gra polega na kliknięciu właściwego znaku, który wyświetlany jest losowo nad przyciskami: X Y Z.</li>
+                        <li><strong>4.</strong> Punkty mogą być odejmowane!</li>
+                        <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
+                    </ol>
+                </div>
+            </div>
+        );
+    }
+}
+
+//---
 class Validation extends Component {
     render() {
         return (
@@ -86,7 +165,8 @@ class ShowOnline extends Component {
     }
 }
 
-//--- REACT MAIN COMPONENT
+
+//---  *** REACT MAIN COMPONENT ***  ---//
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -120,24 +200,19 @@ class Login extends Component {
     }
 
     //--- MY FUNCTIONS ---//
-    handleTextPlayer = e => {
-        this.setState({ name: e.target.value })
+    nickText= e => {
+        this.setState({ name: e.target.value });
     }
 
-    handleSelectTag = e => {
-        this.setState({ value: e.target.value }); // I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
-    }
-
-    validation = (arg) => {
-        if(arg) { return <FontAwesomeIcon icon="check-circle" style={{ color: '#5c7b1e' }} /> }
-        else { return <FontAwesomeIcon icon="times-circle" style={{ color: 'red' }} /> }
+    selectTag = e => {
+        this.setState({ value: e.target.value });
     }
 
     /**
      * Add new player to Firebase
      * Redirection
      * Choosing avatar in game */
-    handleClickGame = () => {
+    prepareGame = () => {
         if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
@@ -181,8 +256,8 @@ class Login extends Component {
         }
     }
 
-    showInstruction = () => {
-        this.setState({ instruction: !this.state.instruction })
+    showInstruction = (e) => {
+        this.setState({ instruction: e })
     }
 
     //--- RENDER ---//
@@ -191,6 +266,7 @@ class Login extends Component {
 
         return (
             <div>
+
                 <Music />
                 { Logo }
 
@@ -198,23 +274,17 @@ class Login extends Component {
                 <div className="div-login">
 
                     {/* Nick */}
-                    <label for="nick">Podaj Nick:</label>
-                    <input id='nick' placeholder='Nickname' type='text' value={this.state.name} onChange={this.handleTextPlayer}/>
-                    <div className="validation-icon">{ this.validation(nickValidation) }</div>
+                    <ChooseNick sendMethod={this.nickText} nickValidation={ nickValidation } />
 
                     {/* Select Avatar */}
-                    <label for="selectAvatar">Wybierz postać:</label>
-                    <select id='selectAvatar' className='select-player' value={this.state.value} onChange={this.handleSelectTag}>
-                        <option value="bardock">Bardock</option>
-                        <option value="c18">c18</option>
-                        <option value="gokussj3">GokuSsj3</option>
-                        <option value="vegeta">Vegeta</option>
-                    </select>
+                    <SelectAvatar sendMethod={this.selectTag}/>
 
                     {/* Buttons */}
-                    <button className='btn-login' onClick={this.handleClickGame}> GRAJ </button>
-                    <button className='btn-login' onClick={this.showInstruction}> Instrukcja </button>
+                    <button className='btn-login' onClick={this.prepareGame}> GRAJ </button>
+                    <button className='btn-login' onClick={e => this.showInstruction(true)}> Instrukcja </button>
                     <button className='btn-login'> Rekordy </button>
+
+                    {/* Validation */}
                     <Validation containerValidation={ this.state.containerValidation } onlinePlayer={ this.state.onlinePlayer } nickValidation={ nickValidation }/>
 
                     {/* Online players */}
@@ -224,16 +294,14 @@ class Login extends Component {
                     { CreateBy }
                 </div>
 
+
                 {/* ----------------------------------**INSTRUCTION CONTAINER**---------------------------------- */}
-                <div className='instruction' style={{ display: this.state.instruction ? 'block' : 'none'}}>
-                    <div className='close-instruction' onClick={this.showInstruction}> x </div>
-                    { InstructionText }
-                </div>
+                { this.state.instruction && <Instruction sendMethod={this.showInstruction} /> }
+
 
                 {/* ----------------------------------**SCORE-BOARD CONTAINER**---------------------------------- */}
-                {/*
-                    I will add in the future
-                */}
+                {/* I will add in the future */}
+
             </div>
         );
     }
