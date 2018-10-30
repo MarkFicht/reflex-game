@@ -1,9 +1,4 @@
 //--- Animation for logo, in free space made, that appear horizontal scroll
-.fixed-logo {
-  width: $width *2;
-  margin: 0 auto;
-}
-
 h1.logo {
   font-size: 3.5rem;
   font-family: 'Permanent Marker', cursive;
@@ -13,8 +8,10 @@ h1.logo {
   0 0 0.1em tomato;
   font-weight: bold;
   color: $textColor;
-  margin-top: 60px;
+  margin: 60px auto 0 auto;
   animation: logo-move infinite 2s linear;
+  width: $width *2;
+  //margin: 0 auto;
 }
 
 @keyframes logo-move {

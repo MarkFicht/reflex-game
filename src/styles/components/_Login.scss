@@ -10,29 +10,47 @@
   border-radius: 10px;
   cursor: pointer;
 }
-
+//************************
 .div-login {
   background-color: $panelColor;
-
-  //background: url("../mr6.png") no-repeat center;
-  //background-size: cover;
-
   width: 2*$width;
   height: 13*$height;
   margin: 50px auto;
+  padding: 20px;
   border: 3px solid $borderColor;
   border-radius: 15px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
+  align-items: center;
   position: relative;
+
+  & > div {
+    //border: 1px solid black;
+    min-height: 2*$height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    &:first-child {
+      margin-top: 20px;
+    }
+  }
 }
 
-//---
-.div-login input[type='text'], .select-player {
+.div-login label {
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  font-weight: bold;
+  color: $textColor;
+}
+
+.div-login input[type='text'],
+.select-player
+{
   width: $width;
   height: $height;
-  margin: 0 auto;
   font-size: 1.3rem;
   font-family: 'VT323', monospace;
   padding: 0 15px;
@@ -42,71 +60,64 @@
   border-radius: 5px;
   border: 2px solid $borderColor;
   outline: none;
-}
-
-.div-login p {
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-  font-weight: bold;
-  margin: 10px 0 2px 0;
-  color: $textColor;
-}
-
-.nick-validation {
-  position: absolute;
-  top: 75px;
-  right: 65px;
-}
-
-.btn-validation {
   position: relative;
+}
 
-  .info-online {
+.validation-icon {
+  position: absolute;
+  font-size: 30px;
+  top: 77px;
+  right: 60px;
+}
+
+//************************
+div.validation {
+  position: absolute;
+  border: 3px solid $borderColor;
+  width: 200px;
+  min-height: 62px;
+  background-color: $backgroundColor;
+  top: 207px;
+  right: -120px;
+  display: none;
+
+  &:after {
+    content: '';
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
     position: absolute;
-    border: 3px solid $borderColor;
-    width: 200px;
-    min-height: 50px;
-    background-color: $backgroundColor;
-    top: 8px;
-    right: -120px;
-    display: none;
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid $borderColor;
+    top: 18px;
+    left: -23px;
+  }
 
-    &:after {
-      content: '';
-      box-sizing: border-box;
-      width: 20px;
-      height: 20px;
-      position: absolute;
-      border-top: 10px solid transparent;
-      border-left: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-right: 10px solid $borderColor;
-      top: 18px;
-      left: -23px;
-    }
+  p {
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: 1px;
+    padding: 6px;
+    color: darken($panelColor, 10%);
 
-    p {
-      font-size: 22px;
-      margin: 0;
-      letter-spacing: 1px;
-      padding: 6px;
-      color: darken($panelColor, 10%);
-
-      &:first-child {
-        color: darken($panelColor, 5%);
-      }
+    &:first-child {
+      color: darken($panelColor, 5%);
     }
   }
 }
 
-//---
+//************************
 .online-players {
-  padding-top: 5px;
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
-//---
+//************************
 .create-by {
-  margin-top: 10px;
 
   p {
     font-size: 1.5rem;
@@ -121,7 +132,7 @@
   }
 }
 
-//---
+//************************
 .instruction {
   position: fixed;
   width: 100%;
@@ -131,7 +142,7 @@
   background-color: rgba(black, 0.6);
 }
 
-div.instruction-center {
+.instruction-center {
   background-color: $panelColor;
   width: 500px;
   height: 500px;
@@ -160,10 +171,12 @@ div.instruction-center {
 }
 
 .close-instruction {
-  font-size: 65px;
   position: absolute;
-  top: -10px;
-  right: 15px;
+  font-size: 65px;
+  top: 12vh;
+  right: calc(50% - 210px);
+  transform: translate(50%);
+  z-index: 1;
 
   &:hover {
     text-shadow: 0 0 3px;
@@ -171,6 +184,6 @@ div.instruction-center {
   }
 
   &:active {
-    transform: scale(1.25);
+    transform: translate(50%) scale(1.25);
   }
 }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
 import good from '../sound/good.wav';

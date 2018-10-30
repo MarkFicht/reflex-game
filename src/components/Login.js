@@ -1,10 +1,172 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import * as firebase from 'firebase';
 import bgSong from '../sound/bg_dynamic.m4a';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+//--- JSX TAG - Static text
+const Logo = <h1 className="logo">Reflex game</h1>;
+
+const CreateBy = (
+    <div className="create-by">
+        <p>Game create by <span><i>Marek Ficht</i></span></p>
+        <p>All rights reserved &copy;</p>
+    </div>
+);
+
+
+//--- REACT COMPONENTS
+class Music extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            audioMute: true,
+        }
+        this.audio = new Audio(bgSong);
+        this.audio.loop = true;
+        this.audio.volume = 0.2;
+        this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;
+    }
+
+    audioOnOff = () => {
+        if (!this.state.audioMute) {
+            this.audio.pause();
+            this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;
+        }
+        else {
+            this.audio.play();
+            this.music = <FontAwesomeIcon icon="volume-up" color='tomato' />;
+        }
+
+        this.setState( (prevState) => { return { audioMute: !prevState.audioMute } })
+    }
+
+    render() {
+        return <div className="audio" onClick={this.audioOnOff}>{ this.music }</div>;
+    }
+}
+
 //---
+class ChooseNick extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: '',
+        }
+    }
+
+    validation = (arg) => {
+        if(arg) { return <FontAwesomeIcon icon="check-circle" style={{ color: '#5c7b1e' }} /> }
+        else { return <FontAwesomeIcon icon="times-circle" style={{ color: 'red' }} /> }
+    }
+
+    inputNick = e => {
+        if (typeof this.props.sendMethod === "function") {
+            this.props.sendMethod(e);
+        }
+        this.setState({ name: e.target.value });
+    }
+
+    render() {
+        return (
+            <div>
+                <label htmlFor="nick">Podaj Nick:</label>
+                <input id='nick' placeholder='Nickname' type='text' value={this.state.name} onChange={this.inputNick}/>
+                <div className="validation-icon">{ this.validation(this.props.nickValidation) }</div>
+            </div>
+        );
+    }
+}
+
+//---
+class SelectAvatar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: 'bardock',
+        }
+    }
+
+    selectAvatar = e => {
+        if (typeof this.props.sendMethod === "function") {
+            this.props.sendMethod(e);
+        }
+        this.setState({ value: e.target.value }); // I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
+    }
+
+    render() {
+        return (
+            <div>
+                <label htmlFor="selectAvatar">Wybierz postać:</label>
+                <select id='selectAvatar' className='select-player' value={this.state.value} onChange={this.selectAvatar}>
+                    <option value="bardock">Bardock</option>
+                    <option value="c18">c18</option>
+                    <option value="gokussj3">GokuSsj3</option>
+                    <option value="vegeta">Vegeta</option>
+                </select>
+            </div>
+        );
+    }
+}
+
+//---
+class Instruction extends Component {
+
+    hideInstruction = e => {
+        if(typeof this.props.sendMethod === "function") {
+            this.props.sendMethod(false);
+        }
+    }
+
+    render() {
+        return (
+            <div className='instruction'>
+                <div className='close-instruction' onClick={this.hideInstruction}> x </div>
+                <div className='instruction-center'>
+                    <h2>Zasady gry:</h2>
+                    <ol>
+                        <li><strong>1.</strong> Wersja Beta.</li>
+                        <li><strong>2.</strong> Aktualnie korzystamy tylko z myszki.</li>
+                        <li><strong>3.</strong> Gra polega na kliknięciu właściwego znaku, który wyświetlany jest losowo nad przyciskami: X Y Z.</li>
+                        <li><strong>4.</strong> Punkty mogą być odejmowane!</li>
+                        <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
+                    </ol>
+                </div>
+            </div>
+        );
+    }
+}
+
+//---
+class Validation extends Component {
+    render() {
+        return (
+            <div className="validation" style={{ display: this.props.containerValidation ? 'block' : 'none' }}>
+                { this.props.onlinePlayer >= 2
+                    ? <p>Jest 2 graczy. Poczekaj chwilkę.</p>
+                    : null
+                }
+                { this.props.nickValidation
+                    ? null
+                    : <p>Nick musi zawierac od 3 do 9 znakow!</p>
+                }
+            </div>
+        );
+    }
+}
+
+//---
+class ShowOnline extends Component {
+    render() {
+        return <p className='online-players'>ONLINE PLAYERS:
+            <span style={{ color: this.props.onlinePlayer < 2 ? '#5c7b1e' : 'red' }}> { this.props.onlinePlayer }/2</span>
+        </p>
+    }
+}
+
+
+//---  *** REACT MAIN COMPONENT ***  ---//
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -13,21 +175,16 @@ class Login extends Component {
             name: '',
             value: 'bardock',
             urlImg: '',
-            displayValidation: false,
+            containerValidation: false,
             onlinePlayer: 0,
             instruction: false,
-            audioMute: true,
         };
         this.showValidation = null;
-        this.audio = new Audio(bgSong);
-        this.audio.loop = true;
     };
-
 
     componentDidMount() {
         firebase.database().ref('/users').on('value', snap => {
             const val = snap.val();
-            // console.log(val);
 
             let currentOnline = [];
             for (let key in val) {
@@ -35,38 +192,27 @@ class Login extends Component {
             }
 
             this.setState({ onlinePlayer: currentOnline.length })
-            // console.log(this.state.onlinePlayer);
         })
     }
 
-
-    audioOnOff = () => {
-        this.setState( (prevState) => {
-            return { audioMute: !prevState.audioMute };
-        })
+    componentWillUnmount() {
+        clearTimeout(this.showValidation);
     }
 
+    //--- MY FUNCTIONS ---//
+    nickText= e => {
+        this.setState({ name: e.target.value });
+    }
 
-    handleTextPlayer = e => {
-        this.setState({ name: e.target.value })
-    };
-
-
-    handleSelectTag = e => {
+    selectTag = e => {
         this.setState({ value: e.target.value });
-        console.log(this.state.value); // Show prev value, because setState is async
-        // I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
-    };
+    }
 
-
-    showInstruction = () => {
-        this.setState({ instruction: !this.state.instruction })
-    };
-
-
-    //--- Add new player to Firebase / Redirection / Choosing avatar in game
-    handleClickGame = () => {
-
+    /**
+     * Add new player to Firebase
+     * Redirection
+     * Choosing avatar in game */
+    prepareGame = () => {
         if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
@@ -88,7 +234,6 @@ class Login extends Component {
                         break;
                 }
 
-                //---
                 firebase.database().ref('/users').push({
                     nickname: this.state.name,
                     points: 0,
@@ -102,120 +247,61 @@ class Login extends Component {
             })
         }
         else {
-            this.setState({ displayValidation: true })
+            this.setState({ containerValidation: true })
             clearTimeout(this.showValidation);
 
             this.showValidation = setTimeout( () => {
-                this.setState({ displayValidation: false })
-
+                this.setState({ containerValidation: false })
             }, 2000)
         }
-    };
-
-
-    componentWillUnmount() {
-        clearTimeout(this.showValidation);
     }
 
+    showInstruction = (e) => {
+        this.setState({ instruction: e })
+    }
 
+    //--- RENDER ---//
     render() {
-
-        const validationVar = this.state.name.length >= 3 && this.state.name.length < 10;
-        const styles = { color: validationVar ? '#5c7b1e' : 'red' };
-
-        if (this.state.audioMute) {
-            this.audio.volume = 0;
-            this.audio.pause();
-        } else {
-            this.audio.volume = 0.65;
-            this.audio.play();
-        }
+        const nickValidation = this.state.name.length >= 3 && this.state.name.length < 10;
 
         return (
             <div>
-                <div className="audio" onClick={this.audioOnOff}>
-                    { this.state.audioMute
-                        ? <FontAwesomeIcon icon="volume-off" color='tomato' />
-                        : <FontAwesomeIcon icon="volume-up" color='tomato' />
 
-                    }
-                </div>
+                <Music />
+                { Logo }
 
-                <div className='fixed-logo'>
-                    <h1 className="logo">
-                        Reflex game
-                    </h1>
-                </div>
-
+                {/* ----------------------------------**MAIN CONTAINER - LOGIN**---------------------------------- */}
                 <div className="div-login">
-                    <label>
-                        <p>Podaj Nick: </p>
-                        <input placeholder='Nickname' type='text' value={this.state.name} onChange={this.handleTextPlayer}/>
-                        <div className="nick-validation">
-                            { validationVar
-                                ? <p>
-                                    <FontAwesomeIcon icon="check-circle" style={ styles } />
-                                </p>
 
-                                : <p>
-                                    <FontAwesomeIcon icon="times-circle" style={ styles } />
-                                </p>
-                            }
-                        </div>
-                    </label>
+                    {/* Nick */}
+                    <ChooseNick sendMethod={this.nickText} nickValidation={ nickValidation } />
 
-                    <label>
-                        <p>Wybierz postać: </p>
-                        <select className='select-player' value={this.state.value} onChange={this.handleSelectTag}>
-                            <option value="bardock">Bardock</option>
-                            <option value="c18">c18</option>
-                            <option value="gokussj3">GokuSsj3</option>
-                            <option value="vegeta">Vegeta</option>
-                        </select>
-                    </label>
+                    {/* Select Avatar */}
+                    <SelectAvatar sendMethod={this.selectTag}/>
 
-                    <div className='btn-validation'>
-                        <button className='btn-login' onClick={this.handleClickGame}>{ 'GRAJ' }</button>
-                        <button className='btn-login' onClick={this.showInstruction}>{ 'Instrukcja' }</button>
-                        <button className='btn-login'>{ 'Rekordy' }</button>
+                    {/* Buttons */}
+                    <button className='btn-login' onClick={this.prepareGame}> GRAJ </button>
+                    <button className='btn-login' onClick={e => this.showInstruction(true)}> Instrukcja </button>
+                    <button className='btn-login'> Rekordy </button>
 
-                        <div className="info-online" style={{ display: this.state.displayValidation ? 'block' : 'none' }}>
-                            { this.state.onlinePlayer >= 2
-                                ? <p>Jest 2 graczy. Poczekaj chwilkę.</p>
-                                : null
-                            }
-                            { validationVar
-                                ? null
-                                : <p>Nick musi zawierac od 3 do 9 znakow!</p>
-                            }
-                        </div>
-                    </div>
+                    {/* Validation */}
+                    <Validation containerValidation={ this.state.containerValidation } onlinePlayer={ this.state.onlinePlayer } nickValidation={ nickValidation }/>
 
-                    <div className='online-players'>
-                        <p>ONLINE PLAYERS:
-                            <span style={{ color: this.state.onlinePlayer < 2 ? '#5c7b1e' : 'red' }}> { this.state.onlinePlayer }/2</span>
-                        </p>
-                    </div>
+                    {/* Online players */}
+                    <ShowOnline onlinePlayer={this.state.onlinePlayer}/>
 
-                    <div className="create-by">
-                        <p>Game create by <span><i>Marek Ficht</i></span></p>
-                        <p>All rights reserved &copy;</p>
-                    </div>
+                    {/* Footer */}
+                    { CreateBy }
                 </div>
 
-                <div className='instruction' style={{ display: this.state.instruction ? 'block' : 'none'}}>
-                    <div className='instruction-center'>
-                        <div className='close-instruction' onClick={this.showInstruction}>x</div>
-                        <h2>Zasady gry:</h2>
-                        <ol>
-                            <li><strong>1.</strong> Wersja Beta.</li>
-                            <li><strong>2.</strong> Aktualnie korzystamy tylko z myszki.</li>
-                            <li><strong>3.</strong> Gra polega na kliknięciu właściwego znaku, który wyświetlany jest losowo nad przyciskami: X Y Z.</li>
-                            <li><strong>4.</strong> Punkty mogą być odejmowane!</li>
-                            <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
-                        </ol>
-                    </div>
-                </div>
+
+                {/* ----------------------------------**INSTRUCTION CONTAINER**---------------------------------- */}
+                { this.state.instruction && <Instruction sendMethod={this.showInstruction} /> }
+
+
+                {/* ----------------------------------**SCORE-BOARD CONTAINER**---------------------------------- */}
+                {/* I will add in the future */}
+
             </div>
         );
     }
