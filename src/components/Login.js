@@ -231,13 +231,13 @@ class Login extends Component {
                 let randomChar = '';
                 switch ( Math.floor( Math.random() * 3 + 1 ) ) {
                     case 1:
-                        randomChar = 'x'
+                        randomChar = 'X'
                         break;
                     case 2:
-                        randomChar = 'y'
+                        randomChar = 'Y'
                         break;
                     case 3:
-                        randomChar = 'z'
+                        randomChar = 'Z'
                         break;
                 }
 
