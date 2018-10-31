@@ -34,13 +34,16 @@
 .btn-game {
   width: $height*1.5;
   height: $height*1.5;
-  font-weight: 900;
-  font-size: 2rem;
+  font-weight: bold;
+  font-size: 2.2rem;
   font-family: 'Permanent Marker', cursive;
   background-color: $backgroundColor;
   color: $textColor;
   outline: none;
   border: 4px solid $textColor;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 0 5px black;

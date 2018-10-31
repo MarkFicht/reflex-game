@@ -4,8 +4,146 @@ import * as firebase from 'firebase';
 import good from '../sound/good.wav';
 import bad from '../sound/wrong.mp3';
 
-class Game extends React.Component {
+//--- Data
+const randomChar = ['X', 'Y', 'Z'];
 
+
+//--- REACT COMPONENTS
+class Timer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            gameTime: 30,
+        }
+    }
+
+    // Game counter and redirection to GameOver
+    gameTime = e => {
+
+        let timer = setInterval( () => {
+
+            if (this.state.game) {
+                if (this.state.gameTime === 0) {
+                    clearInterval(this.gameTime);
+                    this.props.history.push('/gameover')
+                }
+
+                this.setState({ gameTime: this.state.gameTime - 1 })
+            }
+        }, 1000 )
+    }
+
+    render() {
+        return (
+            <div className="timer">
+                TIME: <span style={{ color: this.props.gameTime <= 10 && 'orange' }} >{ this.props.gameTime }</span>
+            </div>
+        );
+    }
+}
+
+
+//---
+class Nick extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return <h3>{this.props.users[nr] ? this.props.users[nr].nickname : '-'}</h3>;
+    }
+}
+
+//---
+class Score extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className="scores">
+                <p>SCORE: {this.props.users[nr] ? this.props.users[nr].points : '-'}</p>
+            </div>
+        );
+    }
+}
+
+//---
+class DisplayRandomChar extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className="random-char">{ this.props.game ? this.props.users[nr].char : '?' }</div>
+        );
+    }
+}
+
+//---
+class DisplayAvatar extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className='player'>
+                <div className={`player-img${nr+1}`} style={{ backgroundImage: this.props.users[nr] && `url("${ this.props.users[nr].imgPlayer }")` }}></div>
+            </div>
+        );
+    }
+}
+
+//---
+/** THE MECHANISM OF GAME */
+class GameButtons extends Component {
+    constructor(props) {
+        super(props);
+        this.good = new Audio(good);
+        this.bad = new Audio(bad);
+    }
+
+    clickRandomChar = (id, char, nr_player) => {
+        /** ADD POINT */
+        if (char === this.props.users[nr_player].char) {
+
+            let newChar = randomChar[Math.floor( Math.random() * 3 + 1 ) - 1];
+
+            firebase.database().ref('/users/' + id).update({
+                points: this.props.users.find( (user) => user.id === id ).points + 1, // .find() - robi tablice jednoelementowa
+                char: newChar,
+            })
+
+            this.good.play();
+        }
+        /** SUBTRACT POINT */
+        else {
+            firebase.database().ref('/users/' + id).update({
+                points: this.props.users.find( (user) => user.id === id ).points - 1
+            })
+
+            this.bad.play();
+        }
+    };
+
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className="btns">
+                { randomChar.map( char => {
+                    return (
+                        <button disabled={this.props.game ? false : true}
+                                style={{cursor: this.props.game ? 'pointer' : 'not-allowed'}}
+                                className='btn-game'
+                                onClick={e => this.clickRandomChar(this.props.users[nr].id, char, nr)}>
+                            { char }
+                        </button>
+                    )
+                }) }
+            </div>
+        );
+    }
+}
+
+
+//---  *** REACT MAIN COMPONENT ***  ---//
+class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -20,10 +158,7 @@ class Game extends React.Component {
         this.pauseTime = null;
         this.readyInterval = null;
         this.gameTime = null;
-        this.good = new Audio(good);
-        this.bad = new Audio(bad);
     }
-
 
     componentDidMount() {
 
@@ -67,46 +202,17 @@ class Game extends React.Component {
         }, error => { console.log('Error: ' + error.code); })
     }
 
-
-    //--- The mechanism of the game
-    handleClick = (e, id, char, nr_player) => {
-
-        // Add point
-        if (char === this.state.users[nr_player].char) {
-
-            let randomChar = '';
-            switch ( Math.floor( Math.random() * 3 + 1 ) ) {
-                case 1:
-                    randomChar = 'x'
-                    break;
-                case 2:
-                    randomChar = 'y'
-                    break;
-                case 3:
-                    randomChar = 'z'
-                    break;
-            }
-
-            firebase.database().ref('/users/' + id).update({
-                points: this.state.users.find( (user) => user.id === id ).points + 1, // .find() - robi tablice jednoelementowa
-                char: randomChar,
-            })
-
-            this.good.play();
-        }
-        // Subtract point
-        else {
-            firebase.database().ref('/users/' + id).update({
-                points: this.state.users.find( (user) => user.id === id ).points - 1
-            })
-
-            this.bad.play();
-        }
+    componentWillUnmount() {
+        clearTimeout(this.pauseTime);
+        clearInterval(this.readyInterval);
+        clearInterval(this.gameTime);
     };
 
-
-    //--- Counter of game + redirection to GameOver
-    prepareGameAndTimeGame() {
+    //--- MY FUNCTIONS ---//
+    /**
+     * Counter of game
+     * Redirection to GameOver */
+    prepareGameAndTimeGame = () => {
 
         // Prepare counter
         this.pauseTime = setTimeout( () => {
@@ -143,16 +249,8 @@ class Game extends React.Component {
         }, 1000 )
     }
 
-
-    componentWillUnmount() {
-        clearTimeout(this.pauseTime);
-        clearInterval(this.readyInterval);
-        clearInterval(this.gameTime);
-    };
-
-
+    //--- RENDER ---//
     render() {
-
         if (this.state.pending) {
             return null;
         }
@@ -160,65 +258,62 @@ class Game extends React.Component {
         return (
             <div>
                 <div className="div-game">
-                    <div className="timer">
-                        TIME: <span style={{ color: this.state.gameTime <= 10 && 'orange' }} >{ this.state.gameTime }</span>
-                    </div>
 
+                    <Timer gameTime={this.state.gameTime} />
+
+                    {/* ----------------------------------**PLAYER 1**---------------------------------- */}
                     <div className="half-field">
-                        <p>{this.state.users[0].nickname}</p>
 
-                        <div className="scores">
-                            <p>SCORE: {this.state.users[0].points}</p>
-                        </div>
+                        {/* Nick */}
+                        <Nick users={this.state.users} nrPlayer={0} />
 
-                        <div className="random-char">{ this.state.game ? this.state.users[0].char : '?' }</div>
+                        {/* Score */}
+                        <Score users={this.state.users} nrPlayer={0} />
 
-                        <div className="btns">
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'x', 0)}>X</button>
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'y', 0)}>Y</button>
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[0].id, 'z', 0)}>Z</button>
-                        </div>
+                        {/* Display random char */}
+                        <DisplayRandomChar game={this.state.game} nrPlayer={0} users={this.state.users} />
 
-                        <div className='player'>
-                            <div className="player-img1" style={{ backgroundImage: `url("${ this.state.users[0].imgPlayer }")` }}></div>
-                        </div>
+                        {/* Game buttons - MECHANISM HERE */}
+                        <GameButtons game={this.state.game} nrPlayer={0} users={this.state.users} />
+
+                        {/* Avatar */}
+                        <DisplayAvatar users={this.state.users} nrPlayer={0} />
                     </div>
 
+                    {/* ----------------------------------**PLAYER 2**---------------------------------- */}
                     <div className="half-field">
-                        <p>{this.state.users[1] ? this.state.users[1].nickname : '-'}</p>
 
-                        <div className="scores">
-                            <p>SCORE: {this.state.users[1] ? this.state.users[1].points : '-'}</p>
-                        </div>
+                        {/* Nick */}
+                        <Nick users={this.state.users} nrPlayer={1}/>
 
-                        <div className="random-char">{ this.state.game ? this.state.users[1].char : '?' }</div>
+                        {/* Score */}
+                        <Score users={this.state.users} nrPlayer={1} />
 
-                        <div className="btns">
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'x', 1)}>X</button>
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'y', 1)}>Y</button>
-                            <button disabled={this.state.game ? false : true} style={{cursor: this.state.game ? 'pointer' : 'not-allowed'}} className='btn-game' onClick={e => this.handleClick(e, this.state.users[1].id, 'z', 1)}>Z</button>
-                        </div>
+                        {/* Display random char */}
+                        <DisplayRandomChar game={this.state.game} nrPlayer={1} users={this.state.users} />
 
-                        <div className='player'>
-                            <div className="player-img2" style={{ backgroundImage: this.state.users[1] && `url("${ this.state.users[1].imgPlayer }")` }}></div>
-                        </div>
+                        {/* Game buttons - MECHANISM HERE */}
+                        <GameButtons game={this.state.game} nrPlayer={1} users={this.state.users} />
+
+                        {/* Avatar */}
+                        <DisplayAvatar users={this.state.users} nrPlayer={1} />
                     </div>
 
-                    {this.state.users.length % 2 === 1
-                        ? <div className="connection-info">
-                            <p>Oczekiwanie na polaczanie</p>
-                            <p>gracza</p>
-                        </div>
 
-                        : null
+                    {/* ----------------------------------**PREPARE GAME**---------------------------------- */}
+                    { this.state.users.length % 2 === 1
+                        ?   <div className="connection-info">
+                                <p>Oczekiwanie na polaczanie</p>
+                                <p>gracza</p>
+                            </div>
+                        :   null
                     }
 
-                    {this.state.users.length > 1 && this.state.prepare
-                        ? <div className='prepare'>
-                            <p>{this.state.prepareTime === 0 ? 'start' : this.state.prepareTime}</p>
-                        </div>
-
-                        : null
+                    { this.state.users.length > 1 && this.state.prepare
+                        ?   <div className='prepare'>
+                                <p>{this.state.prepareTime === 0 ? 'start' : this.state.prepareTime}</p>
+                            </div>
+                        :   null
                     }
                 </div>
             </div>

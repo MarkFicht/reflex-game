@@ -1,18 +1,15 @@
 .div-game {
-  //background-color: $panelColor;
-
   background: url("../images/background/bg-dbz2.png") no-repeat -220px;
   background-size: 1175px;
-
   width: $widthGame;
   height: $heightGame;
   margin: 15vh auto;
   border: 3px solid $borderColor;
   border-radius: 10px;
-  position: relative;
   overflow: hidden;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  position: relative;
 }
 
 .timer {
@@ -29,63 +26,60 @@
   width: 50%;
   height: $heightGame;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   position: relative;
-}
 
-.half-field > p {
-  height: 15%;
-  font-size: 2.8rem;
-  font-style: italic;
-  font-family: 'Permanent Marker', cursive;
-  font-weight: bold;
-  margin-top: 2.5rem;
-  letter-spacing: 8px;
-  color: $backgroundColor;
-  text-shadow:  0 0 0.2em black,
-                0 0 0.2em black,
-                0 0 0.2em black;
-}
+  & > h3 {
+    font-size: 3rem;
+    font-style: italic;
+    font-family: 'Permanent Marker', cursive;
+    font-weight: bold;
+    margin-top: 40px;
+    letter-spacing: 9px;
+    color: darken($panelColor, 8%);
+    text-shadow:  0 0 0.2em black,
+    0 0 0.3em black,
+    0 0 0.4em black;
+  }
 
-.half-field > .btns, .half-field > .scores {
-  height: 20%;
-  width: 60%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
+  & > .scores p {
+    font-size: 2.3rem;
+    text-shadow:  -2px 0 5px black,
+    0 -2px 5px black,
+    2px 0 5px black,
+    0 2px 5px black;
+    font-weight: bold;
+    color: $backgroundColor;
+    letter-spacing: 3px;
+    margin: 15px 0;
+  }
 
-.scores p {
-  font-size: 2.3rem;
-  text-shadow:  -2px 0 5px black,
-                0 -2px 5px black,
-                2px 0 5px black,
-                0 2px 5px black;
-  font-weight: bold;
-  color: $backgroundColor;
-  letter-spacing: 3px;
-}
+  & > .random-char {
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $textColor;
+    border-radius: 5px;
+    border: 5px solid $borderColor;
+    color: $panelColor;
+  }
 
-.half-field > .player {
-  height: 45%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  margin-bottom: 3.5rem;
-}
+  & > .btns {
+    height: 100px;
+    width: 60%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 
-//---
-.random-char {
-  width: 60px;
-  height: 12%;
-  margin-bottom: 15px;
-  font-size: 37px;
-  background-color: $textColor;
-  border-radius: 5px;
-  border: 5px solid $borderColor;
-  color: $panelColor;
+  & .player {
+    margin-top: 30px;
+  }
 }
 
 //---
@@ -95,8 +89,8 @@
   background-position: center;
   background-size: contain;
   transform: rotateY($rotate);
-  height: 160px;
-  width: 160px;
+  height: 175px;
+  width: 175px;
 }
 .player-img1 {
   @include imgForPlayers(0deg);
