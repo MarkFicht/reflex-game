@@ -5,45 +5,18 @@ import good from '../sound/good.wav';
 import bad from '../sound/wrong.mp3';
 
 //--- Data
+let induceOnce = true;
 const randomChar = ['X', 'Y', 'Z'];
+
+const waitingForPlayers = (
+    <div className="connection-info">
+        <p>Oczekiwanie na polaczanie</p>
+        <p>gracza</p>
+    </div>
+);
 
 
 //--- REACT COMPONENTS
-class Timer extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            gameTime: 30,
-        }
-    }
-
-    // Game counter and redirection to GameOver
-    gameTime = e => {
-
-        let timer = setInterval( () => {
-
-            if (this.state.game) {
-                if (this.state.gameTime === 0) {
-                    clearInterval(this.gameTime);
-                    this.props.history.push('/gameover')
-                }
-
-                this.setState({ gameTime: this.state.gameTime - 1 })
-            }
-        }, 1000 )
-    }
-
-    render() {
-        return (
-            <div className="timer">
-                TIME: <span style={{ color: this.props.gameTime <= 10 && 'orange' }} >{ this.props.gameTime }</span>
-            </div>
-        );
-    }
-}
-
-
-//---
 class Nick extends Component {
     render() {
         const nr = this.props.nrPlayer;
@@ -84,6 +57,97 @@ class DisplayAvatar extends Component {
         return (
             <div className='player'>
                 <div className={`player-img${nr+1}`} style={{ backgroundImage: this.props.users[nr] && `url("${ this.props.users[nr].imgPlayer }")` }}></div>
+            </div>
+        );
+    }
+}
+
+//---
+/** PREPARE GAME TIME */
+class Timer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            ready: false,
+            prepareTime: 3,
+            gameTime: 30,
+        }
+        this.endPrepare = null; //construktor odswieza caly komponent, dlatego to jest poza
+        this.endTime = null;
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.endPrepare);
+        clearInterval(this.endTime);
+    };
+
+    /**
+     * Counter of game
+     * Redirection to GameOver */
+    gameTimer = () => {
+
+        this.endTime = setInterval( () => {
+
+            this.setState( (prevState) => {
+                return { gameTime: prevState.gameTime - 1 }
+            })
+
+            if (this.state.gameTime === 0) {
+                clearInterval(this.endTime);
+                this.props.history.push('/gameover')
+            }
+        }, 1000 )
+    }
+
+    /**
+     * Prepare counter of game
+     * Unlock buttons */
+    prepareToCount = () => {
+        this.setState({ ready: true })
+
+        this.endPrepare = setInterval( () => {
+
+            if (this.props.users.length > 1 && this.state.ready) {
+
+                this.setState( (prevState) => {
+                    return { prepareTime: prevState.prepareTime - 1 }
+                })
+            }
+
+            if (this.state.prepareTime < 0) {
+                clearInterval(this.endPrepare);
+
+                // Hide div prepare
+                this.setState({
+                    ready: false,
+                })
+
+                if (typeof this.props.sendMethod === "function") {
+                    this.props.sendMethod(true);
+                }
+
+                this.gameTimer();
+            }
+        }, 1000)
+    }
+
+    render() {
+        // Start game time
+        if (induceOnce && this.props.users.length === 2) {
+            this.prepareToCount();
+
+            // Induce only once!
+            induceOnce = false;
+        }
+
+        return (
+            <div className="timer">
+                TIME: <span style={{ color: this.state.gameTime <= 10 && 'orange' }} >{ this.state.gameTime }</span>
+
+                { this.props.users.length > 1 && this.state.ready
+                    ?   <div className='prepare'>{ this.state.prepareTime === 0 ? 'start' : this.state.prepareTime }</div>
+                    :   null
+                }
             </div>
         );
     }
@@ -148,27 +212,15 @@ class Game extends React.Component {
         super(props);
         this.state = {
             users: [],
-            prepare: false,
-            prepareTime: 3,
-            game: false,
-            gameTime: 30,
             pending: true,
+            game: false
         };
-        //construktor odswieza caly komponent, dlatego to jest poza
-        this.pauseTime = null;
-        this.readyInterval = null;
-        this.gameTime = null;
     }
 
     componentDidMount() {
-
-        // **Prepare counter
-        let active = true;
-
         // Reference to Database
         firebase.database().ref('users').on('value', snap => {
-            const val = snap.val();
-            console.log(val);
+            const val = snap.val(); // console.log(val);
 
             // Preparing to save in setState
             const usersTable = [];
@@ -182,18 +234,6 @@ class Game extends React.Component {
                     char: val[key].char,
                 })
             }
-
-            // Start counter
-            if (active && usersTable.length === 2) {
-                this.prepareGameAndTimeGame();
-            }
-
-            // **End counter
-            if (usersTable.length === 2) {
-                active = false;
-            }
-
-            // Loading current data from Firebase
             this.setState({
                 users: usersTable,
                 pending: false,
@@ -202,51 +242,11 @@ class Game extends React.Component {
         }, error => { console.log('Error: ' + error.code); })
     }
 
-    componentWillUnmount() {
-        clearTimeout(this.pauseTime);
-        clearInterval(this.readyInterval);
-        clearInterval(this.gameTime);
-    };
-
-    //--- MY FUNCTIONS ---//
-    /**
-     * Counter of game
-     * Redirection to GameOver */
-    prepareGameAndTimeGame = () => {
-
-        // Prepare counter
-        this.pauseTime = setTimeout( () => {
-            this.setState({ prepare: true })
-
-            this.readyInterval = setInterval( () => {
-                if (this.state.prepareTime === 0) {
-                    clearInterval(this.readyInterval);
-
-                    // Hide div prepare
-                    this.setState({
-                        prepare: false,
-                        game: true,
-                    })
-                }
-
-                if (this.state.users.length > 1 && this.state.prepare) {
-                    this.setState({ prepareTime: this.state.prepareTime - 1 })
-                }
-            }, 1000)
-        }, 1500);
-
-        // Game counter and redirection to GameOver
-        this.gameTime = setInterval( () => {
-
-            if (this.state.game) {
-                if (this.state.gameTime === 0) {
-                    clearInterval(this.gameTime);
-                    this.props.history.push('/gameover')
-                }
-
-                this.setState({ gameTime: this.state.gameTime - 1 })
-            }
-        }, 1000 )
+    /** GAME START */
+    gameStart = (paramFromTimer) => {
+        this.setState({
+            game: paramFromTimer
+        })
     }
 
     //--- RENDER ---//
@@ -259,25 +259,26 @@ class Game extends React.Component {
             <div>
                 <div className="div-game">
 
-                    <Timer gameTime={this.state.gameTime} />
+                    {/* Prepare game & Time & Redirection */}
+                    <Timer users={this.state.users} sendMethod={this.gameStart} />
+
+                    {/* Waiting for players */}
+                    { this.state.users.length % 2 === 1 && waitingForPlayers }
 
                     {/* ----------------------------------**PLAYER 1**---------------------------------- */}
                     <div className="half-field">
 
                         {/* Nick */}
                         <Nick users={this.state.users} nrPlayer={0} />
-
                         {/* Score */}
                         <Score users={this.state.users} nrPlayer={0} />
-
                         {/* Display random char */}
                         <DisplayRandomChar game={this.state.game} nrPlayer={0} users={this.state.users} />
-
                         {/* Game buttons - MECHANISM HERE */}
                         <GameButtons game={this.state.game} nrPlayer={0} users={this.state.users} />
-
                         {/* Avatar */}
                         <DisplayAvatar users={this.state.users} nrPlayer={0} />
+
                     </div>
 
                     {/* ----------------------------------**PLAYER 2**---------------------------------- */}
@@ -285,36 +286,17 @@ class Game extends React.Component {
 
                         {/* Nick */}
                         <Nick users={this.state.users} nrPlayer={1}/>
-
                         {/* Score */}
                         <Score users={this.state.users} nrPlayer={1} />
-
                         {/* Display random char */}
                         <DisplayRandomChar game={this.state.game} nrPlayer={1} users={this.state.users} />
-
                         {/* Game buttons - MECHANISM HERE */}
                         <GameButtons game={this.state.game} nrPlayer={1} users={this.state.users} />
-
                         {/* Avatar */}
                         <DisplayAvatar users={this.state.users} nrPlayer={1} />
+
                     </div>
 
-
-                    {/* ----------------------------------**PREPARE GAME**---------------------------------- */}
-                    { this.state.users.length % 2 === 1
-                        ?   <div className="connection-info">
-                                <p>Oczekiwanie na polaczanie</p>
-                                <p>gracza</p>
-                            </div>
-                        :   null
-                    }
-
-                    { this.state.users.length > 1 && this.state.prepare
-                        ?   <div className='prepare'>
-                                <p>{this.state.prepareTime === 0 ? 'start' : this.state.prepareTime}</p>
-                            </div>
-                        :   null
-                    }
                 </div>
             </div>
         )

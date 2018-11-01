@@ -280,15 +280,6 @@ div.validation {
   justify-content: center;
   position: relative; }
 
-.timer {
-  font-size: 2.7rem;
-  font-weight: bold;
-  position: absolute;
-  text-shadow: 0 0 2px black;
-  letter-spacing: 1px;
-  top: 105px;
-  color: #4c1d15; }
-
 .half-field {
   width: 50%;
   height: 600px;
@@ -367,17 +358,27 @@ div.validation {
     letter-spacing: 1px;
     padding-top: 15px; }
 
+.timer {
+  font-size: 2.7rem;
+  font-weight: bold;
+  position: absolute;
+  text-shadow: 0 0 2px black;
+  letter-spacing: 1px;
+  top: 105px;
+  color: #4c1d15; }
+
 .prepare {
   position: absolute;
   z-index: 5;
-  top: 200px;
-  left: auto;
+  top: 171.42857px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   text-shadow: 3px 3px black;
-  animation: prepare-count forwards 3s linear; }
-  .prepare p {
-    font-size: 7rem;
-    letter-spacing: 2px;
-    font-weight: bold; }
+  animation: prepare-count forwards 1s infinite;
+  text-align: center;
+  font-size: 9rem;
+  letter-spacing: 3px; }
 
 @keyframes info-scale {
   0% {
@@ -390,8 +391,14 @@ div.validation {
 @keyframes prepare-count {
   from {
     transform: scale(0.75); }
+  20% {
+    transform: scale(0.75); }
+  50% {
+    transform: scale(1.2); }
+  85% {
+    transform: scale(0.75); }
   to {
-    transform: scale(1.25); } }
+    transform: scale(0.75); } }
 
 .div-gameover {
   background: url("../images/background/bg-dbz3.jpg") no-repeat center -405px;

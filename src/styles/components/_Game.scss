@@ -12,16 +12,7 @@
   position: relative;
 }
 
-.timer {
-  font-size: 2.7rem;
-  font-weight: bold;
-  position: absolute;
-  text-shadow: 0 0 2px black;
-  letter-spacing: 1px;
-  top: 105px;
-  color: $textColor;
-}
-
+//---
 .half-field {
   width: 50%;
   height: $heightGame;
@@ -82,7 +73,6 @@
   }
 }
 
-//---
 @mixin imgForPlayers($rotate) {
   //background-image: url("../images/player/c18.gif");
   background-repeat: no-repeat;
@@ -123,19 +113,28 @@
   }
 }
 
+.timer {
+  font-size: 2.7rem;
+  font-weight: bold;
+  position: absolute;
+  text-shadow: 0 0 2px black;
+  letter-spacing: 1px;
+  top: 105px;
+  color: $textColor;
+}
+
 .prepare {
   position: absolute;
   z-index: 5;
-  top: $heightGame/3;
-  left: auto;
+  top: $heightGame/3.5;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   text-shadow: 3px 3px darken($textColor, 20%);
-  animation: prepare-count forwards 3s linear;
-
-  p {
-    font-size: 7rem;
-    letter-spacing: 2px;
-    font-weight: bold;
-  }
+  animation: prepare-count forwards 1s infinite;
+  text-align: center;
+  font-size: 9rem;
+  letter-spacing: 3px;
 }
 
 @keyframes info-scale {
@@ -146,5 +145,8 @@
 
 @keyframes prepare-count {
   from { transform: scale(0.75); }
-  to { transform: scale(1.25); }
+  20% { transform: scale(0.75); }
+  50% { transform: scale(1.2); }
+  85% { transform: scale(0.75); }
+  to { transform: scale(0.75); }
 }
