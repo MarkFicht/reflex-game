@@ -14,6 +14,16 @@ const CreateBy = (
     </div>
 );
 
+const avatars = [
+    {value: 'bardock',  text: 'Bardock'},
+    {value: 'c18',      text: 'C18'},
+    {value: 'gokussj3', text: 'Goku Ssj3'},
+    {value: 'vegeta',   text: 'Vegeta'} ];
+
+const avatarList = avatars.map( char => {
+    return <option value={char.value}>{ char.text }</option>
+});
+
 
 //--- REACT COMPONENTS
 class Music extends Component {
@@ -25,7 +35,7 @@ class Music extends Component {
         }
         this.audio = new Audio(bgSong);
         this.audio.loop = true;
-        this.audio.volume = 0.2;
+        this.audio.volume = 0.25;
         this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;
     }
 
@@ -80,7 +90,7 @@ class ChooseNick extends Component {
 }
 
 //---
-class SelectAvatar extends Component {
+class SelectAvatar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -100,10 +110,7 @@ class SelectAvatar extends Component {
             <div>
                 <label htmlFor="selectAvatar">Wybierz postać:</label>
                 <select id='selectAvatar' className='select-player' value={this.state.value} onChange={this.selectAvatar}>
-                    <option value="bardock">Bardock</option>
-                    <option value="c18">c18</option>
-                    <option value="gokussj3">GokuSsj3</option>
-                    <option value="vegeta">Vegeta</option>
+                    { avatarList }
                 </select>
             </div>
         );
@@ -224,13 +231,13 @@ class Login extends Component {
                 let randomChar = '';
                 switch ( Math.floor( Math.random() * 3 + 1 ) ) {
                     case 1:
-                        randomChar = 'x'
+                        randomChar = 'X'
                         break;
                     case 2:
-                        randomChar = 'y'
+                        randomChar = 'Y'
                         break;
                     case 3:
-                        randomChar = 'z'
+                        randomChar = 'Z'
                         break;
                 }
 
