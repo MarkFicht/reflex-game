@@ -1,6 +1,35 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase'
 
+class WhoWin extends Component {
+    render() {
+        let player1 = this.props.players[0];
+        let player2 = this.props.players[1];
+
+        let playerA = player1.points > player2.points ? player1 : player2;
+        let playerB = player1.points < player2.points ? player1 : player2;
+        let wasDraw = player1.points === player2.points ? true : false;
+
+        return (
+            <div className='game-winner'>
+                { wasDraw
+                    ? <div>
+                        DRAW: <span className='text-winner'>{ player1.nickname }</span> & <span className='text-winner'>{ player2.nickname }</span>
+                        <br />
+                        SCORE: <span className='text-winner'>{ player1.points }</span>
+                    </div>
+
+                    : <div>
+                        WINNER: <span className='text-winner'>{ playerA.nickname }</span> SCORE: <span className='text-winner'>{ playerA.points }</span>
+                        <br/>
+                        looser: <span className='text-looser'>{ playerB.nickname }</span> score: <span className='text-looser'>{ playerB.points }</span>
+                    </div>
+                }
+            </div>
+        );
+    }
+}
+
 class GameOver extends React.Component {
     constructor(props) {
         super(props);
@@ -10,10 +39,7 @@ class GameOver extends React.Component {
         }
     }
 
-
     componentDidMount() {
-
-        //--- Downloading data and checking for Redirection
         firebase.database().ref('/users').on('value', snap => {
             const value = snap.val();
 
@@ -33,68 +59,34 @@ class GameOver extends React.Component {
         });
     };
 
-
     playAgain = () => {
         firebase.database().ref('/users').remove();
     };
 
-
+    //--- RENDER ---//
     render() {
 
-        if (this.state.pending) { return null; }
+        if (this.state.pending) {
+            return null;
+        }
 
         return (
             <div>
-                { console.log(this.state.players) }
                 <div className="div-gameover">
-                    <h1 className="logo">
-                        Reflex game
-                    </h1>
 
+                    {/* Logo */}
+                    <h1 className="logo">Reflex game</h1>
+                    {/* GameOver - Text */}
                     <p className='game-over'> GAME OVER </p>
-
-                    { this.state.players[0].points !== this.state.players[1].points
-
-                        ? <div className='game-winner'>
-                            WINNER IS: <span className='text-winner'>
-                            {
-                                this.state.players[0].points > this.state.players[1].points
-                                    ? this.state.players[0].nickname
-                                    : this.state.players[1].nickname
-                            }
-                            </span> SCORE: <span className='text-winner'>
-                            {
-                                this.state.players[0].points > this.state.players[1].points
-                                    ? this.state.players[0].points
-                                    : this.state.players[1].points
-                            }
-                            </span>
-                            <p>Looser: <span className='text-looser'>
-                                { this.state.players[0].points > this.state.players[1].points
-                                    ? this.state.players[1].nickname
-                                    : this.state.players[0].nickname
-                                }
-                                </span> score: <span className='text-looser'>
-                                { this.state.players[0].points > this.state.players[1].points
-                                    ? this.state.players[1].points
-                                    : this.state.players[0].points
-                                }</span>
-                            </p>
-                        </div>
-
-                        : <div className='game-winner'>
-                            DRAW: <span className='text-winner'>{this.state.players[0].nickname}</span> & <span className='text-winner'>{this.state.players[1].nickname}</span>
-                            <br />
-                            SCORE: <span className='text-winner'>{ this.state.players[0].points }</span>
-                        </div>
-                    }
-
+                    {/* Winner */}
+                    <WhoWin players={this.state.players} />
+                    {/* Play again + Drop DataBase */}
                     <button className="btn-gameover" onClick={this.playAgain}>Play again?</button>
+
                 </div>
             </div>
         );
     }
-
 }
 
 export default GameOver;

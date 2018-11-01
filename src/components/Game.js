@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-
 import good from '../sound/good.wav';
 import bad from '../sound/wrong.mp3';
 
-//--- Data
+//--- VARIABLES
 let induceOnce = true;
+
 const randomChar = ['X', 'Y', 'Z'];
 
+//--- JSX TAG - Static text
 const waitingForPlayers = (
     <div className="connection-info">
         <p>Oczekiwanie na polaczanie</p>
