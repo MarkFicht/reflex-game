@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase'
+import * as firebase from 'firebase';
 
+import logo from './static/logo';
+
+//--- REACT COMPONENTS
 class WhoWin extends Component {
     render() {
         let player1 = this.props.players[0];
@@ -30,6 +33,7 @@ class WhoWin extends Component {
     }
 }
 
+//---  *** REACT MAIN COMPONENT ***  ---//
 class GameOver extends React.Component {
     constructor(props) {
         super(props);
@@ -75,7 +79,7 @@ class GameOver extends React.Component {
                 <div className="div-gameover">
 
                     {/* Logo */}
-                    <h1 className="logo">Reflex game</h1>
+                    { logo }
                     {/* GameOver - Text */}
                     <p className='game-over'> GAME OVER </p>
                     {/* Winner */}

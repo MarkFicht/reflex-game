@@ -3,19 +3,11 @@ import * as firebase from 'firebase';
 import good from '../sound/good.wav';
 import bad from '../sound/wrong.mp3';
 
+import randomChar from './static/randomChar';
+import waitingForPlayers from './static/waitingForPlayers';
+
 //--- VARIABLES
-let induceOnce = true;
-
-const randomChar = ['X', 'Y', 'Z'];
-
-//--- JSX TAG - Static text
-const waitingForPlayers = (
-    <div className="connection-info">
-        <p>Oczekiwanie na polaczanie</p>
-        <p>gracza</p>
-    </div>
-);
-
+let induceTimerOnce = true;
 
 //--- REACT COMPONENTS
 class Nick extends Component {
@@ -64,7 +56,7 @@ class DisplayAvatar extends Component {
 }
 
 //---
-/** PREPARE GAME TIME */
+/** PREPARE GAME TIME - Need {...this.props} from parent for redirection */
 class Timer extends Component {
     constructor(props) {
         super(props);
@@ -134,16 +126,15 @@ class Timer extends Component {
 
     render() {
         // Start game time
-        if (induceOnce && this.props.users.length === 2) {
+        if (induceTimerOnce && this.props.users.length === 2) {
             this.prepareToCount();
 
-            // Induce only once!
-            induceOnce = false;
+            induceTimerOnce = false;
         }
 
         return (
             <div className="timer">
-                TIME: <span style={{ color: this.state.gameTime <= 10 && 'orange' }} >{ this.state.gameTime }</span>
+                TIME: <span style={{ color: this.state.gameTime <= 12 && 'orange' }} >{ this.state.gameTime }</span>
 
                 { this.props.users.length > 1 && this.state.ready
                     ?   <div className='prepare'>{ this.state.prepareTime === 0 ? 'start' : this.state.prepareTime }</div>
@@ -261,7 +252,7 @@ class Game extends React.Component {
                 <div className="div-game">
 
                     {/* Prepare game & Time & Redirection */}
-                    <Timer users={this.state.users} sendMethod={this.gameStart} />
+                    <Timer { ...this.props } users={this.state.users} sendMethod={this.gameStart} />
 
                     {/* Waiting for players */}
                     { this.state.users.length % 2 === 1 && waitingForPlayers }

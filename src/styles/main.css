@@ -391,11 +391,11 @@ div.validation {
 @keyframes prepare-count {
   from {
     transform: scale(0.75); }
-  20% {
+  10% {
     transform: scale(0.75); }
   50% {
     transform: scale(1.2); }
-  85% {
+  90% {
     transform: scale(0.75); }
   to {
     transform: scale(0.75); } }
