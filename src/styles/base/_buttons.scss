@@ -63,7 +63,7 @@
 
 //--- btns in gameover ---//
 .btn-gameover {
-  width: $width*2;
+  width: $width*1.5;
   height: $height*1.5;
   margin: 50px auto;
   font-weight: bold;
@@ -76,10 +76,10 @@
   border: 0;
   border-radius: 15px;
   cursor: pointer;
-  transition: background-color .3s, color .3s;
+  transition: all .3s, color .3s;
 
   &:hover {
-    transform: scale(1.01);
+    transform: scale(1.05);
     color: lighten($textColor, 10%);
     background-color: lighten($backgroundColor, 4%);
   }

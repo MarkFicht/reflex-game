@@ -1,9 +1,6 @@
 .div-gameover {
-  //background-color: $panelColor;
-
   background: url("../images/background/bg-dbz3.jpg") no-repeat center -405px;
   background-size: 1500px;
-
   width: $widthGame;
   height: $heightGame;
   margin: 15vh auto;
@@ -18,18 +15,19 @@
 
 .game-over {
   margin: 30px 0;
-  font-size: 8rem;
+  font-size: 6rem;
   font-weight: bold;
   letter-spacing: 10px;
-  animation: game-over-animation 2.5s 1s alternate forwards;
+  animation: game-over-animation 3s .7s alternate forwards;
   color: transparent;
 }
 
 .game-winner {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: bold;
   letter-spacing: 3px;
   color: $textColor;
+  text-shadow: 0 0 5px tomato;
 }
 
 .text-winner {
@@ -51,7 +49,7 @@
 @keyframes game-over-animation {
   0% { transform: rotate(-1080deg) scale(0.05); color: tomato; }
   40% { transform: rotate(7deg) scale(1); color: tomato; }
-  80% { transform: rotate(7deg) scale(1.07); color: $textColor; }
+  80% { transform: rotate(7deg) scale(1.5); color: $textColor; }
   100% { transform: rotate(0) scale(1); color: tomato;
          text-shadow:  5px 0 1px $borderColor,
                        0 5px 1px $borderColor,

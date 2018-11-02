@@ -1,63 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import * as firebase from 'firebase';
-import bgSong from '../sound/bg_dynamic.m4a';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-//--- JSX TAG - Static text
-const Logo = <h1 className="logo">Reflex game</h1>;
+import Music from './SimpleComponents/Music';
 
-const CreateBy = (
-    <div className="create-by">
-        <p>Game create by <span><i>Marek Ficht</i></span></p>
-        <p>All rights reserved &copy;</p>
-    </div>
-);
-
-const avatars = [
-    {value: 'bardock',  text: 'Bardock'},
-    {value: 'c18',      text: 'C18'},
-    {value: 'gokussj3', text: 'Goku Ssj3'},
-    {value: 'vegeta',   text: 'Vegeta'} ];
-
-const avatarList = avatars.map( char => {
-    return <option value={char.value}>{ char.text }</option>
-});
-
+import logo from './static/logo';
+import createBy from './static/createBy';
+import randomChar from './static/randomChar';
+import avatarList from './static/avatarList';
 
 //--- REACT COMPONENTS
-class Music extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            audioMute: true,
-        }
-        this.audio = new Audio(bgSong);
-        this.audio.loop = true;
-        this.audio.volume = 0.25;
-        this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;
-    }
-
-    audioOnOff = () => {
-        if (!this.state.audioMute) {
-            this.audio.pause();
-            this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;
-        }
-        else {
-            this.audio.play();
-            this.music = <FontAwesomeIcon icon="volume-up" color='tomato' />;
-        }
-
-        this.setState( (prevState) => { return { audioMute: !prevState.audioMute } })
-    }
-
-    render() {
-        return <div className="audio" onClick={this.audioOnOff}>{ this.music }</div>;
-    }
-}
-
-//---
 class ChooseNick extends Component {
     constructor(props) {
         super(props);
@@ -222,31 +175,21 @@ class Login extends Component {
     prepareGame = () => {
         if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
+            const { history } = this.props;
+
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
             storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
 
-                console.log(url);
                 this.setState({ urlImg:  url});
 
-                let randomChar = '';
-                switch ( Math.floor( Math.random() * 3 + 1 ) ) {
-                    case 1:
-                        randomChar = 'X'
-                        break;
-                    case 2:
-                        randomChar = 'Y'
-                        break;
-                    case 3:
-                        randomChar = 'Z'
-                        break;
-                }
+                let newChar = randomChar[Math.floor( Math.random() * 3 + 1 ) - 1];
 
                 firebase.database().ref('/users').push({
                     nickname: this.state.name,
                     points: 0,
                     imgPlayer: this.state.urlImg,
                     readyPlayer: false,
-                    char: randomChar,
+                    char: newChar,
                 }).then( (e) => this.props.history.push('/game') )
 
             }).catch( (error) => {
@@ -275,7 +218,7 @@ class Login extends Component {
             <div>
 
                 <Music />
-                { Logo }
+                { logo }
 
                 {/* ----------------------------------**MAIN CONTAINER - LOGIN**---------------------------------- */}
                 <div className="div-login">
@@ -298,7 +241,7 @@ class Login extends Component {
                     <ShowOnline onlinePlayer={this.state.onlinePlayer}/>
 
                     {/* Footer */}
-                    { CreateBy }
+                    { createBy }
                 </div>
 
 
