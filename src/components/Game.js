@@ -8,6 +8,7 @@ import waitingForPlayers from './static/waitingForPlayers';
 
 //--- VARIABLES
 let induceTimerOnce = true;
+let showHideReadyBtns = true;
 
 //--- REACT COMPONENTS
 class Nick extends Component {
@@ -56,6 +57,29 @@ class DisplayAvatar extends Component {
 }
 
 //---
+class GetReady extends Component {
+
+    /** GET READY */
+    getReadyPlayers = (who, bool) => {
+        firebase.database().ref('/users/' + who).update({
+            readyPlayer: bool
+        })
+    }
+
+    render() {
+        const nr = this.props.nrPlayer;
+        let userIsPresent = this.props.users[nr];
+
+        return ( userIsPresent
+                ? <button className='btn-ready' style={{ color: userIsPresent.readyPlayer ? 'green' : 'tomato', borderColor: userIsPresent.readyPlayer ? 'green' : 'tomato' }} onClick={e => this.getReadyPlayers(userIsPresent.id, true)} >
+                    { userIsPresent.readyPlayer ? 'Ready!' : 'Get Ready?' }
+                </button>
+                : null
+        );
+    }
+}
+
+//---
 /** PREPARE GAME TIME - Need {...this.props} from parent for redirection */
 class Timer extends Component {
     constructor(props) {
@@ -76,7 +100,9 @@ class Timer extends Component {
 
     /**
      * Counter of game
-     * Redirection to GameOver */
+     * Redirection to GameOver
+     * Restore the countdown
+     * Show again btns ready to next game*/
     gameTimer = () => {
 
         this.endTime = setInterval( () => {
@@ -88,6 +114,8 @@ class Timer extends Component {
             if (this.state.gameTime === 0) {
                 clearInterval(this.endTime);
                 this.props.history.push('/gameover')
+                induceTimerOnce = true;
+                showHideReadyBtns = true;
             }
         }, 1000 )
     }
@@ -126,10 +154,11 @@ class Timer extends Component {
 
     render() {
         // Start game time
-        if (induceTimerOnce && this.props.users.length === 2) {
+        if (induceTimerOnce && this.props.users.length === 2 && this.props.users[0].readyPlayer && this.props.users[1].readyPlayer) {
             this.prepareToCount();
 
             induceTimerOnce = false;
+            showHideReadyBtns = false;
         }
 
         return (
@@ -251,7 +280,7 @@ class Game extends React.Component {
             <div>
                 <div className="div-game">
 
-                    {/* Prepare game & Time & Redirection */}
+                    {/* PREPARE GAME & TIME & REDIRECTION */}
                     <Timer { ...this.props } users={this.state.users} sendMethod={this.gameStart} />
 
                     {/* Waiting for players */}
@@ -259,6 +288,9 @@ class Game extends React.Component {
 
                     {/* ----------------------------------**PLAYER 1**---------------------------------- */}
                     <div className="half-field">
+
+                        {/* Get ready */}
+                        { showHideReadyBtns && <GetReady users={this.state.users} nrPlayer={0} /> }
 
                         {/* Nick */}
                         <Nick users={this.state.users} nrPlayer={0} />
@@ -275,6 +307,9 @@ class Game extends React.Component {
 
                     {/* ----------------------------------**PLAYER 2**---------------------------------- */}
                     <div className="half-field">
+
+                        {/* Get ready */}
+                        { showHideReadyBtns && <GetReady users={this.state.users} nrPlayer={1} /> }
 
                         {/* Nick */}
                         <Nick users={this.state.users} nrPlayer={1}/>

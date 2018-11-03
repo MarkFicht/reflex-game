@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import * as firebase from 'firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -176,8 +175,8 @@ class Login extends Component {
         if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
             const { history } = this.props;
-
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
+
             storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
 
                 this.setState({ urlImg:  url});
@@ -190,7 +189,7 @@ class Login extends Component {
                     imgPlayer: this.state.urlImg,
                     readyPlayer: false,
                     char: newChar,
-                }).then( (e) => this.props.history.push('/game') )
+                }).then( (e) => history.push('/game') )
 
             }).catch( (error) => {
                 // console.log(`Error: ${ error.code }`)
