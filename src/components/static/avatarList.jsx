@@ -7,7 +7,7 @@ const avatars = [
     {value: 'vegeta',   text: 'Vegeta'} ];
 
 const avatarList = avatars.map( char => {
-    return <option value={char.value}>{ char.text }</option>
+    return <option value={char.value} key={char.value}>{ char.text }</option>
 });
 
 export default avatarList;

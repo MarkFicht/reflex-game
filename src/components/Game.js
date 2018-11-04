@@ -161,9 +161,11 @@ class Timer extends Component {
             showHideReadyBtns = false;
         }
 
+        const colorTimer = { color: (this.state.gameTime <= 12 && this.state.gameTime > 5) && 'orange' || this.state.gameTime <= 5 && 'red' };
+
         return (
             <div className="timer">
-                TIME: <span style={{ color: this.state.gameTime <= 12 && 'orange' }} >{ this.state.gameTime }</span>
+                TIME: <span style={ colorTimer } >{ this.state.gameTime }</span>
 
                 { this.props.users.length > 1 && this.state.ready
                     ?   <div className='prepare'>{ this.state.prepareTime === 0 ? 'start' : this.state.prepareTime }</div>
@@ -216,7 +218,8 @@ class GameButtons extends Component {
                         <button disabled={this.props.game ? false : true}
                                 style={{cursor: this.props.game ? 'pointer' : 'not-allowed'}}
                                 className='btn-game'
-                                onClick={e => this.clickRandomChar(this.props.users[nr].id, char, nr)}>
+                                onClick={e => this.clickRandomChar(this.props.users[nr].id, char, nr)}
+                                key={ char }>
                             { char }
                         </button>
                     )
