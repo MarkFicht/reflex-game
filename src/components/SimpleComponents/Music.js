@@ -7,16 +7,28 @@ class Music extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            audioMute: true,
+            audioMute: this.props.playMusic,
         }
 
         this.audio = new Audio(bgSong);
         this.audio.loop = true;
         this.audio.volume = 0.25;
-        this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;
+        this.music = null;
+    }
+
+    componentDidMount() {
+        this.audioOnOff();
+    }
+
+    componentWillUnmount() {
+        this.audio.pause() //test
     }
 
     audioOnOff = () => {
+        if (typeof this.props.sendMethod === "function") {
+            this.props.sendMethod();
+        }
+
         if (!this.state.audioMute) {
             this.audio.pause();
             this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;

@@ -210,7 +210,8 @@ div.validation {
   background-color: tomato;
   top: 207px;
   right: -120px;
-  display: none; }
+  display: none;
+  animation: shake .4s forwards linear; }
   div.validation:after {
     content: '';
     box-sizing: border-box;
@@ -231,6 +232,20 @@ div.validation {
     color: #f7d445; }
     div.validation p:first-child {
       color: #f8d95e; }
+
+@keyframes shake {
+  from {
+    right: -110px; }
+  20% {
+    right: -135px; }
+  40% {
+    right: -115px; }
+  60% {
+    right: -130px; }
+  80% {
+    right: -118px; }
+  to {
+    right: -120px; } }
 
 .online-players {
   margin-top: 12px;
@@ -266,7 +281,8 @@ div.validation {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center; }
+  justify-content: center;
+  animation: getOut .6s forwards linear; }
   .instruction-center h2 {
     font-size: 2.4rem;
     margin-bottom: 12px; }
@@ -277,11 +293,25 @@ div.validation {
     .instruction-center ol li {
       padding: 10px 40px; }
 
+@keyframes getOut {
+  from {
+    margin: -100vh auto; }
+  40% {
+    margin: 13vh auto; }
+  50% {
+    margin: 10vh auto; }
+  60% {
+    margin: 12.5vh auto; }
+  75% {
+    margin: 11.5vh auto; }
+  to {
+    margin: 12vh auto; } }
+
 .close-instruction {
   position: absolute;
   font-size: 65px;
-  top: 12vh;
-  right: calc(50% - 210px);
+  top: 0;
+  right: 40px;
   transform: translate(50%);
   z-index: 1;
   color: #333; }

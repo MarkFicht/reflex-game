@@ -81,14 +81,14 @@ class Instruction extends Component {
     render() {
         return (
             <div className='instruction'>
-                <div className='close-instruction' onClick={this.hideInstruction}> x </div>
                 <div className='instruction-center'>
+                    <div className='close-instruction' onClick={this.hideInstruction}> x </div>
                     <h2>Zasady gry:</h2>
                     <ol>
-                        <li><strong>1.</strong> Wersja Beta.</li>
-                        <li><strong>2.</strong> Aktualnie korzystamy tylko z myszki.</li>
-                        <li><strong>3.</strong> Gra polega na kliknięciu właściwego znaku, który wyświetlany jest losowo nad przyciskami: X Y Z.</li>
-                        <li><strong>4.</strong> Punkty mogą być odejmowane!</li>
+                        <li><strong>1.</strong> Wersja Beta. Nadal jest kilka bugów do rozwiazania :)</li>
+                        <li><strong>2.</strong> Korzystamy z myszki podczas gry.</li>
+                        <li><strong>3.</strong> Musimy kliknąć właściwy znak (wyświetlany losowo) nad przyciskami: X Y Z, by dostać punkt.</li>
+                        <li><strong>4.</strong> Punkty są odejmowane za pomyłki!</li>
                         <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
                     </ol>
                 </div>
@@ -137,6 +137,7 @@ class Login extends Component {
             containerValidation: false,
             onlinePlayer: 0,
             instruction: false,
+            playMusic: false
         };
         this.showValidation = null;
     };
@@ -159,7 +160,11 @@ class Login extends Component {
     }
 
     //--- MY FUNCTIONS ---//
-    nickText= e => {
+    music = e => {
+        this.setState({ playMusic: !this.state.playMusic })
+    }
+
+    nickText = e => {
         this.setState({ name: e.target.value });
     }
 
@@ -192,7 +197,7 @@ class Login extends Component {
                 }).then( (e) => history.push('/game') )
 
             }).catch( (error) => {
-                // console.log(`Error: ${ error.code }`)
+                console.log(`Error: ${ error.code }`)
             })
         }
         else {
@@ -201,7 +206,7 @@ class Login extends Component {
 
             this.showValidation = setTimeout( () => {
                 this.setState({ containerValidation: false })
-            }, 2000)
+            }, 2500)
         }
     }
 
@@ -216,7 +221,7 @@ class Login extends Component {
         return (
             <div>
 
-                <Music />
+                <Music sendMethod={this.music} playMusic={this.state.playMusic}/>
                 { logo }
 
                 {/* ----------------------------------**MAIN CONTAINER - LOGIN**---------------------------------- */}

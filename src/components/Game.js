@@ -93,6 +93,15 @@ class Timer extends Component {
         this.endTime = null;
     }
 
+    componentDidUpdate() {
+        if (induceTimerOnce && this.props.users.length === 2 && this.props.users[0].readyPlayer && this.props.users[1].readyPlayer) {
+            this.prepareToCount();
+
+            induceTimerOnce = false;
+            showHideReadyBtns = false;
+        }
+    }
+
     componentWillUnmount() {
         clearInterval(this.endPrepare);
         clearInterval(this.endTime);
@@ -153,14 +162,6 @@ class Timer extends Component {
     }
 
     render() {
-        // Start game time
-        if (induceTimerOnce && this.props.users.length === 2 && this.props.users[0].readyPlayer && this.props.users[1].readyPlayer) {
-            this.prepareToCount();
-
-            induceTimerOnce = false;
-            showHideReadyBtns = false;
-        }
-
         const colorTimer = { color: (this.state.gameTime <= 12 && this.state.gameTime > 5) && 'orange' || this.state.gameTime <= 5 && 'red' };
 
         return (
