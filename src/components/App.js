@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../styles/main.css';
+import Music from './SimpleComponents/Music';
 
 import Login from '../components/Login';
 import Game from '../components/Game';
@@ -20,7 +21,9 @@ class App extends Component {
         <HashRouter>
           <div className="App">
 
-            <Switch>
+              <Music playMusic={true}/>
+
+              <Switch>
                 <Route exact path="/" component={Login} />
                 <Route exact path="/game" component={Game} />
                 <Route exact path="/gameover" component={GameOver} />

@@ -98,6 +98,32 @@ class Instruction extends Component {
 }
 
 //---
+class BestScore extends Component {
+
+    hideBestScore = e => {
+        if(typeof this.props.sendMethod === "function") {
+            this.props.sendMethod(false);
+        }
+    }
+
+    render() {
+        return (
+            <div className='instruction'>
+                <div className='instruction-center'>
+                    <div className='close-instruction' onClick={this.hideBestScore}> x </div>
+                    <h2>W BUDOWIE :)</h2>
+                    <ol>
+                        <li><strong>1.</strong> Wersja Beta. Nadal jest kilka bugów do rozwiazania :)</li>
+                        <li><strong>2.</strong> Gracze poki co usuwani sa tylko gdy dojdziemy do konca gry.
+                            Brak rozlaczenia, gdy gracz wyjdzie lub gdy nacisnie wstecz, itp.</li>
+                    </ol>
+                </div>
+            </div>
+        );
+    }
+}
+
+//---
 class Validation extends Component {
     render() {
         return (
@@ -137,7 +163,8 @@ class Login extends Component {
             containerValidation: false,
             onlinePlayer: 0,
             instruction: false,
-            playMusic: false
+            bestScore: false,
+            playMusic: false,
         };
         this.showValidation = null;
     };
@@ -214,6 +241,10 @@ class Login extends Component {
         this.setState({ instruction: e })
     }
 
+    showBestScore = e => {
+        this.setState({ bestScore: e })
+    }
+
     //--- RENDER ---//
     render() {
         const nickValidation = this.state.name.length >= 3 && this.state.name.length < 10;
@@ -221,7 +252,7 @@ class Login extends Component {
         return (
             <div>
 
-                <Music sendMethod={this.music} playMusic={this.state.playMusic}/>
+                {/*<Music sendMethod={this.music} playMusic={this.state.playMusic}/>*/}
                 { logo }
 
                 {/* ----------------------------------**MAIN CONTAINER - LOGIN**---------------------------------- */}
@@ -236,7 +267,7 @@ class Login extends Component {
                     {/* Buttons */}
                     <button className='btn-login' onClick={this.prepareGame}> GRAJ </button>
                     <button className='btn-login' onClick={e => this.showInstruction(true)}> Instrukcja </button>
-                    <button className='btn-login'> Rekordy </button>
+                    <button className='btn-login' onClick={e => this.showBestScore(true)}> Rekordy </button>
 
                     {/* Validation */}
                     <Validation containerValidation={ this.state.containerValidation } onlinePlayer={ this.state.onlinePlayer } nickValidation={ nickValidation }/>
@@ -254,7 +285,7 @@ class Login extends Component {
 
 
                 {/* ----------------------------------**SCORE-BOARD CONTAINER**---------------------------------- */}
-                {/* I will add in the future */}
+                { this.state.bestScore && <BestScore sendMethod={this.showBestScore} /> }
 
             </div>
         );
