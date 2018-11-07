@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import Music from './SimpleComponents/Music';
-
 import logo from './static/logo';
 import createBy from './static/createBy';
 import randomChar from './static/randomChar';
@@ -71,7 +69,6 @@ class SelectAvatar extends React.Component {
 
 //---
 class Instruction extends Component {
-
     hideInstruction = e => {
         if(typeof this.props.sendMethod === "function") {
             this.props.sendMethod(false);
@@ -99,7 +96,6 @@ class Instruction extends Component {
 
 //---
 class BestScore extends Component {
-
     hideBestScore = e => {
         if(typeof this.props.sendMethod === "function") {
             this.props.sendMethod(false);
@@ -164,7 +160,6 @@ class Login extends Component {
             onlinePlayer: 0,
             instruction: false,
             bestScore: false,
-            playMusic: false,
         };
         this.showValidation = null;
     };
@@ -187,10 +182,6 @@ class Login extends Component {
     }
 
     //--- MY FUNCTIONS ---//
-    music = e => {
-        this.setState({ playMusic: !this.state.playMusic })
-    }
-
     nickText = e => {
         this.setState({ name: e.target.value });
     }
@@ -233,7 +224,7 @@ class Login extends Component {
 
             this.showValidation = setTimeout( () => {
                 this.setState({ containerValidation: false })
-            }, 2500)
+            }, 2000)
         }
     }
 
@@ -252,7 +243,6 @@ class Login extends Component {
         return (
             <div>
 
-                {/*<Music sendMethod={this.music} playMusic={this.state.playMusic}/>*/}
                 { logo }
 
                 {/* ----------------------------------**MAIN CONTAINER - LOGIN**---------------------------------- */}

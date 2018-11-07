@@ -162,7 +162,10 @@ class Timer extends Component {
     }
 
     render() {
-        const colorTimer = { color: (this.state.gameTime <= 12 && this.state.gameTime > 5) && 'orange' || this.state.gameTime <= 5 && 'red' };
+        const colorTimer = { color:
+                ((this.state.gameTime <= 12 && this.state.gameTime > 5) && 'orange') ||
+                 (this.state.gameTime <= 5 && 'red')
+        };
 
         return (
             <div className="timer">
@@ -183,7 +186,7 @@ class GameButtons extends Component {
     constructor(props) {
         super(props);
         this.good = new Audio(good);
-        this.bad = new Audio(bad);
+        this.bad = null;
     }
 
     clickRandomChar = (id, char, nr_player) => {
@@ -197,7 +200,8 @@ class GameButtons extends Component {
                 char: newChar,
             })
 
-            this.good.play();
+            this.good = new Audio(good).play();
+            this.good = null;
         }
         /** SUBTRACT POINT */
         else {
@@ -205,7 +209,8 @@ class GameButtons extends Component {
                 points: this.props.users.find( (user) => user.id === id ).points - 1
             })
 
-            this.bad.play();
+            this.bad = new Audio(bad).play();
+            this.bad = null;
         }
     };
 

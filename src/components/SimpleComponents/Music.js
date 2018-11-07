@@ -12,7 +12,7 @@ class Music extends Component {
 
         this.audio = new Audio(bgSong);
         this.audio.loop = true;
-        this.audio.volume = 0.25;
+        this.audio.volume = 0.3;
         this.music = null;
     }
 
@@ -21,14 +21,10 @@ class Music extends Component {
     }
 
     componentWillUnmount() {
-        this.audio.pause() //test
+        this.audio.pause()
     }
 
     audioOnOff = () => {
-        if (typeof this.props.sendMethod === "function") {
-            this.props.sendMethod();
-        }
-
         if (!this.state.audioMute) {
             this.audio.pause();
             this.music = <FontAwesomeIcon icon="volume-off" color='tomato' />;
