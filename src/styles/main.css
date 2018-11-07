@@ -96,6 +96,16 @@ h1.logo {
     background-color: #ff745b;
     border: 4px solid #742c20; }
 
+.btn-game-noEffect {
+  cursor: default; }
+  .btn-game-noEffect:hover {
+    box-shadow: 0 0 5px black; }
+  .btn-game-noEffect:active {
+    color: #4c1d15;
+    background-color: tomato;
+    border: 4px solid #4c1d15;
+    transform: none; }
+
 .btn-ready {
   width: 170px;
   height: 70px;
@@ -118,6 +128,12 @@ h1.logo {
     box-shadow: 0 0 20px black; }
   .btn-ready:active {
     transform: scale(0.95); }
+
+.btn-ready-noEffect {
+  cursor: default; }
+  .btn-ready-noEffect:hover, .btn-ready-noEffect:active {
+    transform: none;
+    box-shadow: 0 0 10px black; }
 
 .btn-gameover {
   width: 300px;
@@ -349,7 +365,7 @@ div.validation {
     font-weight: bold;
     margin-top: 40px;
     letter-spacing: 12px;
-    color: #f7d64f;
+    color: tomato;
     text-shadow: 0 0 0.2em black, 0 0 0.3em black, 0 0 0.4em black; }
   .half-field > .scores p {
     font-size: 2.3rem;

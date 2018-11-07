@@ -10,12 +10,21 @@ import waitingForPlayers from './static/waitingForPlayers';
 let induceTimerOnce = true;
 let showHideReadyBtns = true;
 
+//--- JSX TAGS
+const gameButtonsDummy = (
+    <div className="btns">
+        { randomChar.map( char => {
+            return <button key={ char } className='btn-game btn-game-noEffect'>{ char }</button>
+        }) }
+    </div>
+);
+
 //--- REACT COMPONENTS
 class Nick extends Component {
     render() {
         const nr = this.props.nrPlayer;
 
-        return <h3>{this.props.users[nr] ? this.props.users[nr].nickname : '-'}</h3>;
+        return <h3 style={ this.props.sendStyle }>{this.props.users[nr] ? this.props.users[nr].nickname : '-'}</h3>;
     }
 }
 
@@ -26,7 +35,7 @@ class Score extends Component {
 
         return (
             <div className="scores">
-                <p>SCORE: {this.props.users[nr] ? this.props.users[nr].points : '-'}</p>
+                <p style={ this.props.sendStyle }>SCORE: {this.props.users[nr] ? this.props.users[nr].points : '-'}</p>
             </div>
         );
     }
@@ -57,21 +66,28 @@ class DisplayAvatar extends Component {
 }
 
 //---
+/** Need {...this.props} from parent for active suitable btn */
 class GetReady extends Component {
 
     /** GET READY */
     getReadyPlayers = (who, bool) => {
-        firebase.database().ref('/users/' + who).update({
-            readyPlayer: bool
-        })
+        if (bool) {
+            firebase.database().ref('/users/' + who).update({
+                readyPlayer: bool
+            })
+        }
     }
 
     render() {
+        console.log(Number(this.props.match.params.userId))
+
         const nr = this.props.nrPlayer;
         let userIsPresent = this.props.users[nr];
 
         return ( userIsPresent
-                ? <button className='btn-ready' style={{ color: userIsPresent.readyPlayer ? 'green' : 'tomato', borderColor: userIsPresent.readyPlayer ? 'green' : 'tomato' }} onClick={e => this.getReadyPlayers(userIsPresent.id, true)} >
+                ? <button className={ Number(this.props.match.params.userId) === this.props.nrPlayer ? 'btn-ready' : 'btn-ready btn-ready-noEffect'}
+                          style={{ color: userIsPresent.readyPlayer ? 'green' : 'tomato', borderColor: userIsPresent.readyPlayer ? 'green' : 'tomato' }}
+                          onClick={e => this.getReadyPlayers(userIsPresent.id, Number(this.props.match.params.userId) === this.props.nrPlayer)} >
                     { userIsPresent.readyPlayer ? 'Ready!' : 'Get Ready?' }
                 </button>
                 : null
@@ -285,6 +301,8 @@ class Game extends React.Component {
             return null;
         }
 
+        let sendStyle = { color: '#548687' }
+
         return (
             <div>
                 <div className="div-game">
@@ -299,16 +317,22 @@ class Game extends React.Component {
                     <div className="half-field">
 
                         {/* Get ready */}
-                        { showHideReadyBtns && <GetReady users={this.state.users} nrPlayer={0} /> }
+                        { showHideReadyBtns && <GetReady users={this.state.users} { ...this.props } nrPlayer={0} /> }
 
                         {/* Nick */}
-                        <Nick users={this.state.users} nrPlayer={0} />
+                        <Nick sendStyle={ Number(this.props.match.params.userId) === 0 ? sendStyle : null } users={this.state.users} nrPlayer={0} />
+
                         {/* Score */}
-                        <Score users={this.state.users} nrPlayer={0} />
+                        <Score sendStyle={ Number(this.props.match.params.userId) === 0 ? sendStyle : null } users={this.state.users} nrPlayer={0} />
+
                         {/* Display random char */}
                         <DisplayRandomChar game={this.state.game} nrPlayer={0} users={this.state.users} />
+
                         {/* Game buttons - MECHANISM HERE */}
-                        <GameButtons game={this.state.game} nrPlayer={0} users={this.state.users} />
+                        { Number(this.props.match.params.userId) === 0
+                            ? <GameButtons game={this.state.game} nrPlayer={0} users={this.state.users} />
+                            : gameButtonsDummy }
+
                         {/* Avatar */}
                         <DisplayAvatar users={this.state.users} nrPlayer={0} />
 
@@ -318,16 +342,22 @@ class Game extends React.Component {
                     <div className="half-field">
 
                         {/* Get ready */}
-                        { showHideReadyBtns && <GetReady users={this.state.users} nrPlayer={1} /> }
+                        { showHideReadyBtns && <GetReady users={this.state.users} { ...this.props } nrPlayer={1} /> }
 
                         {/* Nick */}
-                        <Nick users={this.state.users} nrPlayer={1}/>
+                        <Nick sendStyle={ Number(this.props.match.params.userId) === 1 ? sendStyle : null } users={this.state.users} nrPlayer={1}/>
+
                         {/* Score */}
-                        <Score users={this.state.users} nrPlayer={1} />
+                        <Score sendStyle={ Number(this.props.match.params.userId) === 1 ? sendStyle : null } users={this.state.users} nrPlayer={1} />
+
                         {/* Display random char */}
                         <DisplayRandomChar game={this.state.game} nrPlayer={1} users={this.state.users} />
+
                         {/* Game buttons - MECHANISM HERE */}
-                        <GameButtons game={this.state.game} nrPlayer={1} users={this.state.users} />
+                        { Number(this.props.match.params.userId) === 1
+                            ? <GameButtons game={this.state.game} nrPlayer={1} users={this.state.users} />
+                            : gameButtonsDummy }
+
                         {/* Avatar */}
                         <DisplayAvatar users={this.state.users} nrPlayer={1} />
 

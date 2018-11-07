@@ -192,7 +192,7 @@ class Login extends Component {
 
     /**
      * Add new player to Firebase
-     * Redirection
+     * Redirection to /game/#
      * Choosing avatar in game */
     prepareGame = () => {
         if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
@@ -212,7 +212,8 @@ class Login extends Component {
                     imgPlayer: this.state.urlImg,
                     readyPlayer: false,
                     char: newChar,
-                }).then( (e) => history.push('/game') )
+                    disconnectPlayer: false,
+                }).then( (e) => history.push(`/game/${this.state.onlinePlayer - 1}`) )
 
             }).catch( (error) => {
                 console.log(`Error: ${ error.code }`)
@@ -255,7 +256,7 @@ class Login extends Component {
                     <SelectAvatar sendMethod={this.selectTag}/>
 
                     {/* Buttons */}
-                    <button className='btn-login' onClick={this.prepareGame}> GRAJ </button>
+                    <button className='btn-login' onClick={this.prepareGame}> Graj </button>
                     <button className='btn-login' onClick={e => this.showInstruction(true)}> Instrukcja </button>
                     <button className='btn-login' onClick={e => this.showBestScore(true)}> Rekordy </button>
 

@@ -61,6 +61,20 @@
   }
 }
 
+.btn-game-noEffect {
+  cursor: default;
+
+  &:hover {
+    box-shadow: 0 0 5px black;
+  }
+  &:active {
+    color: $textColor;
+    background-color: $backgroundColor;
+    border: 4px solid $textColor;
+    transform: none;
+  }
+}
+
 .btn-ready {
   width: 170px;
   height: 70px;
@@ -85,6 +99,16 @@
   }
   &:active {
     transform: scale(.95);
+  }
+}
+
+.btn-ready-noEffect {
+  cursor: default;
+
+  &:hover, &:active {
+    transform: none;
+    box-shadow: 0 0 10px black;
+
   }
 }
 

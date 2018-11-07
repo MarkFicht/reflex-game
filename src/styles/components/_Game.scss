@@ -29,7 +29,7 @@
     font-weight: bold;
     margin-top: 40px;
     letter-spacing: 12px;
-    color: darken($panelColor, 8%);
+    color: $backgroundColor;
     text-shadow:  0 0 0.2em black,
     0 0 0.3em black,
     0 0 0.4em black;

@@ -21,11 +21,11 @@ class App extends Component {
         <HashRouter>
           <div className="App">
 
-              <Music playMusic={true}/>
+              <Music playMusic={false}/>
 
               <Switch>
                 <Route exact path="/" component={Login} />
-                <Route exact path="/game" component={Game} />
+                <Route exact path="/game/:userId" component={Game} />
                 <Route exact path="/gameover" component={GameOver} />
             </Switch>
           </div>
