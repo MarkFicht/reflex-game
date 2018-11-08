@@ -175,6 +175,11 @@ class Login extends Component {
 
             this.setState({ onlinePlayer: currentOnline.length })
         })
+
+        /** Restart: Bool for checking connected 2 players */
+        firebase.database().ref('game/').update({
+            disconnect: false,
+        })
     }
 
     componentWillUnmount() {

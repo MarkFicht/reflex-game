@@ -28,7 +28,6 @@ class Nick extends Component {
     }
 }
 
-//---
 class Score extends Component {
     render() {
         const nr = this.props.nrPlayer;
@@ -41,7 +40,6 @@ class Score extends Component {
     }
 }
 
-//---
 class DisplayRandomChar extends Component {
     render() {
         const nr = this.props.nrPlayer;
@@ -52,7 +50,6 @@ class DisplayRandomChar extends Component {
     }
 }
 
-//---
 class DisplayAvatar extends Component {
     render() {
         const nr = this.props.nrPlayer;
@@ -65,7 +62,6 @@ class DisplayAvatar extends Component {
     }
 }
 
-//---
 /** Need {...this.props} from parent for active suitable btn */
 class GetReady extends Component {
 
@@ -79,8 +75,6 @@ class GetReady extends Component {
     }
 
     render() {
-        console.log(Number(this.props.match.params.userId))
-
         const nr = this.props.nrPlayer;
         let userIsPresent = this.props.users[nr];
 
@@ -95,7 +89,6 @@ class GetReady extends Component {
     }
 }
 
-//---
 /** PREPARE GAME TIME - Need {...this.props} from parent for redirection */
 class Timer extends Component {
     constructor(props) {
@@ -103,10 +96,8 @@ class Timer extends Component {
         this.state = {
             ready: false,
             prepareTime: 3,
-            gameTime: 30,
         }
         this.endPrepare = null; //construktor odswieza caly komponent, dlatego to jest poza
-        this.endTime = null;
     }
 
     componentDidUpdate() {
@@ -120,30 +111,7 @@ class Timer extends Component {
 
     componentWillUnmount() {
         clearInterval(this.endPrepare);
-        clearInterval(this.endTime);
     };
-
-    /**
-     * Counter of game
-     * Redirection to GameOver
-     * Restore the countdown
-     * Show again btns ready to next game*/
-    gameTimer = () => {
-
-        this.endTime = setInterval( () => {
-
-            this.setState( (prevState) => {
-                return { gameTime: prevState.gameTime - 1 }
-            })
-
-            if (this.state.gameTime === 0) {
-                clearInterval(this.endTime);
-                this.props.history.push('/gameover')
-                induceTimerOnce = true;
-                showHideReadyBtns = true;
-            }
-        }, 1000 )
-    }
 
     /**
      * Prepare counter of game
@@ -168,24 +136,26 @@ class Timer extends Component {
                     ready: false,
                 })
 
+                /** Start Real-Time Game from component Game */
                 if (typeof this.props.sendMethod === "function") {
                     this.props.sendMethod(true);
                 }
-
-                this.gameTimer();
+                if (typeof this.props.sendMethodTimer === "function") {
+                    this.props.sendMethodTimer();
+                }
             }
         }, 1000)
     }
 
     render() {
         const colorTimer = { color:
-                ((this.state.gameTime <= 12 && this.state.gameTime > 5) && 'orange') ||
-                 (this.state.gameTime <= 5 && 'red')
+                ((this.props.gameTime <= 12 && this.props.gameTime > 5) && 'orange') ||
+                 (this.props.gameTime <= 5 && 'red')
         };
 
         return (
             <div className="timer">
-                TIME: <span style={ colorTimer } >{ this.state.gameTime }</span>
+                TIME: <span style={ colorTimer } >{ this.props.gameTime }</span>
 
                 { this.props.users.length > 1 && this.state.ready
                     ?   <div className='prepare'>{ this.state.prepareTime === 0 ? 'start' : this.state.prepareTime }</div>
@@ -196,7 +166,6 @@ class Timer extends Component {
     }
 }
 
-//---
 /** THE MECHANISM OF GAME */
 class GameButtons extends Component {
     constructor(props) {
@@ -259,17 +228,22 @@ class Game extends React.Component {
         this.state = {
             users: [],
             pending: true,
-            game: false
+            game: false,
+            gameTime: 30,
+            disconnect: null,
         };
+        this.endTime = null;
     }
 
     componentDidMount() {
-        // Reference to Database
+        induceTimerOnce = true;
+        showHideReadyBtns = true;
+
+        /** Add players to state from Firebase */
         firebase.database().ref('users').on('value', snap => {
             const val = snap.val(); // console.log(val);
-
-            // Preparing to save in setState
             const usersTable = [];
+
             for (var key in val) {
                 usersTable.push({
                     nickname: val[key].nickname,
@@ -277,6 +251,7 @@ class Game extends React.Component {
                     points: val[key].points,
                     imgPlayer: val[key].imgPlayer,
                     readyPlayer: val[key].readyPlayer,
+                    disconnectPlayer: val[key].disconnectPlayer,
                     char: val[key].char,
                 })
             }
@@ -285,7 +260,37 @@ class Game extends React.Component {
                 pending: false,
             })
 
-        }, error => { console.log('Error: ' + error.code); })
+        }, error => { console.log('Error in users: ' + error.code); })
+
+        /** Bool for checking connected 2 players */
+        firebase.database().ref('game').on('value', snap => {
+            const val = snap.val();
+
+            this.setState({
+                disconnect: val.disconnect
+            })
+
+        }, error => { console.log('Error in game: ' + error.code); })
+    }
+
+    componentDidUpdate() {
+        if (this.state.disconnect) {
+            firebase.database().ref('/users').remove();
+            this.props.history.push('/');
+        }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.endTime);
+
+        /**
+         * Delete players after disconnect
+         * Don't delete online players */
+        if (this.state.gameTime !== 0) {
+            firebase.database().ref('game/').update({ disconnect: true })
+
+            firebase.database().ref('/users').remove();
+        }
     }
 
     /** GAME START */
@@ -295,12 +300,28 @@ class Game extends React.Component {
         })
     }
 
+    /**
+     * Counter of game
+     * Redirection to GameOver */
+    gameTimer = () => {
+        this.endTime = setInterval( () => {
+
+            this.setState( (prevState) => {
+                return { gameTime: prevState.gameTime - 1 }
+            })
+
+            if (this.state.gameTime === 0) {
+                clearInterval(this.endTime);
+                this.props.history.push('/gameover')
+            }
+        }, 1000 )
+    }
+
     //--- RENDER ---//
     render() {
         if (this.state.pending) {
             return null;
         }
-
         let sendStyle = { color: '#548687' }
 
         return (
@@ -308,7 +329,7 @@ class Game extends React.Component {
                 <div className="div-game">
 
                     {/* PREPARE GAME & TIME & REDIRECTION */}
-                    <Timer { ...this.props } users={this.state.users} sendMethod={this.gameStart} />
+                    <Timer { ...this.props } users={this.state.users} gameTime={this.state.gameTime} sendMethod={this.gameStart} sendMethodTimer={this.gameTimer} />
 
                     {/* Waiting for players */}
                     { this.state.users.length % 2 === 1 && waitingForPlayers }

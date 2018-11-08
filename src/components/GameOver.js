@@ -63,6 +63,10 @@ class GameOver extends React.Component {
         });
     };
 
+    componentWillUnmount() {
+        this.playAgain();
+    }
+
     playAgain = () => {
         firebase.database().ref('/users').remove();
     };
