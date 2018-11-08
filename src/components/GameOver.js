@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
 import logo from './static/logo';
+import gameover from '../sound/gameover.mp3';
 
 //--- REACT COMPONENTS
 class WhoWin extends Component {
@@ -41,9 +42,11 @@ class GameOver extends React.Component {
             players: [],
             pending: true
         }
+        this.gameOverId = null;
     }
 
     componentDidMount() {
+
         firebase.database().ref('/users').on('value', snap => {
             const value = snap.val();
 
@@ -61,10 +64,16 @@ class GameOver extends React.Component {
                 pending: false
             })
         });
+
+        this.gameOverId = setTimeout( () => {
+            this.gameover = new Audio(gameover).play();
+            this.gameover.volume = .4;
+        }, 1500)
     };
 
     componentWillUnmount() {
         this.playAgain();
+        clearTimeout(this.gameOverId);
     }
 
     playAgain = () => {

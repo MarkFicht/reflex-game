@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import good from '../sound/good.wav';
 import bad from '../sound/wrong.mp3';
+import countdownPrepare from '../sound/countdown.wav';
+import countdown from '../sound/countdown.mp3';
 
 import randomChar from './static/randomChar';
 import waitingForPlayers from './static/waitingForPlayers';
@@ -98,6 +100,8 @@ class Timer extends Component {
             prepareTime: 3,
         }
         this.endPrepare = null; //construktor odswieza caly komponent, dlatego to jest poza
+        this.countdownPrepare = new Audio(countdownPrepare);
+        this.countdownPrepare.volume = .3;
     }
 
     componentDidUpdate() {
@@ -118,6 +122,8 @@ class Timer extends Component {
      * Unlock buttons */
     prepareToCount = () => {
         this.setState({ ready: true })
+        this.countdownPrepare.play();
+
 
         this.endPrepare = setInterval( () => {
 
@@ -170,7 +176,7 @@ class Timer extends Component {
 class GameButtons extends Component {
     constructor(props) {
         super(props);
-        this.good = new Audio(good);
+        this.good = null;
         this.bad = null;
     }
 
@@ -229,10 +235,12 @@ class Game extends React.Component {
             users: [],
             pending: true,
             game: false,
-            gameTime: 30,
+            gameTime: 7,
             disconnect: null,
         };
         this.endTime = null;
+        this.countdown = new Audio(countdown);
+        this.countdown.volume = .3;
     }
 
     componentDidMount() {
@@ -309,6 +317,10 @@ class Game extends React.Component {
             this.setState( (prevState) => {
                 return { gameTime: prevState.gameTime - 1 }
             })
+
+            if (this.state.gameTime === 4) {
+                this.countdown.play();
+            }
 
             if (this.state.gameTime === 0) {
                 clearInterval(this.endTime);

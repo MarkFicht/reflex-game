@@ -1,6 +1,6 @@
 import React from "react";
 import { Component } from "react";
-import bgSong from "../../sound/bg_dynamic.m4a";
+import bgSong from "../../sound/bg_dynamic2.mp3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class Music extends Component {
@@ -12,7 +12,7 @@ class Music extends Component {
 
         this.audio = new Audio(bgSong);
         this.audio.loop = true;
-        this.audio.volume = 0.3;
+        this.audio.volume = 0.25;
         this.music = null;
     }
 
