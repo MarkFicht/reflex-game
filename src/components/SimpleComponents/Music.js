@@ -1,6 +1,6 @@
 import React from "react";
 import { Component } from "react";
-import bgSong from "../../sound/bg_dynamic2.mp3";
+import bgSong from "../../sound/bg_dynamic.m4a";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class Music extends Component {

@@ -241,16 +241,32 @@ class Game extends React.Component {
         this.endTime = null;
         this.countdown = new Audio(countdown);
         this.countdown.volume = .3;
+        this.closeBrowser = (ev) =>
+        {
+            // ev.preventDefault();
+            window.removeEventListener('beforeunload', this.closeBrowser);
+            this.dropDataBase();
+
+            // return ev.returnValue = 'Are you sure?';
+        }
     }
 
     componentDidMount() {
         induceTimerOnce = true;
         showHideReadyBtns = true;
 
-        /** Add players to state from Firebase */
+        window.addEventListener('beforeunload', this.closeBrowser);
+
+        /**
+         * Add players to state from Firebase
+         * Redirect if database is empty */
         firebase.database().ref('users').on('value', snap => {
             const val = snap.val(); // console.log(val);
             const usersTable = [];
+
+            if (!val) {
+                this.props.history.push('/');
+            }
 
             for (var key in val) {
                 usersTable.push({
@@ -283,22 +299,16 @@ class Game extends React.Component {
 
     componentDidUpdate() {
         if (this.state.disconnect) {
-            firebase.database().ref('/users').remove();
-            this.props.history.push('/');
+            this.props.history.push('/')
         }
     }
 
     componentWillUnmount() {
         clearInterval(this.endTime);
+        window.removeEventListener('beforeunload', this.closeBrowser);
 
-        /**
-         * Delete players after disconnect
-         * Don't delete online players */
-        if (this.state.gameTime !== 0) {
-            firebase.database().ref('game/').update({ disconnect: true })
-
-            firebase.database().ref('/users').remove();
-        }
+        /** Don't delete online players on EndGame */
+        if (this.state.gameTime !== 0) { this.dropDataBase() }
     }
 
     /** GAME START */
@@ -327,6 +337,12 @@ class Game extends React.Component {
                 this.props.history.push('/gameover')
             }
         }, 1000 )
+    }
+
+    /** Delete all players and change bool in Firebase, after disconnect one */
+    dropDataBase = () => {
+        firebase.database().ref('game/').update({ disconnect: true })
+        firebase.database().ref('/users').remove();
     }
 
     //--- RENDER ---//
