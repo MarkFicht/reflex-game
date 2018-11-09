@@ -243,11 +243,8 @@ class Game extends React.Component {
         this.countdown.volume = .3;
         this.closeBrowser = (ev) =>
         {
-            // ev.preventDefault();
             window.removeEventListener('beforeunload', this.closeBrowser);
             this.dropDataBase();
-
-            // return ev.returnValue = 'Are you sure?';
         }
     }
 
@@ -265,7 +262,7 @@ class Game extends React.Component {
             const usersTable = [];
 
             if (!val) {
-                this.props.history.push('/');
+                this.props.history.push('/gamedisconnect');
             }
 
             for (var key in val) {
@@ -299,7 +296,7 @@ class Game extends React.Component {
 
     componentDidUpdate() {
         if (this.state.disconnect) {
-            this.props.history.push('/')
+            this.props.history.push('/gamedisconnect')
         }
     }
 
@@ -307,7 +304,7 @@ class Game extends React.Component {
         clearInterval(this.endTime);
         window.removeEventListener('beforeunload', this.closeBrowser);
 
-        /** Don't delete online players on EndGame */
+        // Don't delete online players on EndGame
         if (this.state.gameTime !== 0) { this.dropDataBase() }
     }
 

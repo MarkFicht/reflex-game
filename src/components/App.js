@@ -4,6 +4,7 @@ import Music from './SimpleComponents/Music';
 
 import Login from '../components/Login';
 import Game from '../components/Game';
+import GameDisconnect from '../components/GameDisconnect';
 import GameOver from '../components/GameOver.js';
 
 import { Route, HashRouter, Switch } from 'react-router-dom';
@@ -26,6 +27,7 @@ class App extends Component {
               <Switch>
                 <Route exact path="/" component={Login} />
                 <Route exact path="/game/:userId" component={Game} />
+                <Route exact path="/gamedisconnect" component={GameDisconnect} />
                 <Route exact path="/gameover" component={GameOver} />
             </Switch>
           </div>
