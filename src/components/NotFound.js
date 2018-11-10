@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import logo from './static/logo';
 
 //---  *** REACT MAIN COMPONENT ***  ---//
-class GameDisconnect extends Component {
+class NotFound extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,14 +28,13 @@ class GameDisconnect extends Component {
     //--- RENDER ---//
     render() {
         return (
-            <div className='disconnected'>
+            <div className='not-found'>
                 { logo }
-                <p> Jeden z graczy wyszedł lub został rozłączony. </p>
-                <p> Gra została przerwana. </p>
+                <h3> 404 Not found :( </h3>
                 <h3>{ `Przekierowanie za: ${this.state.redirectTime}` }</h3>
                 { this.state.redirectTime < 0 && <Redirect to='/' />}
             </div>
         );
     }
 }
-export default GameDisconnect;
+export default NotFound;

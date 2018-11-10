@@ -24,11 +24,13 @@ body {
 p {
   color: #4c1d15; }
 
-.disconnected > p {
+.disconnected > p,
+.not-found > p {
   margin-top: 10px;
   font-size: 2rem; }
 
-.disconnected > h3 {
+.disconnected > h3,
+.not-found > h3 {
   margin-top: 10px;
   font-family: 'Permanent Marker', cursive;
   color: #993b2a;

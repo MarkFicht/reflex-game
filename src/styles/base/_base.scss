@@ -29,7 +29,9 @@ p {
 }
 
 //---
-.disconnected {
+.disconnected,
+.not-found
+{
   & > p {
     margin-top: 10px;
     font-size: 2rem;
