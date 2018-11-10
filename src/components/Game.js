@@ -115,6 +115,7 @@ class Timer extends Component {
 
     componentWillUnmount() {
         clearInterval(this.endPrepare);
+        this.countdownPrepare.pause();
     };
 
     /**
@@ -302,6 +303,7 @@ class Game extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.endTime);
+        this.countdown.pause();
         window.removeEventListener('beforeunload', this.closeBrowser);
 
         // Don't delete online players on EndGame
