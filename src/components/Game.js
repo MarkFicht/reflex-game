@@ -236,7 +236,7 @@ class Game extends React.Component {
             users: [],
             pending: true,
             game: false,
-            gameTime: 7,
+            gameTime: 30,
             disconnect: null,
         };
         this.endTime = null;
@@ -344,6 +344,55 @@ class Game extends React.Component {
         firebase.database().ref('/users').remove();
     }
 
+    /** Game on keyboard */
+    keyEvent = e => {
+
+        if (!this.state.game) {
+            return null;
+        }
+
+        let newChar = randomChar[Math.floor( Math.random() * 3 + 1 ) - 1];
+        let id = this.state.users[Number(this.props.match.params.userId)].id;
+
+        if (e.keyCode === 88 || e.keyCode === 89 || e.keyCode === 90) {
+            // console.log(e.key, e.keyCode)
+
+            let { char1, char2 } = 0;
+            if (e.keyCode === 88) {
+                char1 = 'x';
+                char2 = 'X';
+            }
+            else if (e.keyCode === 89) {
+                char1 = 'y';
+                char2 = 'Y';
+            }
+            else if (e.keyCode === 90) {
+                char1 = 'z';
+                char2 = 'Z';
+            }
+
+            /** Add point */
+            if (char1 === this.state.users[Number(this.props.match.params.userId)].char || char2 === this.state.users[Number(this.props.match.params.userId)].char) {
+                firebase.database().ref('/users/' + id).update({
+                    points: this.state.users.find( (user) => user.id === id ).points + 1,
+                    char: newChar,
+                })
+
+                this.good = new Audio(good).play();
+                this.good = null;
+            }
+            /** Subtract point */
+            else {
+                firebase.database().ref('/users/' + id).update({
+                    points: this.state.users.find( (user) => user.id === id ).points - 1
+                })
+
+                this.bad = new Audio(bad).play();
+                this.bad = null;
+            }
+        }
+    }
+
     //--- RENDER ---//
     render() {
         if (this.state.pending) {
@@ -353,7 +402,7 @@ class Game extends React.Component {
 
         return (
             <div>
-                <div className="div-game">
+                <div className="div-game" onKeyDown={this.keyEvent} tabIndex="0">
 
                     {/* PREPARE GAME & TIME & REDIRECTION */}
                     <Timer { ...this.props } users={this.state.users} gameTime={this.state.gameTime} sendMethod={this.gameStart} sendMethodTimer={this.gameTimer} />

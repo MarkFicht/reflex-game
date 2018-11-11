@@ -69,6 +69,10 @@ class GameOver extends React.Component {
             this.gameover = new Audio(gameover).play();
             this.gameover.volume = .4;
         }, 1500)
+
+        window.addEventListener('beforeunload', (e) => {
+            this.playAgain();
+        });
     };
 
     componentWillUnmount() {
