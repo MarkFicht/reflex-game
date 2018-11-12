@@ -1,22 +1,25 @@
 # Multi player reflex game.
 
-This project uses the firebase, for multiplayer game in real time. <br />
+This project uses the firebase, for `multiplayer game in real time` :). <br />
 [DEMO here](https://gra-reflex.firebaseapp.com/#/) <br />
-Mechanism for game is in BETA, working only X button without displaying the sequence
+Mechanism for game is simple. I focused more on correct game play, redirections, bug fixes, etc.
 
 ### What's inside?
 * Login panel
-* Validation
-* Current score for players in real time
 * Character selection
-* Instruction on full size
+* Validation
+* Current score and play for players in real time!
+* Instruction
 * Redirections, routing
-* Drop database, after gameover
+* Error checking mechanism, like remove player(drop DB) at the right time 
+* Reacts to the back button or F5
+* 2 special containers: `NotFound` and `GameDisconnect`
 * Score board (in the future)
 
 ### Under construction
-- Divide main component on components
-- Drop player from game after disconnect / leaving
+- Own select box with avatars
+- Maybe add fetch() and .json
+- Regular expressions for validation
 - Score board
 
 ### Installation and configuration
@@ -33,11 +36,9 @@ Mechanism for game is in BETA, working only X button without displaying the sequ
 * Sass
 * React Router
 * Firebase
-* HTML, JS
+* HTML, JS, and other..
 
 ## Further idea for development
 
-I will add consistent layout and better colors. Music in background. Possibility to choose theme for user.
+I will add consistent layout and better colors. Possibility to choose theme for user.
 Score board. And more a little details :). <br />
-For mechanism in JS, fix all bugs, like problems with 1 or 3 users in database. Redirections problems, etc.<br />
-Implementation of the target mechanism game, where player must perform the appropriate click sequences.
