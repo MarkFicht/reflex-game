@@ -10,6 +10,41 @@
   border-radius: 10px;
   cursor: pointer;
 }
+
+//fieldset.under-audio {
+//  position: fixed;
+//  left: 35px;
+//  top: 100px;
+//  height: 70px;
+//  width: 50px;
+//  border: none;
+//
+//  & legend {
+//    display: none;
+//  }
+//
+//  & label {
+//    margin: 0 2px;
+//  }
+//
+//  & input[type='radio'] {
+//    display: none;
+//  }
+//
+//  & .check {
+//    background-color: $panelColor;
+//    border-radius: 5px;
+//    cursor: pointer;
+//    display: inline-block;
+//    width: 20px;
+//    height: 20px;
+//    line-height: 20px;
+//  }
+//
+//  & input[type="radio"]:checked ~ .check{
+//    background-color: greenyellow;
+//  }
+//}
 //************************
 .div-login {
   background-color: $panelColor;

@@ -1,3 +1,3 @@
-const randomChar = ['X', 'Y', 'Z'];
+const randomChar = ['A', 'S', 'D'];
 
 export default randomChar;

@@ -58,7 +58,7 @@ class DisplayAvatar extends Component {
 
         return (
             <div className='player'>
-                <div className={`player-img${nr+1}`} style={{ backgroundImage: this.props.users[nr] && `url("${ this.props.users[nr].imgPlayer }")` }}></div>
+                <div className={`player-img${nr+1}`} style={{ backgroundImage: this.props.users[nr] && `url("${ this.props.users[nr].imgPlayer }")` }}>{}</div>
             </div>
         );
     }
@@ -181,9 +181,20 @@ class GameButtons extends Component {
         this.bad = null;
     }
 
-    clickRandomChar = (id, char, nr_player) => {
-        /** ADD POINT */
-        if (char === this.props.users[nr_player].char) {
+    componentDidMount() {
+        window.addEventListener('keydown', this.keyEvent);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.keyEvent);
+    }
+
+    /**
+     * Add point
+     * Subtract point */
+    addSubtractPoint = (id, char, nr_arr) => {
+
+        if (char === this.props.users[nr_arr].char) {
 
             let newChar = randomChar[Math.floor( Math.random() * 3 + 1 ) - 1];
 
@@ -195,7 +206,6 @@ class GameButtons extends Component {
             this.good = new Audio(good).play();
             this.good = null;
         }
-        /** SUBTRACT POINT */
         else {
             firebase.database().ref('/users/' + id).update({
                 points: this.props.users.find( (user) => user.id === id ).points - 1
@@ -204,7 +214,32 @@ class GameButtons extends Component {
             this.bad = new Audio(bad).play();
             this.bad = null;
         }
+    }
+
+    /** MOUSE */
+    clickRandomChar = (id, char, nr_player) => {
+        this.addSubtractPoint(id, char, nr_player);
     };
+
+    /** KEYBOARD */
+    keyEvent = e => {
+        if (!this.props.game) { return null }
+
+        let nr_arr = this.props.nrPlayer;
+        let id = this.props.users[nr_arr].id;
+
+        /* a-65, s-83, d-68  ||  x-88, y-89, z-90 */
+        if (e.keyCode === 65 || e.keyCode === 83 || e.keyCode === 68) {
+
+            let char = null;
+
+            if (e.keyCode === 65)       char = randomChar[0];
+            else if (e.keyCode === 83)  char = randomChar[1];
+            else if (e.keyCode === 68)  char = randomChar[2];
+
+            this.addSubtractPoint(id, char, nr_arr);
+        }
+    }
 
     render() {
         const nr = this.props.nrPlayer;
@@ -344,55 +379,6 @@ class Game extends React.Component {
         firebase.database().ref('/users').remove();
     }
 
-    /** Game on keyboard */
-    keyEvent = e => {
-
-        if (!this.state.game) {
-            return null;
-        }
-
-        let newChar = randomChar[Math.floor( Math.random() * 3 + 1 ) - 1];
-        let id = this.state.users[Number(this.props.match.params.userId)].id;
-
-        if (e.keyCode === 88 || e.keyCode === 89 || e.keyCode === 90) {
-            // console.log(e.key, e.keyCode)
-
-            let { char1, char2 } = 0;
-            if (e.keyCode === 88) {
-                char1 = 'x';
-                char2 = 'X';
-            }
-            else if (e.keyCode === 89) {
-                char1 = 'y';
-                char2 = 'Y';
-            }
-            else if (e.keyCode === 90) {
-                char1 = 'z';
-                char2 = 'Z';
-            }
-
-            /** Add point */
-            if (char1 === this.state.users[Number(this.props.match.params.userId)].char || char2 === this.state.users[Number(this.props.match.params.userId)].char) {
-                firebase.database().ref('/users/' + id).update({
-                    points: this.state.users.find( (user) => user.id === id ).points + 1,
-                    char: newChar,
-                })
-
-                this.good = new Audio(good).play();
-                this.good = null;
-            }
-            /** Subtract point */
-            else {
-                firebase.database().ref('/users/' + id).update({
-                    points: this.state.users.find( (user) => user.id === id ).points - 1
-                })
-
-                this.bad = new Audio(bad).play();
-                this.bad = null;
-            }
-        }
-    }
-
     //--- RENDER ---//
     render() {
         if (this.state.pending) {
@@ -402,7 +388,7 @@ class Game extends React.Component {
 
         return (
             <div>
-                <div className="div-game" onKeyDown={this.keyEvent} tabIndex="0">
+                <div className="div-game">
 
                     {/* PREPARE GAME & TIME & REDIRECTION */}
                     <Timer { ...this.props } users={this.state.users} gameTime={this.state.gameTime} sendMethod={this.gameStart} sendMethodTimer={this.gameTimer} />
@@ -427,7 +413,7 @@ class Game extends React.Component {
 
                         {/* Game buttons - MECHANISM HERE */}
                         { Number(this.props.match.params.userId) === 0
-                            ? <GameButtons game={this.state.game} nrPlayer={0} users={this.state.users} />
+                            ? <GameButtons game={this.state.game} { ...this.props } nrPlayer={0} users={this.state.users} />
                             : gameButtonsDummy }
 
                         {/* Avatar */}
@@ -465,5 +451,4 @@ class Game extends React.Component {
         )
     }
 }
-
 export default Game;
