@@ -82,9 +82,9 @@ class Instruction extends Component {
                     <div className='close-instruction' onClick={this.hideInstruction}> x </div>
                     <h2>Zasady gry:</h2>
                     <ol>
-                        <li><strong>1.</strong> Wersja Beta. Nadal jest kilka bugów do rozwiazania :)</li>
-                        <li><strong>2.</strong> Korzystamy z myszki podczas gry.</li>
-                        <li><strong>3.</strong> Musimy kliknąć właściwy znak (wyświetlany losowo) nad przyciskami: X Y Z, by dostać punkt.</li>
+                        <li><strong>1.</strong> Projekt jest cały czas rozwijany!</li>
+                        <li><strong>2.</strong> Można używać myszki i klawiatury.</li>
+                        <li><strong>3.</strong> Musimy kliknąć właściwy znak (wyświetlany losowo) nad przyciskami: A S D, by dostać punkt.</li>
                         <li><strong>4.</strong> Punkty są odejmowane za pomyłki!</li>
                         <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
                     </ol>
@@ -109,9 +109,7 @@ class BestScore extends Component {
                     <div className='close-instruction' onClick={this.hideBestScore}> x </div>
                     <h2>W BUDOWIE :)</h2>
                     <ol>
-                        <li><strong>1.</strong> Wersja Beta. Nadal jest kilka bugów do rozwiazania :)</li>
-                        <li><strong>2.</strong> Gracze poki co usuwani sa tylko gdy dojdziemy do konca gry.
-                            Brak rozlaczenia, gdy gracz wyjdzie lub gdy nacisnie wstecz, itp.</li>
+                        <li><strong>1.</strong> Wersja Beta. Rekordy beda pobierane z Firebase</li>
                     </ol>
                 </div>
             </div>
