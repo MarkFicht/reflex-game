@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import * as firebase from 'firebase';
 import good from '../sound/good.wav';
 import bad from '../sound/wrong.mp3';
@@ -269,9 +270,10 @@ class Game extends React.Component {
         super(props);
         this.state = {
             users: [],
+            // results: [],
             pending: true,
             game: false,
-            gameTime: 30,
+            gameTime: 1,
             disconnect: null,
         };
         this.endTime = null;
@@ -368,10 +370,27 @@ class Game extends React.Component {
 
             if (this.state.gameTime === 0) {
                 clearInterval(this.endTime);
+                // this.resultsPlayers();
                 this.props.history.push('/gameover')
             }
         }, 1000 )
     }
+
+    // resultsPlayers = () => {
+    //     let Results = function (name, score) {
+    //         name;
+    //         score;
+    //     }
+    //    const results = [];
+    //
+    //    for (let i=0; i<this.state.users.length; i++) {
+    //        results[i] = new Results(this.state.users[i].nickname, this.state.users[i].points);
+    //    }
+    //
+    //    this.setState({
+    //        results: results
+    //    })
+    // }
 
     /** Delete all players and change bool in Firebase, after disconnect one */
     dropDataBase = () => {
@@ -389,6 +408,8 @@ class Game extends React.Component {
         return (
             <div>
                 <div className="div-game">
+
+                    {/*{ this.state.gameTime === 0 && <Redirect to='/gameover' results={this.state.results} /> }*/}
 
                     {/* PREPARE GAME & TIME & REDIRECTION */}
                     <Timer { ...this.props } users={this.state.users} gameTime={this.state.gameTime} sendMethod={this.gameStart} sendMethodTimer={this.gameTimer} />
