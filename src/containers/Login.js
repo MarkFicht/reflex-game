@@ -1,151 +1,18 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import logo from './static/logo';
-import createBy from './static/createBy';
-import randomChar from './static/randomChar';
-import avatarList from './static/avatarList';
+import logo from '../components/other/logo';
+import createBy from '../components/other/createBy';
+import randomChar from '../components/other/randomChar';
 
-//--- REACT COMPONENTS
-class ChooseNick extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: '',
-        }
-    }
-
-    validation = (arg) => {
-        if(arg) { return <FontAwesomeIcon icon="check-circle" style={{ color: '#5c7b1e' }} /> }
-        else { return <FontAwesomeIcon icon="times-circle" style={{ color: 'red' }} /> }
-    }
-
-    inputNick = e => {
-        if (typeof this.props.sendMethod === "function") {
-            this.props.sendMethod(e);
-        }
-        this.setState({ name: e.target.value });
-    }
-
-    render() {
-        return (
-            <div>
-                <label htmlFor="nick">Podaj Nick:</label>
-                <input id='nick' placeholder='Nickname' type='text' value={this.state.name} onChange={this.inputNick}/>
-                <div className="validation-icon">{ this.validation(this.props.nickValidation) }</div>
-            </div>
-        );
-    }
-}
-
-//---
-class SelectAvatar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: 'bardock',
-        }
-    }
-
-    selectAvatar = e => {
-        if (typeof this.props.sendMethod === "function") {
-            this.props.sendMethod(e);
-        }
-        this.setState({ value: e.target.value }); // I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
-    }
-
-    render() {
-        return (
-            <div>
-                <label htmlFor="selectAvatar">Wybierz postać:</label>
-                <select id='selectAvatar' className='select-player' value={this.state.value} onChange={this.selectAvatar}>
-                    { avatarList }
-                </select>
-            </div>
-        );
-    }
-}
-
-//---
-class Instruction extends Component {
-    hideInstruction = e => {
-        if(typeof this.props.sendMethod === "function") {
-            this.props.sendMethod(false);
-        }
-    }
-
-    render() {
-        return (
-            <div className='instruction'>
-                <div className='instruction-center'>
-                    <div className='close-instruction' onClick={this.hideInstruction}> x </div>
-                    <h2>Zasady gry:</h2>
-                    <ol>
-                        <li><strong>1.</strong> Projekt jest cały czas rozwijany!</li>
-                        <li><strong>2.</strong> Można używać myszki i klawiatury.</li>
-                        <li><strong>3.</strong> Musimy kliknąć właściwy znak (wyświetlany losowo) nad przyciskami: A S D, by dostać punkt.</li>
-                        <li><strong>4.</strong> Punkty są odejmowane za pomyłki!</li>
-                        <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
-                    </ol>
-                </div>
-            </div>
-        );
-    }
-}
-
-//---
-class BestScore extends Component {
-    hideBestScore = e => {
-        if(typeof this.props.sendMethod === "function") {
-            this.props.sendMethod(false);
-        }
-    }
-
-    render() {
-        return (
-            <div className='instruction'>
-                <div className='instruction-center'>
-                    <div className='close-instruction' onClick={this.hideBestScore}> x </div>
-                    <h2>W BUDOWIE :)</h2>
-                    <ol>
-                        <li><strong>1.</strong> Wersja Beta. Rekordy beda pobierane z Firebase</li>
-                    </ol>
-                </div>
-            </div>
-        );
-    }
-}
-
-//---
-class Validation extends Component {
-    render() {
-        return (
-            <div className="validation" style={{ display: this.props.containerValidation ? 'block' : 'none' }}>
-                { this.props.onlinePlayer >= 2
-                    ? <p>Jest 2 graczy. Poczekaj chwilkę.</p>
-                    : null
-                }
-                { this.props.nickValidation
-                    ? null
-                    : <p>Nick musi zawierac od 3 do 9 znakow!</p>
-                }
-            </div>
-        );
-    }
-}
-
-//---
-class ShowOnline extends Component {
-    render() {
-        return <p className='online-players'>ONLINE PLAYERS:
-            <span style={{ color: this.props.onlinePlayer < 2 ? '#5c7b1e' : 'red' }}> { this.props.onlinePlayer }/2</span>
-        </p>
-    }
-}
+import ChooseNick from '../components/login/ChooseNick';
+import SelectAvatar from '../components/login/SelectAvatar';
+import Instruction from '../components/login/Instruction';
+import BestScore from '../components/login/BestScore';
+import Validation from '../components/login/Validation';
+import ShowOnline from '../components/login/ShowOnline';
 
 
-//---  *** REACT MAIN COMPONENT ***  ---//
 class Login extends Component {
     constructor(props) {
         super(props);

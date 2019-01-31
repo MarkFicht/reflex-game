@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../styles/main.css';
 import Music from './SimpleComponents/Music';
 
-import Login from '../components/Login';
+import Login from '../containers/Login';
 import Game from '../components/Game';
 import GameDisconnect from '../components/GameDisconnect';
 import GameOver from '../components/GameOver.js';
