@@ -3,7 +3,7 @@ import '../styles/main.css';
 import Music from './SimpleComponents/Music';
 
 import Login from '../containers/Login';
-import Game from '../components/Game';
+import Game from '../containers/Game';
 import GameDisconnect from '../components/GameDisconnect';
 import GameOver from '../components/GameOver.js';
 import NotFound from '../components/NotFound';

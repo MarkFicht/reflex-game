@@ -113,7 +113,6 @@ class Login extends Component {
 
         return (
             <div>
-
                 { logo }
 
                 {/* ----------------------------------**MAIN CONTAINER - LOGIN**---------------------------------- */}
@@ -140,14 +139,11 @@ class Login extends Component {
                     { createBy }
                 </div>
 
-
                 {/* ----------------------------------**INSTRUCTION CONTAINER**---------------------------------- */}
                 { this.state.instruction && <Instruction sendMethod={this.showInstruction} /> }
 
-
                 {/* ----------------------------------**SCORE-BOARD CONTAINER**---------------------------------- */}
                 { this.state.bestScore && <BestScore sendMethod={this.showBestScore} /> }
-
             </div>
         );
     }
