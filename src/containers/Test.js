@@ -1,21 +1,32 @@
 import React, { Component } from 'react';
+import * as firebase from 'firebase';
 
 
 class Test extends Component {
 
-
     render() {
         return (
             <div className="div-game">
-                <BtnRdy />
-                <BtnRdy />
+                <BtnRdy idPlayer={ [0, Number(this.props.match.params.userId) === 0] } />
+                <BtnRdy idPlayer={ [1, Number(this.props.match.params.userId) === 1] } />
             </div>
         )
     }
 }
 
 class BtnRdy extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            btnRdy: false
+        }
+    }
 
+    getReadyPlayers = () => {
+        this.setState({
+            btnRdy: !this.state.btnRdy
+        })
+    }
 
     render() {
         return (
@@ -25,24 +36,30 @@ class BtnRdy extends Component {
             //     {userIsPresent.readyPlayer ? 'Ready!' : 'Get Ready?'}
             // </button>
             <>
-                <button className="btn-ready"></button>
+                <button className="btn-ready" onClick={ e => this.getReadyPlayers()}></button>
 
-                <Timer />
+                <Timer btnRdy={this.state.btnRdy} idPlayer={this.props.idPlayer} />
             </>
         )
     }
 }
 
 class Timer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            time: 30
+        }
+    }
 
     render() {
         return (
             <>
                 <div className="timer">
-                    TIME: <span> 30 </span>
+                    TIME: <span>{ this.state.time }</span>
                 </div>
 
-                <MechanismOfGame />
+                <MechanismOfGame time={this.state.time} idPlayer={this.props.idPlayer} />
             </>
         )
     }
@@ -50,28 +67,84 @@ class Timer extends Component {
 }
 
 class MechanismOfGame extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: [],
+            pending: true,
+            disconnect: null,
+            startGame: false,
+            time: this.props.time,
+        }
+    }
+
+    componentDidMount() {
+
+        /** Saving data from Firebase, to the state */
+        firebase.database().ref('users').on('value', snap => {
+            const val = snap.val(); 
+            const usersTable = [];
+
+            /** Check connection */ 
+            if (!val) {
+                // this.props.history.push('/gamedisconnect');
+            }
+
+            for (var key in val) {
+                usersTable.push({
+                    nickname: val[key].nickname,
+                    id: key,
+                    points: val[key].points,
+                    imgPlayer: val[key].imgPlayer,
+                    readyPlayer: val[key].readyPlayer,
+                    disconnectPlayer: val[key].disconnectPlayer,
+                    char: val[key].char,
+                })
+            }
+            this.setState({
+                users: usersTable,
+                pending: false,
+            })
+
+        }, error => { console.log('Error in users: ' + error.code); })
+    }
 
     render() {
+        if (this.state.pending) {
+            return null;
+        }
+
         return (
             <>
-                <Player />
+                <Player users={this.state.users} idPlayer={this.props.idPlayer} />
             </>
         )
     }
 }
 
 class Player extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            users: this.props.users,
+            idPlayer: this.props.idPlayer
+        }
+    }
 
     render() {
+        const [ id, bool ] = this.state.idPlayer;
+        let { users } = this.state;
+
         return (
             <div className="half-field">
-                <h3> - </h3>
-
+            
+                <h3>{ users[id] ? users[id].nickname : '-' }</h3>
+            
                 <div className="scores">
-                    <p>SCORE: 0</p>
+                    <p>SCORE: { users[id] ? users[id].points : '-' }</p>
                 </div>
 
-                <div className="random-char"> ? </div>
+                <div className="random-char">{ users[id] ? users[id].char : '-' }</div>
 
                 <div className="btns">
                     <button className='btn-game'> x </button>
@@ -80,7 +153,7 @@ class Player extends Component {
                 </div>
 
                 <div className='player'>
-                    <div className={`player-img1`}>  </div>
+                    <div className={`player-img${id + 1}`} style={{ backgroundImage: users[id] && `url(" ${users[id].imgPlayer} ")` }} >{  }</div>
                 </div>
             </div>
         )

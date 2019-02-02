@@ -83,7 +83,7 @@ class Login extends Component {
                     readyPlayer: false,
                     char: newChar,
                     disconnectPlayer: false,
-                }).then( (e) => history.push(`/game/${this.state.onlinePlayer - 1}`) )
+                }).then( (e) => history.push(`/test/${this.state.onlinePlayer - 1}`) )
 
             }).catch( (error) => {
                 console.log(`Error: ${ error.code }`)
