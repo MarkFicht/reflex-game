@@ -4,6 +4,7 @@ import Music from './SimpleComponents/Music';
 
 import Login from '../containers/Login';
 import Game from '../containers/Game';
+import Test from '../containers/Test';
 import GameDisconnect from '../components/GameDisconnect';
 import GameOver from '../components/GameOver.js';
 import NotFound from '../components/NotFound';
@@ -27,6 +28,7 @@ class App extends Component {
 
               <Switch>
                 <Route exact path="/" component={Login} />
+                <Route exact path="/test" component={Test} />
                 <Route exact path="/game/:userId" component={Game} />
                 <Route exact path="/gamedisconnect" component={GameDisconnect} />
                 <Route exact path="/gameover" component={GameOver} />

@@ -1,26 +1,96 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import * as firebase from 'firebase';
+import good from '../sound/good.wav';
+import bad from '../sound/wrong.mp3';
 import countdownPrepare from '../sound/countdown.wav';
 import countdown from '../sound/countdown.mp3';
 
-import waitingForPlayers from '../components/other/waitingForPlayers';
-
-import gameButtonsDummy from '../components/game/gameButtonsDummy';
-import Nick from '../components/game/Nick';
-import Score from '../components/game/Score';
-import DisplayRandomChar from '../components/game/DisplayRandomChar';
-import DisplayAvatar from '../components/game/DisplayAvatar';
-
-import GetReady from '../components/game/mechanism/GetReady';           /** GET READY - Need {...this.props} from parent -> active suitable btn */
-// import Timer from '../components/game/mechanism/Timer';                 /** PREPARE GAME TIME - Need {...this.props} from parent -> redirection */
-import GameButtons from '../components/game/mechanism/GameButtons';     /** THE MECHANISM OF GAME */
-
+import randomChar from './static/randomChar';
+import waitingForPlayers from './static/waitingForPlayers';
 
 //--- VARIABLES
 let induceTimerOnce = true;
 let showHideReadyBtns = true;
 
+//--- JSX TAGS
+const gameButtonsDummy = (
+    <div className="btns">
+        { randomChar.map( char => {
+            return <button key={ char } className='btn-game btn-game-noEffect'>{ char }</button>
+        }) }
+    </div>
+);
+
+//--- REACT COMPONENTS
+class Nick extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return <h3 style={ this.props.sendStyle }>{this.props.users[nr] ? this.props.users[nr].nickname : '-'}</h3>;
+    }
+}
+
+class Score extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className="scores">
+                <p style={ this.props.sendStyle }>SCORE: {this.props.users[nr] ? this.props.users[nr].points : '-'}</p>
+            </div>
+        );
+    }
+}
+
+class DisplayRandomChar extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className="random-char">{ this.props.game ? this.props.users[nr].char : '?' }</div>
+        );
+    }
+}
+
+class DisplayAvatar extends Component {
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className='player'>
+                <div className={`player-img${nr+1}`} style={{ backgroundImage: this.props.users[nr] && `url("${ this.props.users[nr].imgPlayer }")` }}>{}</div>
+            </div>
+        );
+    }
+}
+
+/** Need {...this.props} from parent for active suitable btn */
+class GetReady extends Component {
+
+    /** GET READY */
+    getReadyPlayers = (who, bool) => {
+        if (bool) {
+            firebase.database().ref('/users/' + who).update({
+                readyPlayer: bool
+            })
+        }
+    }
+
+    render() {
+        const nr = this.props.nrPlayer;
+        let userIsPresent = this.props.users[nr];
+
+        return ( userIsPresent
+                ? <button className={ Number(this.props.match.params.userId) === this.props.nrPlayer ? 'btn-ready' : 'btn-ready btn-ready-noEffect'}
+                          style={{ color: userIsPresent.readyPlayer ? 'green' : 'tomato', borderColor: userIsPresent.readyPlayer ? 'green' : 'tomato' }}
+                          onClick={e => this.getReadyPlayers(userIsPresent.id, Number(this.props.match.params.userId) === this.props.nrPlayer)} >
+                    { userIsPresent.readyPlayer ? 'Ready!' : 'Get Ready?' }
+                </button>
+                : null
+        );
+    }
+}
 
 /** PREPARE GAME TIME - Need {...this.props} from parent for redirection */
 class Timer extends Component {
@@ -104,7 +174,94 @@ class Timer extends Component {
     }
 }
 
+/** THE MECHANISM OF GAME */
+class GameButtons extends Component {
+    constructor(props) {
+        super(props);
+        this.good = null;
+        this.bad = null;
+    }
 
+    componentDidMount() {
+        window.addEventListener('keydown', this.keyEvent);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.keyEvent);
+    }
+
+    /**
+     * Add point
+     * Subtract point */
+    addSubtractPoint = (id, char, nr_arr) => {
+
+        if (char === this.props.users[nr_arr].char) {
+
+            let newChar = randomChar[Math.floor( Math.random() * 3 + 1 ) - 1];
+
+            firebase.database().ref('/users/' + id).update({
+                points: this.props.users.find( (user) => user.id === id ).points + 1, // .find() - robi tablice jednoelementowa
+                char: newChar,
+            })
+
+            this.good = new Audio(good).play();
+            this.good = null;
+        }
+        else {
+            firebase.database().ref('/users/' + id).update({
+                points: this.props.users.find( (user) => user.id === id ).points - 1
+            })
+
+            this.bad = new Audio(bad).play();
+            this.bad = null;
+        }
+    }
+
+    /** MOUSE */
+    clickRandomChar = (id, char, nr_player) => {
+        this.addSubtractPoint(id, char, nr_player);
+    };
+
+    /** KEYBOARD */
+    keyEvent = e => {
+        if (!this.props.game) { return null }
+
+        let nr_arr = this.props.nrPlayer;
+        let id = this.props.users[nr_arr].id;
+
+        /* a-65, s-83, d-68  ||  x-88, y-89, z-90 */
+        if (e.keyCode === 65 || e.keyCode === 83 || e.keyCode === 68) {
+
+            let char = null;
+
+            if (e.keyCode === 65)       char = randomChar[0];
+            else if (e.keyCode === 83)  char = randomChar[1];
+            else if (e.keyCode === 68)  char = randomChar[2];
+
+            this.addSubtractPoint(id, char, nr_arr);
+        }
+    }
+
+    render() {
+        const nr = this.props.nrPlayer;
+
+        return (
+            <div className="btns">
+                { randomChar.map( char => {
+                    return (
+                        <button disabled={this.props.game ? false : true}
+                                style={{cursor: this.props.game ? 'pointer' : 'not-allowed'}}
+                                className='btn-game'
+                                onClick={e => this.clickRandomChar(this.props.users[nr].id, char, nr)}
+                                key={ char }>
+                            { char }
+                        </button>
+                    )
+                }) }
+            </div>
+        );
+    }
+}
 
 
 //---  *** REACT MAIN COMPONENT ***  ---//
@@ -113,9 +270,10 @@ class Game extends React.Component {
         super(props);
         this.state = {
             users: [],
+            // results: [],
             pending: true,
             game: false,
-            gameTime: 30,
+            gameTime: 1,
             disconnect: null,
         };
         this.endTime = null;
@@ -212,11 +370,27 @@ class Game extends React.Component {
 
             if (this.state.gameTime === 0) {
                 clearInterval(this.endTime);
+                // this.resultsPlayers();
                 this.props.history.push('/gameover')
             }
         }, 1000 )
     }
 
+    // resultsPlayers = () => {
+    //     let Results = function (name, score) {
+    //         name;
+    //         score;
+    //     }
+    //    const results = [];
+    //
+    //    for (let i=0; i<this.state.users.length; i++) {
+    //        results[i] = new Results(this.state.users[i].nickname, this.state.users[i].points);
+    //    }
+    //
+    //    this.setState({
+    //        results: results
+    //    })
+    // }
 
     /** Delete all players and change bool in Firebase, after disconnect one */
     dropDataBase = () => {
@@ -234,6 +408,8 @@ class Game extends React.Component {
         return (
             <div>
                 <div className="div-game">
+
+                    {/*{ this.state.gameTime === 0 && <Redirect to='/gameover' results={this.state.results} /> }*/}
 
                     {/* PREPARE GAME & TIME & REDIRECTION */}
                     <Timer { ...this.props } users={this.state.users} gameTime={this.state.gameTime} sendMethod={this.gameStart} sendMethodTimer={this.gameTimer} />
@@ -297,4 +473,3 @@ class Game extends React.Component {
     }
 }
 export default Game;
-
