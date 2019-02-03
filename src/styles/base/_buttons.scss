@@ -75,7 +75,7 @@
   }
 }
 
-.btn-ready {
+.btn-ready1, .btn-ready2 {
   width: 170px;
   height: 70px;
   line-height: 70px;
@@ -92,6 +92,7 @@
   cursor: pointer;
   transition: all .3s;
   box-shadow: 0 0 10px black;
+  z-index: 1;
 
   &:hover {
     transform: scale(1.07);
@@ -100,6 +101,13 @@
   &:active {
     transform: scale(.95);
   }
+}
+
+.btn-ready1 {
+  left: 112px;
+}
+.btn-ready2 {
+  right: 112px;
 }
 
 .btn-ready-noEffect {

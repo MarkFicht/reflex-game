@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
+import waitingForPlayers from '../components/game/waitingForPlayers';
+
 
 class Test extends Component {
 
@@ -18,8 +20,29 @@ class BtnRdy extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            btnRdy: false
+            btnRdy: null,
+            howManyOnline: 0
         }
+    }
+
+    componentDidMount() {
+        firebase.database().ref('/users').on('value', snap => {
+            const val = snap.val();
+            const [ id, bool ] = this.props.idPlayer;
+
+            let currentOnline = [];
+
+            for (let key in val) {
+                currentOnline.push({ readyPlayer: val[key].readyPlayer })
+
+                // playerRdy = val[this.props.idPlayer[0]].readyPlayer;
+            }
+
+            this.setState({ 
+                btnRdy: bool ? currentOnline[ id ].readyPlayer : null,
+                howManyOnline: currentOnline.length 
+            })
+        })
     }
 
     getReadyPlayers = () => {
@@ -29,6 +52,9 @@ class BtnRdy extends Component {
     }
 
     render() {
+        const btnRdyClass = `btn-ready${this.props.idPlayer[0] + 1}`;
+        const btnRdyWithEffect = this.props.idPlayer[1] ? `` : ` btn-ready-noEffect`;
+
         return (
             // <button className={Number(this.props.match.params.userId) === this.props.nrPlayer ? 'btn-ready' : 'btn-ready btn-ready-noEffect'}
             //     style={{ color: userIsPresent.readyPlayer ? 'green' : 'tomato', borderColor: userIsPresent.readyPlayer ? 'green' : 'tomato' }}
@@ -36,7 +62,13 @@ class BtnRdy extends Component {
             //     {userIsPresent.readyPlayer ? 'Ready!' : 'Get Ready?'}
             // </button>
             <>
-                <button className="btn-ready" onClick={ e => this.getReadyPlayers()}></button>
+                {/* Waiting for players */}
+                { this.state.howManyOnline % 2 === 1 && waitingForPlayers }
+
+                { this.props.idPlayer[0] < this.state.howManyOnline 
+                    ? <button className={btnRdyClass + btnRdyWithEffect} onClick={e => this.getReadyPlayers()}></button> 
+                    : null 
+                }
 
                 <Timer btnRdy={this.state.btnRdy} idPlayer={this.props.idPlayer} />
             </>
@@ -55,9 +87,12 @@ class Timer extends Component {
     render() {
         return (
             <>
+                { this.props.idPlayer[1] && 
                 <div className="timer">
-                    TIME: <span>{ this.state.time }</span>
-                </div>
+                    TIME: <span>{this.state.time}</span>
+                </div> 
+                }
+                
 
                 <MechanismOfGame time={this.state.time} idPlayer={this.props.idPlayer} />
             </>
