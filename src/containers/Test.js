@@ -7,70 +7,89 @@ import waitingForPlayers from '../components/game/waitingForPlayers';
 class Test extends Component {
 
     render() {
+        const ID_URL = Number(this.props.match.params.userId);
+
         return (
             <div className="div-game">
-                <BtnRdy idPlayer={ [0, Number(this.props.match.params.userId) === 0] } />
-                <BtnRdy idPlayer={ [1, Number(this.props.match.params.userId) === 1] } />
+                <BtnRdy idPlayer={ [0, ID_URL === 0] } {...this.props} />
+                <BtnRdy idPlayer={ [1, ID_URL === 1] } {...this.props} />
             </div>
         )
     }
 }
 
-class BtnRdy extends Component {
+class BtnRdy extends Component {        // And info "Waiting for all players"
     constructor(props) {
         super(props);
         this.state = {
             btnRdy: null,
+            who: null,
             howManyOnline: 0
         }
     }
 
     componentDidMount() {
+        const [ id, bool ] = this.props.idPlayer;
+
         firebase.database().ref('/users').on('value', snap => {
             const val = snap.val();
-            const [ id, bool ] = this.props.idPlayer;
 
             let currentOnline = [];
 
             for (let key in val) {
-                currentOnline.push({ readyPlayer: val[key].readyPlayer })
-
-                // playerRdy = val[this.props.idPlayer[0]].readyPlayer;
+                currentOnline.push({ 
+                    readyPlayer: val[key].readyPlayer,
+                    who: key
+                })
             }
 
             this.setState({ 
-                btnRdy: bool ? currentOnline[ id ].readyPlayer : null,
+                btnRdy: id < currentOnline.length ? currentOnline[ id ].readyPlayer : null,
+                who: id < currentOnline.length ? currentOnline[ id ].who : null,
                 howManyOnline: currentOnline.length 
             })
         })
     }
 
-    getReadyPlayers = () => {
+    getReadyPlayers = (who, bool) => {
+
+        if (!bool) {
+            return null;
+        }
+
+        firebase.database().ref('/users/' + who).update({
+            readyPlayer: !this.state.btnRdy
+        })
+
         this.setState({
             btnRdy: !this.state.btnRdy
         })
     }
 
     render() {
-        const btnRdyClass = `btn-ready${this.props.idPlayer[0] + 1}`;
-        const btnRdyWithEffect = this.props.idPlayer[1] ? `` : ` btn-ready-noEffect`;
+        const [ id, bool ] = this.props.idPlayer;
+        const { who, btnRdy, howManyOnline } = this.state;
+
+        const btnRdyClass = `btn-ready${ id + 1 }`;
+        const btnRdyWithEffect = bool ? `` : ` btn-ready-noEffect`;
+        const btnCaption = btnRdy ? 'OK' : 'Ready?';
+        const btnColor = btnRdy ? 'green' : 'tomato';
+        const style = { 
+            color: btnColor, 
+            borderColor: btnColor 
+        };
 
         return (
-            // <button className={Number(this.props.match.params.userId) === this.props.nrPlayer ? 'btn-ready' : 'btn-ready btn-ready-noEffect'}
-            //     style={{ color: userIsPresent.readyPlayer ? 'green' : 'tomato', borderColor: userIsPresent.readyPlayer ? 'green' : 'tomato' }}
-            //     onClick={e => this.getReadyPlayers(userIsPresent.id, Number(this.props.match.params.userId) === this.props.nrPlayer)} >
-            //     {userIsPresent.readyPlayer ? 'Ready!' : 'Get Ready?'}
-            // </button>
             <>
                 {/* Waiting for players */}
-                { this.state.howManyOnline % 2 === 1 && waitingForPlayers }
+                { howManyOnline % 2 === 1 && waitingForPlayers }
 
-                { this.props.idPlayer[0] < this.state.howManyOnline 
-                    ? <button className={btnRdyClass + btnRdyWithEffect} onClick={e => this.getReadyPlayers()}></button> 
+                { id < howManyOnline 
+                    ? <button className={btnRdyClass + btnRdyWithEffect} style={style} onClick={ e => this.getReadyPlayers(who, bool) }>{ btnCaption }</button> 
                     : null 
                 }
 
-                <Timer btnRdy={this.state.btnRdy} idPlayer={this.props.idPlayer} />
+                <Timer btnRdy={ btnRdy } idPlayer={this.props.idPlayer} />
             </>
         )
     }
@@ -167,8 +186,8 @@ class Player extends Component {
     }
 
     render() {
-        const [ id, bool ] = this.state.idPlayer;
-        let { users } = this.state;
+        const [ id, bool ] = this.props.idPlayer;
+        let { users } = this.props;
 
         return (
             <div className="half-field">
@@ -182,9 +201,9 @@ class Player extends Component {
                 <div className="random-char">{ users[id] ? users[id].char : '-' }</div>
 
                 <div className="btns">
-                    <button className='btn-game'> x </button>
-                    <button className='btn-game'> x </button>
-                    <button className='btn-game'> x </button>
+                    <button className='btn-game'> A </button>
+                    <button className='btn-game'> S </button>
+                    <button className='btn-game'> D </button>
                 </div>
 
                 <div className='player'>
