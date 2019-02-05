@@ -4,6 +4,9 @@ import * as firebase from 'firebase';
 import waitingForPlayers from '../components/game/waitingForPlayers';
 
 
+/** idPlayer is arr 
+ * 0: id current player, 
+ * 1: bool, checks at what address the player is */
 class Test extends Component {
 
     render() {
@@ -18,13 +21,14 @@ class Test extends Component {
     }
 }
 
-class BtnRdy extends Component {        // And info "Waiting for all players"
+class BtnRdy extends Component {        // + component: "Waiting for all players"
     constructor(props) {
         super(props);
         this.state = {
             btnRdy: null,
             who: null,
-            howManyOnline: 0
+            howManyOnline: 0,
+            prepareTimer: null,
         }
     }
 
@@ -46,7 +50,8 @@ class BtnRdy extends Component {        // And info "Waiting for all players"
             this.setState({ 
                 btnRdy: id < currentOnline.length ? currentOnline[ id ].readyPlayer : null,
                 who: id < currentOnline.length ? currentOnline[ id ].who : null,
-                howManyOnline: currentOnline.length 
+                howManyOnline: currentOnline.length,
+                prepareTimer: currentOnline 
             })
         })
     }
@@ -68,7 +73,7 @@ class BtnRdy extends Component {        // And info "Waiting for all players"
 
     render() {
         const [ id, bool ] = this.props.idPlayer;
-        const { who, btnRdy, howManyOnline } = this.state;
+        const { who, btnRdy, howManyOnline, prepareTimer } = this.state;
 
         const btnRdyClass = `btn-ready${ id + 1 }`;
         const btnRdyWithEffect = bool ? `` : ` btn-ready-noEffect`;
@@ -89,7 +94,7 @@ class BtnRdy extends Component {        // And info "Waiting for all players"
                     : null 
                 }
 
-                <Timer btnRdy={ btnRdy } idPlayer={this.props.idPlayer} />
+                <Timer btnRdy={ btnRdy } prepareTimer={ prepareTimer } idPlayer={this.props.idPlayer} />
             </>
         )
     }
@@ -99,9 +104,50 @@ class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            time: 30
+            time: 30,
+            // rdyPlayers: null,
+            startPrepare: false,
+            startTime: false
         }
     }
+
+    // componentDidMount() {
+    //     let { rdyPlayers } = this.state;
+
+    //     firebase.database().ref('/users').on('value', snap => {
+    //         const val = snap.val();
+
+    //         let allPlayersRdy = [];
+
+    //         for (let key in val) {
+    //             allPlayersRdy.push({
+    //                 readyPlayer: val[key].readyPlayer,
+    //             })
+    //         }
+
+    //         this.setState({
+    //             rdyPlayers: allPlayersRdy
+    //         })
+    //     })
+    // }
+
+    componentDidUpdate() {
+        let { prepareTimer, idPlayer } = this.props;
+
+        if ( prepareTimer.length === 2 && idPlayer[1] ) {
+            // console.log('cDU z Timer.js' + prepareTimer);
+
+            if ( !this.state.startPrepare && prepareTimer[0].readyPlayer && prepareTimer[1].readyPlayer ) {
+                
+                this.setState({ startPrepare: true })
+                // console.log('Zmieniono stan raz. ' + this.state.startPrepare);
+
+                // Tu wywolam funkcje odliczania - w ifie wyzej zadbalem o to, by zrobilo sie to raz, oraz by byl tylko 1 komponent timer.
+            }
+        }
+    }
+
+    // Funkcja odliczania
 
     render() {
         return (
