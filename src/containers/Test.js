@@ -3,10 +3,24 @@ import * as firebase from 'firebase';
 
 import waitingForPlayers from '../components/game/waitingForPlayers';
 
+import countdownPrepare from '../sound/countdown.wav';
+import countdownTime from '../sound/countdown.mp3';
 
-/** idPlayer is arr 
+
+/** 
+ * idPlayer is arr 
  * 0: id current player, 
- * 1: bool, checks at what address the player is */
+ * 1: bool, checks at what address the player is 
+ * */
+
+ /** 
+  * Test > create idPlayer
+  * BtnRdy > who, bool for btnRdy, idPlayer
+  * Timer > allPlayers, btnsRdyHide, idPlayer
+  * MechanismOfGame > 
+  * Player >
+  * */
+
 class Test extends Component {
 
     render() {
@@ -28,7 +42,8 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
             btnRdy: null,
             who: null,
             howManyOnline: 0,
-            prepareTimer: null,
+            arrStatusPlayers: null,
+            displayBtns: true
         }
     }
 
@@ -51,9 +66,22 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
                 btnRdy: id < currentOnline.length ? currentOnline[ id ].readyPlayer : null,
                 who: id < currentOnline.length ? currentOnline[ id ].who : null,
                 howManyOnline: currentOnline.length,
-                prepareTimer: currentOnline 
+                arrStatusPlayers: currentOnline 
             })
         })
+    }
+
+    componentDidUpdate() {
+        const { howManyOnline, displayBtns, arrStatusPlayers } = this.state;
+
+        if (howManyOnline === 2 && displayBtns) {
+            
+            if (arrStatusPlayers[0].readyPlayer && arrStatusPlayers[1].readyPlayer) {
+                this.setState({
+                    displayBtns: false
+                })
+            }
+        }
     }
 
     getReadyPlayers = (who, bool) => {
@@ -73,7 +101,7 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
 
     render() {
         const [ id, bool ] = this.props.idPlayer;
-        const { who, btnRdy, howManyOnline, prepareTimer } = this.state;
+        const { who, btnRdy, howManyOnline, displayBtns } = this.state;
 
         const btnRdyClass = `btn-ready${ id + 1 }`;
         const btnRdyWithEffect = bool ? `` : ` btn-ready-noEffect`;
@@ -89,12 +117,13 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
                 {/* Waiting for players */}
                 { howManyOnline % 2 === 1 && waitingForPlayers }
 
-                { id < howManyOnline 
+                {/* { id < howManyOnline && displayBtns */}
+                { id < howManyOnline
                     ? <button className={btnRdyClass + btnRdyWithEffect} style={style} onClick={ e => this.getReadyPlayers(who, bool) }>{ btnCaption }</button> 
                     : null 
                 }
 
-                <Timer btnRdy={ btnRdy } prepareTimer={ prepareTimer } idPlayer={this.props.idPlayer} />
+                <Timer howManyOnline={ howManyOnline } displayBtns={ displayBtns } idPlayer={this.props.idPlayer} />
             </>
         )
     }
@@ -104,62 +133,94 @@ class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            prepare: 3,
             time: 30,
-            // rdyPlayers: null,
             startPrepare: false,
             startTime: false
         }
     }
 
-    // componentDidMount() {
-    //     let { rdyPlayers } = this.state;
-
-    //     firebase.database().ref('/users').on('value', snap => {
-    //         const val = snap.val();
-
-    //         let allPlayersRdy = [];
-
-    //         for (let key in val) {
-    //             allPlayersRdy.push({
-    //                 readyPlayer: val[key].readyPlayer,
-    //             })
-    //         }
-
-    //         this.setState({
-    //             rdyPlayers: allPlayersRdy
-    //         })
-    //     })
-    // }
-
     componentDidUpdate() {
-        let { prepareTimer, idPlayer } = this.props;
+        let { howManyOnline, displayBtns, idPlayer } = this.props;
 
-        if ( prepareTimer.length === 2 && idPlayer[1] ) {
-            // console.log('cDU z Timer.js' + prepareTimer);
+        if ( howManyOnline === 2 && idPlayer[1] ) {
+            // console.log('cDU z Timer.js ' + displayBtns);
 
-            if ( !this.state.startPrepare && prepareTimer[0].readyPlayer && prepareTimer[1].readyPlayer ) {
-                
-                this.setState({ startPrepare: true })
+            if ( !this.state.startPrepare && !displayBtns ) {
                 // console.log('Zmieniono stan raz. ' + this.state.startPrepare);
 
-                // Tu wywolam funkcje odliczania - w ifie wyzej zadbalem o to, by zrobilo sie to raz, oraz by byl tylko 1 komponent timer.
+                this.setState({ 
+                    startPrepare: true 
+                })
+                this.startPrepareFoo();     // startTimeFoo() inside
             }
         }
     }
 
-    // Funkcja odliczania
+    startPrepareFoo = () => {
+        const preparePlayers = setInterval( () => {
+
+            this.setState( (prevState) => {
+                return { prepare: prevState.prepare - 1 }
+            })
+
+            if (this.state.prepare < 0) {
+
+                this.setState({
+                    startTime: true
+                })
+                clearInterval( preparePlayers );
+                this.startTimeFoo();
+            }
+
+            // if (this.state.gameTime === 4) {
+            //     this.countdown.play();
+            // }
+
+            // if (this.state.gameTime === 0) {
+            //     clearInterval(this.endTime);
+            //     // this.resultsPlayers();
+            //     this.props.history.push('/gameover')
+            // }
+        }, 1000)
+    }
+
+    startTimeFoo = () => {
+        const timePlayers = setInterval( () => {
+
+            this.setState( (prevState) => {
+                return { time: prevState.time - 1 }
+            })
+
+            if (this.state.time < 0) {
+
+                this.setState({
+                    startPrepare: false,
+                    startTime: false
+                })
+                clearInterval( timePlayers );
+            }
+
+        }, 1000)
+    }
 
     render() {
+        const { prepare, time, startPrepare, startTime } = this.state;
+        const countPrepare = prepare === 0 ? 'start' : prepare;
+
         return (
             <>
                 { this.props.idPlayer[1] && 
-                <div className="timer">
-                    TIME: <span>{this.state.time}</span>
-                </div> 
+                    <div className="timer">
+                        TIME: <span>{ time }</span>
+                    </div> 
                 }
                 
+                { (this.props.idPlayer[1] && startPrepare && !startTime) && 
+                    <div className='prepare'>{ countPrepare }</div> 
+                }
 
-                <MechanismOfGame time={this.state.time} idPlayer={this.props.idPlayer} />
+                <MechanismOfGame time={ time } idPlayer={this.props.idPlayer} />
             </>
         )
     }
