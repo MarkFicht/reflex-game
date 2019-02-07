@@ -8,16 +8,16 @@ import countdownTime from '../sound/countdown.mp3';
 
 
 /** 
- * idPlayer is arr 
- * 0: id current player, 
- * 1: bool, checks at what address the player is 
+ * idPlayer is arr with 2 objects
+ * 1st key: id current player, 
+ * 2nd key: bool, checks at what address the player is 
  * */
 
  /** 
-  * Test > create idPlayer
-  * BtnRdy > who, bool for btnRdy, idPlayer
-  * Timer > allPlayers, btnsRdyHide, idPlayer
-  * MechanismOfGame > 
+  * Test >              create idPlayer
+  * BtnRdy >            who, bool for btnRdy, idPlayer
+  * Timer >             allPlayers, btnsRdyHide, time, idPlayer
+  * MechanismOfGame >   whenToStart, time, idPlayer
   * Player >
   * */
 
@@ -152,12 +152,16 @@ class Timer extends Component {
                 this.setState({ 
                     startPrepare: true 
                 })
-                this.startPrepareFoo();     // startTimeFoo() inside
+                this.startPrepareFoo( countdownPrepare );     // startTimeFoo() inside
             }
         }
     }
 
-    startPrepareFoo = () => {
+    startPrepareFoo = (music) => {
+        let audio = new Audio(music);
+        audio.volume = .25;
+        audio.play();
+
         const preparePlayers = setInterval( () => {
 
             this.setState( (prevState) => {
@@ -169,35 +173,30 @@ class Timer extends Component {
                 this.setState({
                     startTime: true
                 })
+                audio = null;
                 clearInterval( preparePlayers );
-                this.startTimeFoo();
+                this.startTimeFoo( countdownTime );
             }
 
-            // if (this.state.gameTime === 4) {
-            //     this.countdown.play();
-            // }
-
-            // if (this.state.gameTime === 0) {
-            //     clearInterval(this.endTime);
-            //     // this.resultsPlayers();
-            //     this.props.history.push('/gameover')
-            // }
         }, 1000)
     }
 
-    startTimeFoo = () => {
+    startTimeFoo = (music) => {
+        let audio = new Audio(music);
+        audio.volume = .3;
+
         const timePlayers = setInterval( () => {
 
             this.setState( (prevState) => {
                 return { time: prevState.time - 1 }
             })
 
-            if (this.state.time < 0) {
+            if (this.state.time === 4) {
+                audio.play();
+            }
 
-                this.setState({
-                    startPrepare: false,
-                    startTime: false
-                })
+            if (this.state.time < 0) {
+                audio = null;
                 clearInterval( timePlayers );
             }
 
@@ -220,7 +219,7 @@ class Timer extends Component {
                     <div className='prepare'>{ countPrepare }</div> 
                 }
 
-                <MechanismOfGame time={ time } idPlayer={this.props.idPlayer} />
+                <MechanismOfGame time={ time } startTime={ startTime } idPlayer={this.props.idPlayer} />
             </>
         )
     }

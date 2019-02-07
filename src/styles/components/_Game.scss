@@ -120,23 +120,21 @@
   font-size: 2.7rem;
   font-weight: bold;
   position: absolute;
-  text-shadow: 0 0 2px black;
   letter-spacing: 1px;
   top: 105px;
-  color: $textColor;
+  color: lighten($textColor, 7%);
 }
 
 .prepare {
   position: absolute;
   z-index: 5;
+  color: $textColor;
   top: $heightGame/3.5;
-  width: 100%;
   display: flex;
   justify-content: center;
-  text-shadow: 3px 3px darken($textColor, 20%);
   animation: prepare-count forwards 1s infinite;
-  text-align: center;
   font-size: 9rem;
+  font-weight: bold;
   letter-spacing: 3px;
 }
 
@@ -147,9 +145,9 @@
 }
 
 @keyframes prepare-count {
-  from { transform: scale(0.75); }
-  10% { transform: scale(0.75); }
-  50% { transform: scale(1.2); }
-  90% { transform: scale(0.75); }
-  to { transform: scale(0.75); }
+  from { transform: scale(0.75); opacity: 0; }
+  15% { transform: scale(0.75); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  85% { transform: scale(0.75); opacity: 0; }
+  to { transform: scale(0.75); opacity: 0; }
 }
