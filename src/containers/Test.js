@@ -149,10 +149,8 @@ class Timer extends Component {
         let { howManyOnline, displayBtns, idPlayer } = this.props;
 
         if ( howManyOnline === 2 && idPlayer[1] ) {
-            // console.log('cDU z Timer.js ' + displayBtns);
 
             if ( !this.state.startPrepare && !displayBtns ) {
-                // console.log('Zmieniono stan raz. ' + this.state.startPrepare);
 
                 this.setState({ 
                     startPrepare: true 
@@ -229,7 +227,7 @@ class Timer extends Component {
                     <div className='prepare'>{ countPrepare }</div> 
                 }
 
-                <Player time={ time } startTime={ startTime } idPlayer={this.props.idPlayer} />
+                <Player startTime={ startTime } idPlayer={this.props.idPlayer} />
             </>
         )
     }
@@ -242,8 +240,6 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
         this.state = {
             users: [],
             pending: true,
-            // startTime: this.props.startTime,
-            // time: this.props.time,
             disconnect: null
         }
     }
@@ -254,11 +250,6 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
         firebase.database().ref('users').on('value', snap => {
             const val = snap.val(); 
             const usersTable = [];
-
-            /** Check connection */ 
-            // if (!val) {
-                // this.props.history.push('/gamedisconnect');
-            // }
 
             for (var key in val) {
                 usersTable.push({
@@ -271,6 +262,7 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
                     char: val[key].char,
                 })
             }
+
             this.setState({
                 users: usersTable,
                 pending: false,
@@ -324,9 +316,7 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
 class MechanismGameButtons extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            // startTime: this.props.startTime
-        }
+      
         this.good = null;
         this.bad = null;
     }
@@ -367,7 +357,6 @@ class MechanismGameButtons extends Component {
 
         this.addOrSubtractPoint( clickedChar );
     }
-
 
     /** Main mechanism of the game */
     addOrSubtractPoint = ( clickedChar ) => {
