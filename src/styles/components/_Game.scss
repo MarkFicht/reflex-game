@@ -21,6 +21,7 @@
   align-items: center;
   flex-direction: column;
   position: relative;
+  color: $backgroundColor;
 
   & > h3 {
     font-size: 3rem;
@@ -28,24 +29,21 @@
     font-weight: bold;
     margin-top: 60px;
     letter-spacing: 12px;
-    color: $backgroundColor;
     text-shadow:
             -2px 0 5px black,
             0 -2px 5px black,
             2px 0 5px black,
-            0 2px 5px black,
-            0 0 0.3em black,
-            0 0 0.6em black;
+            0 2px 5px black;
   }
 
   & > .scores p {
     font-size: 2.3rem;
-    text-shadow:  -2px 0 5px black,
-    0 -2px 5px black,
-    2px 0 5px black,
-    0 2px 5px black;
+    text-shadow:  
+      -2px 0 black,
+      0 -2px black,
+      2px 0 black,
+      0 2px black;
     font-weight: bold;
-    color: $backgroundColor;
     letter-spacing: 3px;
     margin: 15px 0;
   }

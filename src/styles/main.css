@@ -21,9 +21,6 @@ body {
   /* Standard syntax */
   text-align: center; }
 
-p {
-  color: #4c1d15; }
-
 .disconnected > p,
 .not-found > p {
   margin-top: 10px;
@@ -287,7 +284,8 @@ div.validation {
   margin-top: 12px;
   font-size: 22px;
   font-weight: bold;
-  letter-spacing: 2px; }
+  letter-spacing: 2px;
+  color: #262626; }
 
 .create-by p {
   font-size: 1.5rem;
@@ -377,20 +375,19 @@ div.validation {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  position: relative; }
+  position: relative;
+  color: tomato; }
   .half-field > h3 {
     font-size: 3rem;
     font-style: italic;
     font-weight: bold;
     margin-top: 60px;
     letter-spacing: 12px;
-    color: tomato;
-    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black, 0 0 0.3em black, 0 0 0.6em black; }
+    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black; }
   .half-field > .scores p {
     font-size: 2.3rem;
-    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black;
+    text-shadow: -2px 0 black, 0 -2px black, 2px 0 black, 0 2px black;
     font-weight: bold;
-    color: tomato;
     letter-spacing: 3px;
     margin: 15px 0; }
   .half-field > .random-char {

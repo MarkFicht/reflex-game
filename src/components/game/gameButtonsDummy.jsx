@@ -1,11 +1,14 @@
 import React from 'react';
-import randomChar from '../other/randomChar';
+
+const fakeChars = ['x', 'x', 'x'];
 
 const gameButtonsDummy = (
     <div className="btns">
-        {randomChar.map(char => {
-            return <button key={char} className='btn-game btn-game-noEffect'>{char}</button>
-        })}
+        { 
+            fakeChars.map( (char, index) => {
+                return <button key={index} className='btn-game btn-game-noEffect'>{ char }</button>
+            })
+        }
     </div>
 );
 
