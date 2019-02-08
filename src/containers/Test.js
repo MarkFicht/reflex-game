@@ -4,22 +4,26 @@ import * as firebase from 'firebase';
 import waitingForPlayers from '../components/game/waitingForPlayers';
 import gameButtonsDummy from '../components/game/gameButtonsDummy';
 
+import randomChar from '../components/other/randomChar';
+
 import countdownPrepare from '../sound/countdown.wav';
 import countdownTime from '../sound/countdown.mp3';
+import good from '../sound/good.wav';
+import wrong from '../sound/wrong.mp3';
 
 
 /** 
- * idPlayer is arr with 2 objects
+ * "idPlayer" is arr with 2 objects
  * 1st key: id current player, 
  * 2nd key: bool, checks at what address the player is 
  * */
 
  /** 
-  * Test >              create idPlayer
-  * BtnRdy >            who, bool for btnRdy, idPlayer
-  * Timer >             allPlayers, btnsRdyHide, time, idPlayer
-  * MechanismOfGame >   whenToStart, time, idPlayer
-  * Player >
+  * Test >                  create "idPlayer"
+  * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
+  * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer
+  * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE)
+  * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
   * */
 
 class Test extends Component {
@@ -107,7 +111,7 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
         const btnRdyClass = `btn-ready${ id + 1 }`;
         const btnRdyWithEffect = bool ? `` : ` btn-ready-noEffect`;
         const btnCaption = btnRdy ? 'OK' : 'Ready?';
-        const btnColor = btnRdy ? 'green' : 'tomato';
+        const btnColor = btnRdy ? 'mediumseagreen' : 'tomato';
         const style = { 
             color: btnColor, 
             borderColor: btnColor 
@@ -118,8 +122,8 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
                 {/* Waiting for players */}
                 { howManyOnline % 2 === 1 && waitingForPlayers }
 
-                {/* { id < howManyOnline && displayBtns */}
-                { id < howManyOnline
+                { id < howManyOnline && displayBtns
+                // { id < howManyOnline
                     ? <button className={btnRdyClass + btnRdyWithEffect} style={style} onClick={ e => this.getReadyPlayers(who, bool) }>{ btnCaption }</button> 
                     : null 
                 }
@@ -225,22 +229,22 @@ class Timer extends Component {
                     <div className='prepare'>{ countPrepare }</div> 
                 }
 
-                <MechanismOfGame time={ time } startTime={ startTime } idPlayer={this.props.idPlayer} />
+                <Player time={ time } startTime={ startTime } idPlayer={this.props.idPlayer} />
             </>
         )
     }
 
 }
 
-class MechanismOfGame extends Component {
+class Player extends Component {        // + jsx tag: "gameButtonsDummy"
     constructor(props, context) {
         super(props, context);
         this.state = {
             users: [],
             pending: true,
-            disconnect: null,
-            startGame: false,
-            time: this.props.time,
+            // startTime: this.props.startTime,
+            // time: this.props.time,
+            disconnect: null
         }
     }
 
@@ -252,9 +256,9 @@ class MechanismOfGame extends Component {
             const usersTable = [];
 
             /** Check connection */ 
-            if (!val) {
+            // if (!val) {
                 // this.props.history.push('/gamedisconnect');
-            }
+            // }
 
             for (var key in val) {
                 usersTable.push({
@@ -273,6 +277,7 @@ class MechanismOfGame extends Component {
             })
 
         }, error => { console.log('Error in users: ' + error.code); })
+
     }
 
     render() {
@@ -280,11 +285,19 @@ class MechanismOfGame extends Component {
             return null;
         }
 
-        const [id, bool] = this.props.idPlayer;
+        const [ id, bool ] = this.props.idPlayer;
         const { users } = this.state;
+        const { startTime } = this.props;
 
         const rightColor = { color: bool ? '#548687' : 'tomato' };
-        const rightGameBtns = users[id] && bool ? <MechanismGameButtons /> : gameButtonsDummy;
+        const rightGameBtns = users[id] && bool 
+            ? <MechanismGameButtons 
+                startTime={startTime} 
+                idPlayer={this.props.idPlayer} 
+                who={users[id].id} 
+                correctChar={users[id].char}
+                points={users[id].points} /> 
+            : gameButtonsDummy;
 
         return (
             <div className="half-field" style={rightColor}>
@@ -297,6 +310,7 @@ class MechanismOfGame extends Component {
 
                 <div className="random-char">{users[id] ? users[id].char : '-'}</div>
 
+                {/* MechanismGameButtons */}
                 { rightGameBtns }
 
                 <div className='player'>
@@ -307,58 +321,120 @@ class MechanismOfGame extends Component {
     }
 }
 
-class PlayerLayout extends Component {
+// class PlayerLayout extends Component {
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//             users: this.props.users,
+//             idPlayer: this.props.idPlayer
+//         }
+//     }
+
+//     render() {
+//         const [ id, bool ] = this.props.idPlayer;
+//         const { users } = this.props;
+
+//         const rightColor = { color: bool ? '#548687' : 'tomato' };
+//         const rightGameBtns = users[id] && bool ? <MechanismGameButtons /> : gameButtonsDummy;
+
+//         return (
+//             <div className="half-field" style={ rightColor }>
+            
+//                 <h3>{ users[id] ? users[id].nickname : '-' }</h3>
+            
+//                 <div className="scores">
+//                     <p>SCORE: { users[id] ? users[id].points : '-' }</p>
+//                 </div>
+
+//                 <div className="random-char">{ users[id] ? users[id].char : '-' }</div>
+
+//                 { rightGameBtns }
+
+//                 <div className='player'>
+//                     <div className={`player-img${id + 1}`} style={{ backgroundImage: users[id] && `url(" ${users[id].imgPlayer} ")` }} >{  }</div>
+//                 </div>
+//             </div>
+//         )
+//     }
+
+// }
+
+class MechanismGameButtons extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            users: this.props.users,
-            idPlayer: this.props.idPlayer
+            // startTime: this.props.startTime
+        }
+        this.good = null;
+        this.bad = null;
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.keyEvent);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.keyEvent);
+    }
+
+    /** Keyboard support */
+    keyEvent = e => {
+        // console.log(`keydown na window - dziala. Props ${this.props.startTime},  State ${this.state.startTime}`);
+        if ( !this.props.startTime ) { 
+            return null;
+        }
+
+        /* a-65, s-83, d-68  ||  x-88, y-89, z-90 */
+        if (e.keyCode === 65 || e.keyCode === 83 || e.keyCode === 68) {
+
+            let clickedChar = null;
+
+            if (e.keyCode === 65)       clickedChar = randomChar[0];
+            else if (e.keyCode === 83)  clickedChar = randomChar[1];
+            else if (e.keyCode === 68)  clickedChar = randomChar[2];
+
+            this.addOrSubtractPoint( clickedChar );
+        }
+    }
+
+    /** Main mechanism of the game */
+    addOrSubtractPoint = ( clickedChar ) => {
+
+        const { who, correctChar, points } = this.props;
+
+        if ( clickedChar === correctChar ) {
+
+            let charsetLength = randomChar.length;
+            let newChar = randomChar[ Math.floor(Math.random() * charsetLength + 1) - 1 ];
+
+            firebase.database().ref( '/users/' + who ).update({
+                points: points + 1,
+                char: newChar
+            })
+
+            this.good = new Audio( good ).play();
+            this.good = null;
+        }
+        else {
+            firebase.database().ref('/users/' + who).update({
+                points: points - 1
+            })
+
+            this.wrong = new Audio( wrong ).play();
+            this.wrong = null;
         }
     }
 
     render() {
-        const [ id, bool ] = this.props.idPlayer;
-        const { users } = this.props;
+        const { startTime } = this.props;
+        const style = { cursor: startTime ? 'pointer' : 'not-allowed' }
 
-        const rightColor = { color: bool ? '#548687' : 'tomato' };
-        const rightGameBtns = users[id] && bool ? <MechanismGameButtons /> : gameButtonsDummy;
-
-        return (
-            <div className="half-field" style={ rightColor }>
-            
-                <h3>{ users[id] ? users[id].nickname : '-' }</h3>
-            
-                <div className="scores">
-                    <p>SCORE: { users[id] ? users[id].points : '-' }</p>
-                </div>
-
-                <div className="random-char">{ users[id] ? users[id].char : '-' }</div>
-
-                { rightGameBtns }
-
-                <div className='player'>
-                    <div className={`player-img${id + 1}`} style={{ backgroundImage: users[id] && `url(" ${users[id].imgPlayer} ")` }} >{  }</div>
-                </div>
-            </div>
-        )
-    }
-
-}
-
-class MechanismGameButtons extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-            
-    //     }
-    // }
-
-    render() {
         return (
             <div className="btns">
-                <button className='btn-game'> A </button>
-                <button className='btn-game'> S </button>
-                <button className='btn-game'> D </button>
+                { randomChar.map( char => {
+
+                    return <button disabled={ !startTime && true } style={style} className='btn-game' key={char}>{ char }</button>   
+                }) }
             </div>
         )
     }

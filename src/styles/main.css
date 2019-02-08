@@ -119,24 +119,24 @@ h1.logo {
 .btn-ready1, .btn-ready2 {
   width: 170px;
   height: 70px;
-  line-height: 70px;
+  display: flex;
+  justify-content: center;
   position: absolute;
   top: 170px;
   font-size: 1.5rem;
   font-weight: bold;
   letter-spacing: 1px;
   outline: none;
-  border: 3px solid tomato;
+  border: 5px solid tomato;
   color: tomato;
   background-color: #f9df76;
   border-radius: 15px;
   cursor: pointer;
-  transition: all .3s;
-  box-shadow: 0 0 10px black;
+  transition: all .5s;
   z-index: 1; }
   .btn-ready1:hover, .btn-ready2:hover {
     transform: scale(1.07);
-    box-shadow: 0 0 20px black; }
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); }
   .btn-ready1:active, .btn-ready2:active {
     transform: scale(0.95); }
 
