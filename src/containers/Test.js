@@ -22,7 +22,7 @@ import wrong from '../sound/wrong.mp3';
   * Test >                  create "idPlayer"
   * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
   * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer
-  * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE)
+  * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
   * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
   * */
 
@@ -321,44 +321,6 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
     }
 }
 
-// class PlayerLayout extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             users: this.props.users,
-//             idPlayer: this.props.idPlayer
-//         }
-//     }
-
-//     render() {
-//         const [ id, bool ] = this.props.idPlayer;
-//         const { users } = this.props;
-
-//         const rightColor = { color: bool ? '#548687' : 'tomato' };
-//         const rightGameBtns = users[id] && bool ? <MechanismGameButtons /> : gameButtonsDummy;
-
-//         return (
-//             <div className="half-field" style={ rightColor }>
-            
-//                 <h3>{ users[id] ? users[id].nickname : '-' }</h3>
-            
-//                 <div className="scores">
-//                     <p>SCORE: { users[id] ? users[id].points : '-' }</p>
-//                 </div>
-
-//                 <div className="random-char">{ users[id] ? users[id].char : '-' }</div>
-
-//                 { rightGameBtns }
-
-//                 <div className='player'>
-//                     <div className={`player-img${id + 1}`} style={{ backgroundImage: users[id] && `url(" ${users[id].imgPlayer} ")` }} >{  }</div>
-//                 </div>
-//             </div>
-//         )
-//     }
-
-// }
-
 class MechanismGameButtons extends Component {
     constructor(props) {
         super(props);
@@ -397,6 +359,16 @@ class MechanismGameButtons extends Component {
         }
     }
 
+    /** Mouse support */
+    mouseEvent = clickedChar => {
+        if (!this.props.startTime) {
+            return null;
+        }
+
+        this.addOrSubtractPoint( clickedChar );
+    }
+
+
     /** Main mechanism of the game */
     addOrSubtractPoint = ( clickedChar ) => {
 
@@ -433,7 +405,7 @@ class MechanismGameButtons extends Component {
             <div className="btns">
                 { randomChar.map( char => {
 
-                    return <button disabled={ !startTime && true } style={style} className='btn-game' key={char}>{ char }</button>   
+                    return <button onClick={ e => this.mouseEvent(char) } disabled={ !startTime && true } style={style} className='btn-game' key={char}>{ char }</button>   
                 }) }
             </div>
         )
