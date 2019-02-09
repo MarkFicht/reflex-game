@@ -91,7 +91,7 @@
   background-color: $panelColor;
   border-radius: 15px;
   cursor: pointer;
-  transition: all .5s;
+  transition: transform .5s, border .3s, color .3s;
   z-index: 1;
 
   &:hover {
@@ -115,9 +115,13 @@
 
   &:hover, &:active {
     transform: none;
-    box-shadow: 0 0 10px black;
-
+    box-shadow: none;
   }
+}
+
+.btn-ready-opacity {
+  transition: opacity 3s;
+  opacity: 0;
 }
 
 //--- btns in gameover ---//

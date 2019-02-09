@@ -110,8 +110,9 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
 
         const btnRdyClass = `btn-ready${ id + 1 }`;
         const btnRdyWithEffect = bool ? `` : ` btn-ready-noEffect`;
+        const btnRdySlowHide = displayBtns ? `` : ` btn-ready-opacity`;        // 2nd option for slow hide btns - conditional "id < howManyOnline"
         const btnCaption = btnRdy ? 'OK' : 'Ready?';
-        const btnColor = btnRdy ? 'mediumseagreen' : 'tomato';
+        const btnColor = btnRdy ? 'limegreen' : 'tomato';
         const style = { 
             color: btnColor, 
             borderColor: btnColor 
@@ -122,9 +123,9 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
                 {/* Waiting for players */}
                 { howManyOnline % 2 === 1 && waitingForPlayers }
 
-                { id < howManyOnline && displayBtns
-                // { id < howManyOnline
-                    ? <button className={btnRdyClass + btnRdyWithEffect} style={style} onClick={ e => this.getReadyPlayers(who, bool) }>{ btnCaption }</button> 
+                {/* { id < howManyOnline && displayBtns */}
+                { id < howManyOnline
+                    ? <button className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide} style={style} onClick={ e => this.getReadyPlayers(who, bool) }>{ btnCaption }</button> 
                     : null 
                 }
 

@@ -132,7 +132,7 @@ h1.logo {
   background-color: #f9df76;
   border-radius: 15px;
   cursor: pointer;
-  transition: all .5s;
+  transition: transform .5s, border .3s, color .3s;
   z-index: 1; }
   .btn-ready1:hover, .btn-ready2:hover {
     transform: scale(1.07);
@@ -150,7 +150,11 @@ h1.logo {
   cursor: default; }
   .btn-ready-noEffect:hover, .btn-ready-noEffect:active {
     transform: none;
-    box-shadow: 0 0 10px black; }
+    box-shadow: none; }
+
+.btn-ready-opacity {
+  transition: opacity 3s;
+  opacity: 0; }
 
 .btn-gameover {
   width: 300px;
