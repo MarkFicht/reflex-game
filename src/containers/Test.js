@@ -27,6 +27,80 @@ import wrong from '../sound/wrong.mp3';
   * */
 
 class Test extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            disconnect: null
+        }
+        
+        // this.closeBrowser = () => {
+        //     this.dropDataBase();
+        // }
+    }
+
+    componentDidMount() {
+
+        firebase.database().ref('/users').on('value', snap => {
+
+            this.redirectToHome( snap.val() );
+            
+        })
+
+        // firebase.database().ref('/game').on('value', snap => {
+
+        //     this.setState({ disconnect: snap.val().disconnect })
+        // })
+
+        // window.addEventListener('beforeunload', this.closeBrowser);
+    }
+
+    componentDidUpdate() {
+        // this.redirectToGameDisconnect( this.state.disconnect );
+
+        firebase.database().ref('/users').on('value', snap => {
+
+            this.redirectToHome( snap.val() );
+            
+        })
+    }
+
+    componentWillUnmount() {
+        // window.removeEventListener('beforeunload', this.closeBrowser);
+    }
+
+    /** Remove all players & set disconnect in '/game' on true, when someone:
+     * 1.refreshes(F5)
+     * 2.press 'back' in browser - COS NIE TRYBI? ???????????????????????????????????/ */
+    // dropDataBase = () => {
+    //     firebase.database().ref('/game').update({ disconnect: true });
+    //     firebase.database().ref('/users').remove();
+    // }
+
+    /** Redirect to: GameDisconnect */
+    // redirectToGameDisconnect = bool => {
+
+    //     if (bool === false) {
+    //         return null;
+    //     } else {
+    //         this.props.history.push('/gamedisconnect');
+    //     }
+    // }
+
+    redirectToHome = val => {
+
+        const lengthObj = val ? Object.keys(val).length : null;
+
+        if ( !val || (lengthObj < Number(this.props.match.params.userId) + 1) ) {
+            this.props.history.push('/');
+        }
+
+        // if ( !bool ) {
+        //     return null;
+        // } else {
+        //     this.props.history.push('/');
+        // }
+    }
+
 
     render() {
         const ID_URL = Number(this.props.match.params.userId);

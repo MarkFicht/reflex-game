@@ -42,7 +42,7 @@ class Login extends Component {
         })
 
         /** Restart: Bool for checking connected 2 players */
-        firebase.database().ref('game/').update({
+        firebase.database().ref('/game').update({
             disconnect: false,
         })
     }
