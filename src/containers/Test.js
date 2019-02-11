@@ -30,9 +30,9 @@ class Test extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isInGame: [],
             disconnect: null
         }
-        
         // this.closeBrowser = () => {
         //     this.dropDataBase();
         // }
@@ -40,22 +40,26 @@ class Test extends Component {
 
     componentDidMount() {
 
+        // console.log(this.props.history.block('Are u sure?'));
+
         firebase.database().ref('/users').on('value', snap => {
 
-            this.redirectToHome( snap.val() );
+            const val = snap.val();
+            this.redirectToHome( val );
+
+            // let isInGameArr = [];
+            // for (let key in val) {
+            //     isInGameArr.push({
+            //         isInGame: val[key].isInGame,
+            //         simpleValid: val[key].nickname,
+            //         who: key
+            //     })
+            // }
             
         })
-
-        // firebase.database().ref('/game').on('value', snap => {
-
-        //     this.setState({ disconnect: snap.val().disconnect })
-        // })
-
-        // window.addEventListener('beforeunload', this.closeBrowser);
     }
 
     componentDidUpdate() {
-        // this.redirectToGameDisconnect( this.state.disconnect );
 
         firebase.database().ref('/users').on('value', snap => {
 
@@ -89,16 +93,29 @@ class Test extends Component {
     redirectToHome = val => {
 
         const lengthObj = val ? Object.keys(val).length : null;
+        let isInGameArr = [];
 
-        if ( !val || (lengthObj < Number(this.props.match.params.userId) + 1) ) {
-            this.props.history.push('/');
+        if (lengthObj === null) {
+            // console.log('1 test na null');
+            return this.props.history.push('/');
         }
 
-        // if ( !bool ) {
-        //     return null;
-        // } else {
-        //     this.props.history.push('/');
-        // }
+        // console.log('2 test nizej');
+
+
+        for (let key in val) {
+            isInGameArr.push({
+                isInGame: val[key].isInGame,
+                simpleValid: val[key].nickname,
+                who: key
+            })
+        }
+
+        const { userId, simpleValid } = this.props.match.params;
+
+        if ( (lengthObj < Number(userId) + 1) || simpleValid !== isInGameArr[userId].simpleValid ) {
+            return this.props.history.push('/');
+        }
     }
 
 

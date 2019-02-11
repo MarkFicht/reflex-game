@@ -11,8 +11,8 @@ import NotFound from '../components/NotFound';
 
 import { Route, HashRouter, Switch } from 'react-router-dom';
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCheckCircle, faTimesCircle, faVolumeUp, faVolumeOff } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCheckCircle, faTimesCircle, faVolumeUp, faVolumeOff } from '@fortawesome/free-solid-svg-icons';
 library.add(faCheckCircle, faTimesCircle, faVolumeUp, faVolumeOff);
 
 
@@ -28,7 +28,7 @@ class App extends Component {
 
               <Switch>
                 <Route exact path="/" component={Login} />
-                <Route exact path="/test/:userId" component={Test} />
+                <Route exact path="/test/:userId/:simpleValid" component={Test} />
                 <Route exact path="/game/:userId" component={Game} />
                 <Route exact path="/gamedisconnect" component={GameDisconnect} />
                 <Route exact path="/gameover" component={GameOver} />
