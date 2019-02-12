@@ -12,6 +12,8 @@ import BestScore from '../components/login/BestScore';
 import Validation from '../components/login/Validation';
 import ShowOnline from '../components/login/ShowOnline';
 
+const randomstring = require("randomstring");
+
 
 class Login extends Component {
     constructor(props) {
@@ -29,7 +31,11 @@ class Login extends Component {
         this.showValidation = null;
     };
 
+    _isMounted = false;
+
     componentDidMount() {
+        this._isMounted = true;
+
         firebase.database().ref('/users').on('value', snap => {
             const val = snap.val();
 
@@ -38,7 +44,9 @@ class Login extends Component {
                 currentOnline.push({ nickname: val[key].nickname })
             }
 
-            this.setState({ onlinePlayer: currentOnline.length })
+            if ( this._isMounted ) {
+                this.setState({ onlinePlayer: currentOnline.length });
+            }
         })
 
         /** Restart: Bool for checking connected 2 players */
@@ -48,6 +56,7 @@ class Login extends Component {
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearTimeout(this.showValidation);
     }
 
@@ -69,6 +78,7 @@ class Login extends Component {
 
             const { history } = this.props;
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
+            const validChars = randomstring.generate(10);
 
             storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
 
@@ -82,8 +92,9 @@ class Login extends Component {
                     imgPlayer: this.state.urlImg,
                     readyPlayer: false,
                     char: newChar,
+                    validChars: validChars,
                     disconnectPlayer: false,
-                }).then( (e) => history.push(`/test/${this.state.onlinePlayer - 1}/${this.state.name}`) )
+                }).then( (e) => history.push(`/test/${this.state.onlinePlayer - 1}/${validChars}`) )
 
             }).catch( (error) => {
                 console.log(`Error: ${ error.code }`)
