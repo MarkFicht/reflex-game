@@ -43,24 +43,28 @@ class Test extends Component {
     componentDidMount() {
         this._isMounted = true;
         if ( !this._isMounted ) { return null; }
-        
-        // console.log(this.props.history.block('Are u sure?'));
 
         firebase.database().ref('/users').on('value', snap => {
 
             const val = snap.val();
-            this.redirectToHome(val, this._isMounted);
+            const changeOnArr = this.changeOnArr( val, this._isMounted );
+            this.redirectToHome( changeOnArr, this._isMounted );
+            
+            /** Test of memory leak */
+            // console.log( 'Zaleznosc z przekierowaniem z this.props.history podczas dropDB. Przeciek pamieci, gdy null: ' + changeOnArr );
         })
     }
 
     componentDidUpdate() {
+        if ( !this._isMounted ) { return null; }
 
-        // firebase.database().ref('/users').on('value', snap => {
+        /** For a case where someone manually enters the address */
+        firebase.database().ref('/users').on('value', snap => {
 
-        //     const val = snap.val();
-        //     this.redirectToHome( val );
-            
-        // })
+            const val = snap.val();
+            const changeOnArr = this.changeOnArr( val, this._isMounted );
+            this.redirectToHome( changeOnArr, this._isMounted );
+        })
     }
 
     componentWillUnmount() {
@@ -86,77 +90,36 @@ class Test extends Component {
     //     }
     // }
 
-    redirectToHome = (val, isMounted) => {
+    changeOnArr = (val, isMounted) => {
+        if (!isMounted || !val) { return null; }
 
-        if ( !isMounted ) { return null; }
+        const returnArr = [];
+        for ( let key in val) {
+            returnArr.push({
+                who: key,
+                validChars: val[key].validChars
+            })
+        }
 
-        const lengthObj = val ? Object.keys(val).length : null;
-        const { userId } = this.props.match.params;
+        return returnArr;
+    }
+
+    redirectToHome = (arr, isMounted) => {
+
+        if (!isMounted) { return null; }
+
+        const arrLength = arr ? arr.length : null;
+        const { userId, simpleValid } = this.props.match.params;
         const { history } = this.props;
-        let isInGameArr = [];
 
-        if (lengthObj === null) {
+        if ( arrLength === null || (arrLength - 1 < Number(userId)) ) {
 
-            // return history.push('/*');
-            return history.goBack();
+            return history.push('/gamedisconnect');
+        } 
+        else if (  arr[userId].validChars !== simpleValid ) {
 
+            return history.push('/*');
         }
-        else if ( lengthObj - 1 < Number(userId) ) {
-
-            console.log(lengthObj, Number(userId))
-            
-            // return history.push('/*'); 
-            return history.goBack();
-
-        }
-        
-
-        
-
-        //---------------------
-        // const lengthObj = val ? Object.keys(val).length : null;
-        // let isInGameArr = [];
-
-        // console.log(val);
-
-        // if (lengthObj !== null) {
-
-        //     console.log('fb true ' + lengthObj)
-
-        //     for (let key in val) {
-        //         isInGameArr.push({
-        //             simpleValid: val[key].validChars,
-        //             who: key
-        //         })
-        //     }
-
-        //     const { userId, simpleValid } = this.props.match.params;
-
-        //     console.log(simpleValid + ' ' + isInGameArr[userId].simpleValid)
-
-        //     if ((lengthObj < Number(userId) + 1) || simpleValid !== isInGameArr[userId].simpleValid) {
-        //         return this.props.history.goBack();
-        //     }
-
-        //     // return this.props.history.push('/');
-        // } else {
-        //     return this.props.history.goBack();
-
-        // }
-
-        //-------------------------
-        // for (let key in val) {
-        //     isInGameArr.push({
-        //         simpleValid: val[key].validChars,
-        //         who: key
-        //     })
-        // }
-
-        // const { userId, simpleValid } = this.props.match.params;
-
-        // if ( (lengthObj < Number(userId) + 1) || simpleValid !== isInGameArr[userId].validChars ) {
-        //     return this.props.history.goBack();
-        // }
     }
 
 
@@ -203,6 +166,7 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
             }
 
             if ( this._isMounted ) {
+
                 this.setState({
                     btnRdy: id < currentOnline.length ? currentOnline[id].readyPlayer : null,
                     who: id < currentOnline.length ? currentOnline[id].who : null,
@@ -216,9 +180,9 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
     componentDidUpdate() {
         const { howManyOnline, displayBtns, arrStatusPlayers } = this.state;
 
-        if (howManyOnline === 2 && displayBtns && this._isMounted) {
+        if ( howManyOnline === 2 && displayBtns && this._isMounted ) {
             
-            if (arrStatusPlayers[0].readyPlayer && arrStatusPlayers[1].readyPlayer ) {
+            if ( arrStatusPlayers[0].readyPlayer && arrStatusPlayers[1].readyPlayer ) {
                 this.setState({
                     displayBtns: false
                 })
@@ -298,7 +262,7 @@ class Timer extends Component {
 
             if ( !this.state.startPrepare && !displayBtns ) {
 
-                if (this._isMounted) {
+                if ( this._isMounted ) {
 
                     this.setState({
                         startPrepare: true
@@ -419,7 +383,8 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
                 })
             }
 
-            if (this._isMounted) {
+            if ( this._isMounted ) {
+
                 this.setState({
                     users: usersTable,
                     pending: false,
@@ -485,7 +450,7 @@ class MechanismGameButtons extends Component {
     componentDidMount() {
         this._isMounted = true;
 
-        if (this._isMounted) {
+        if ( this._isMounted ) {
             window.addEventListener('keydown', this.keyEvent);
         }
     }
