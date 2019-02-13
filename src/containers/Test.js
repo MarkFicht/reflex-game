@@ -27,6 +27,8 @@ import wrong from '../sound/wrong.mp3';
   * */
 
 class Test extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -39,36 +41,30 @@ class Test extends Component {
     }
 
     componentDidMount() {
-
+        this._isMounted = true;
+        if ( !this._isMounted ) { return null; }
+        
         // console.log(this.props.history.block('Are u sure?'));
 
         firebase.database().ref('/users').on('value', snap => {
 
             const val = snap.val();
-            this.redirectToHome( val );
-
-            // let isInGameArr = [];
-            // for (let key in val) {
-            //     isInGameArr.push({
-            //         isInGame: val[key].isInGame,
-            //         simpleValid: val[key].nickname,
-            //         who: key
-            //     })
-            // }
-            
+            this.redirectToHome(val, this._isMounted);
         })
     }
 
     componentDidUpdate() {
 
-        firebase.database().ref('/users').on('value', snap => {
+        // firebase.database().ref('/users').on('value', snap => {
 
-            this.redirectToHome( snap.val() );
+        //     const val = snap.val();
+        //     this.redirectToHome( val );
             
-        })
+        // })
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         // window.removeEventListener('beforeunload', this.closeBrowser);
     }
 
@@ -90,32 +86,77 @@ class Test extends Component {
     //     }
     // }
 
-    redirectToHome = val => {
+    redirectToHome = (val, isMounted) => {
+
+        if ( !isMounted ) { return null; }
 
         const lengthObj = val ? Object.keys(val).length : null;
+        const { userId } = this.props.match.params;
+        const { history } = this.props;
         let isInGameArr = [];
 
         if (lengthObj === null) {
-            // console.log('1 test na null');
-            return this.props.history.push('/');
+
+            // return history.push('/*');
+            return history.goBack();
+
         }
+        else if ( lengthObj - 1 < Number(userId) ) {
 
-        // console.log('2 test nizej');
+            console.log(lengthObj, Number(userId))
+            
+            // return history.push('/*'); 
+            return history.goBack();
 
-
-        for (let key in val) {
-            isInGameArr.push({
-                isInGame: val[key].isInGame,
-                simpleValid: val[key].nickname,
-                who: key
-            })
         }
+        
 
-        const { userId, simpleValid } = this.props.match.params;
+        
 
-        if ( (lengthObj < Number(userId) + 1) || simpleValid !== isInGameArr[userId].simpleValid ) {
-            return this.props.history.push('/');
-        }
+        //---------------------
+        // const lengthObj = val ? Object.keys(val).length : null;
+        // let isInGameArr = [];
+
+        // console.log(val);
+
+        // if (lengthObj !== null) {
+
+        //     console.log('fb true ' + lengthObj)
+
+        //     for (let key in val) {
+        //         isInGameArr.push({
+        //             simpleValid: val[key].validChars,
+        //             who: key
+        //         })
+        //     }
+
+        //     const { userId, simpleValid } = this.props.match.params;
+
+        //     console.log(simpleValid + ' ' + isInGameArr[userId].simpleValid)
+
+        //     if ((lengthObj < Number(userId) + 1) || simpleValid !== isInGameArr[userId].simpleValid) {
+        //         return this.props.history.goBack();
+        //     }
+
+        //     // return this.props.history.push('/');
+        // } else {
+        //     return this.props.history.goBack();
+
+        // }
+
+        //-------------------------
+        // for (let key in val) {
+        //     isInGameArr.push({
+        //         simpleValid: val[key].validChars,
+        //         who: key
+        //     })
+        // }
+
+        // const { userId, simpleValid } = this.props.match.params;
+
+        // if ( (lengthObj < Number(userId) + 1) || simpleValid !== isInGameArr[userId].validChars ) {
+        //     return this.props.history.goBack();
+        // }
     }
 
 
@@ -132,6 +173,8 @@ class Test extends Component {
 }
 
 class BtnRdy extends Component {        // + component: "Waiting for all players"
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -144,6 +187,7 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
     }
 
     componentDidMount() {
+        this._isMounted = true;
         const [ id, bool ] = this.props.idPlayer;
 
         firebase.database().ref('/users').on('value', snap => {
@@ -158,21 +202,23 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
                 })
             }
 
-            this.setState({ 
-                btnRdy: id < currentOnline.length ? currentOnline[ id ].readyPlayer : null,
-                who: id < currentOnline.length ? currentOnline[ id ].who : null,
-                howManyOnline: currentOnline.length,
-                arrStatusPlayers: currentOnline 
-            })
+            if ( this._isMounted ) {
+                this.setState({
+                    btnRdy: id < currentOnline.length ? currentOnline[id].readyPlayer : null,
+                    who: id < currentOnline.length ? currentOnline[id].who : null,
+                    howManyOnline: currentOnline.length,
+                    arrStatusPlayers: currentOnline
+                })
+            }
         })
     }
 
     componentDidUpdate() {
         const { howManyOnline, displayBtns, arrStatusPlayers } = this.state;
 
-        if (howManyOnline === 2 && displayBtns) {
+        if (howManyOnline === 2 && displayBtns && this._isMounted) {
             
-            if (arrStatusPlayers[0].readyPlayer && arrStatusPlayers[1].readyPlayer) {
+            if (arrStatusPlayers[0].readyPlayer && arrStatusPlayers[1].readyPlayer ) {
                 this.setState({
                     displayBtns: false
                 })
@@ -180,11 +226,13 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
         }
     }
 
-    getReadyPlayers = (who, bool) => {
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
-        if (!bool) {
-            return null;
-        }
+    getReadyPlayers = (who, bool, isMounted) => {
+
+        if (!bool || !isMounted) { return null; }
 
         firebase.database().ref('/users/' + who).update({
             readyPlayer: !this.state.btnRdy
@@ -216,7 +264,7 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
 
                 {/* { id < howManyOnline && displayBtns */}
                 { id < howManyOnline
-                    ? <button className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide} style={style} onClick={ e => this.getReadyPlayers(who, bool) }>{ btnCaption }</button> 
+                    ? <button className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide} style={style} onClick={ e => this.getReadyPlayers(who, bool, this._isMounted) }>{ btnCaption }</button> 
                     : null 
                 }
 
@@ -227,6 +275,8 @@ class BtnRdy extends Component {        // + component: "Waiting for all players
 }
 
 class Timer extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -237,6 +287,10 @@ class Timer extends Component {
         }
     }
 
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
     componentDidUpdate() {
         let { howManyOnline, displayBtns, idPlayer } = this.props;
 
@@ -244,12 +298,19 @@ class Timer extends Component {
 
             if ( !this.state.startPrepare && !displayBtns ) {
 
-                this.setState({ 
-                    startPrepare: true 
-                })
-                this.startPrepareFoo( countdownPrepare, .25 );     // startTimeFoo() inside
+                if (this._isMounted) {
+
+                    this.setState({
+                        startPrepare: true
+                    })
+                    this.startPrepareFoo(countdownPrepare, .25);     // startTimeFoo() inside
+                }
             }
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     startPrepareFoo = (music, volumeParam) => {
@@ -327,6 +388,8 @@ class Timer extends Component {
 }
 
 class Player extends Component {        // + jsx tag: "gameButtonsDummy"
+    _isMounted = false;
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -337,6 +400,7 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
     }
 
     componentDidMount() {
+        this._isMounted = true;
 
         /** Saving data from Firebase, to the state */
         firebase.database().ref('users').on('value', snap => {
@@ -355,19 +419,22 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
                 })
             }
 
-            this.setState({
-                users: usersTable,
-                pending: false,
-            })
+            if (this._isMounted) {
+                this.setState({
+                    users: usersTable,
+                    pending: false,
+                })
+            }
 
         }, error => { console.log('Error in users: ' + error.code); })
+    }
 
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
-        if (this.state.pending) {
-            return null;
-        }
+        if (this.state.pending) { return null; }
 
         const [ id, bool ] = this.props.idPlayer;
         const { users } = this.state;
@@ -406,6 +473,8 @@ class Player extends Component {        // + jsx tag: "gameButtonsDummy"
 }
 
 class MechanismGameButtons extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
       
@@ -414,10 +483,15 @@ class MechanismGameButtons extends Component {
     }
 
     componentDidMount() {
-        window.addEventListener('keydown', this.keyEvent);
+        this._isMounted = true;
+
+        if (this._isMounted) {
+            window.addEventListener('keydown', this.keyEvent);
+        }
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         window.removeEventListener('keydown', this.keyEvent);
     }
 

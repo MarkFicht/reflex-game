@@ -73,7 +73,10 @@ class Login extends Component {
      * Add new player to Firebase
      * Redirection to /game/#
      * Choosing avatar in game */
-    prepareGame = () => {
+    prepareGame = ( _isMounted ) => {
+
+        if ( !_isMounted ) return null;
+
         if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
 
             const { history } = this.props;
@@ -136,7 +139,7 @@ class Login extends Component {
                     <SelectAvatar sendMethod={this.selectTag}/>
 
                     {/* Buttons */}
-                    <button className='btn-login' onClick={this.prepareGame}> Graj </button>
+                    <button className='btn-login' onClick={e => this.prepareGame(this._isMounted)}> Graj </button>
                     <button className='btn-login' onClick={e => this.showInstruction(true)}> Instrukcja </button>
                     <button className='btn-login' onClick={e => this.showBestScore(true)}> Rekordy </button>
 
