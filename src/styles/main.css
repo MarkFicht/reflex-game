@@ -21,9 +21,6 @@ body {
   /* Standard syntax */
   text-align: center; }
 
-p {
-  color: #4c1d15; }
-
 .disconnected > p,
 .not-found > p {
   margin-top: 10px;
@@ -119,34 +116,45 @@ h1.logo {
     border: 4px solid #4c1d15;
     transform: none; }
 
-.btn-ready {
+.btn-ready1, .btn-ready2 {
   width: 170px;
   height: 70px;
-  line-height: 70px;
+  display: flex;
+  justify-content: center;
   position: absolute;
   top: 170px;
   font-size: 1.5rem;
   font-weight: bold;
   letter-spacing: 1px;
   outline: none;
-  border: 3px solid tomato;
+  border: 5px solid tomato;
   color: tomato;
   background-color: #f9df76;
   border-radius: 15px;
   cursor: pointer;
-  transition: all .3s;
-  box-shadow: 0 0 10px black; }
-  .btn-ready:hover {
+  transition: transform .5s, border .3s, color .3s;
+  z-index: 1; }
+  .btn-ready1:hover, .btn-ready2:hover {
     transform: scale(1.07);
-    box-shadow: 0 0 20px black; }
-  .btn-ready:active {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); }
+  .btn-ready1:active, .btn-ready2:active {
     transform: scale(0.95); }
+
+.btn-ready1 {
+  left: 112px; }
+
+.btn-ready2 {
+  right: 112px; }
 
 .btn-ready-noEffect {
   cursor: default; }
   .btn-ready-noEffect:hover, .btn-ready-noEffect:active {
     transform: none;
-    box-shadow: 0 0 10px black; }
+    box-shadow: none; }
+
+.btn-ready-opacity {
+  transition: opacity 3s;
+  opacity: 0; }
 
 .btn-gameover {
   width: 300px;
@@ -280,7 +288,8 @@ div.validation {
   margin-top: 12px;
   font-size: 22px;
   font-weight: bold;
-  letter-spacing: 2px; }
+  letter-spacing: 2px;
+  color: #262626; }
 
 .create-by p {
   font-size: 1.5rem;
@@ -370,20 +379,19 @@ div.validation {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  position: relative; }
+  position: relative;
+  color: tomato; }
   .half-field > h3 {
     font-size: 3rem;
     font-style: italic;
     font-weight: bold;
     margin-top: 60px;
     letter-spacing: 12px;
-    color: tomato;
-    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black, 0 0 0.3em black, 0 0 0.6em black; }
+    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black; }
   .half-field > .scores p {
     font-size: 2.3rem;
-    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black;
+    text-shadow: -2px 0 black, 0 -2px black, 2px 0 black, 0 2px black;
     font-weight: bold;
-    color: tomato;
     letter-spacing: 3px;
     margin: 15px 0; }
   .half-field > .random-char {
@@ -444,22 +452,20 @@ div.validation {
   font-size: 2.7rem;
   font-weight: bold;
   position: absolute;
-  text-shadow: 0 0 2px black;
   letter-spacing: 1px;
   top: 105px;
-  color: #4c1d15; }
+  color: #68281d; }
 
 .prepare {
   position: absolute;
   z-index: 5;
+  color: #4c1d15;
   top: 171.42857px;
-  width: 100%;
   display: flex;
   justify-content: center;
-  text-shadow: 3px 3px black;
   animation: prepare-count forwards 1s infinite;
-  text-align: center;
   font-size: 9rem;
+  font-weight: bold;
   letter-spacing: 3px; }
 
 @keyframes info-scale {
@@ -472,15 +478,20 @@ div.validation {
 
 @keyframes prepare-count {
   from {
-    transform: scale(0.75); }
-  10% {
-    transform: scale(0.75); }
+    transform: scale(0.75);
+    opacity: 0; }
+  15% {
+    transform: scale(0.75);
+    opacity: 0; }
   50% {
-    transform: scale(1.2); }
-  90% {
-    transform: scale(0.75); }
+    transform: scale(1.2);
+    opacity: 1; }
+  85% {
+    transform: scale(0.75);
+    opacity: 0; }
   to {
-    transform: scale(0.75); } }
+    transform: scale(0.75);
+    opacity: 0; } }
 
 .div-gameover {
   background: url("../images/background/bg-dbz3.jpg") no-repeat center -405px;
