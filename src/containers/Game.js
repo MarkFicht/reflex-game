@@ -1,149 +1,384 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import * as firebase from 'firebase';
-import countdownPrepare from '../sound/countdown.wav';
-import countdown from '../sound/countdown.mp3';
+import { Redirect } from 'react-router-dom';
 
-import waitingForPlayers from '../components/other/waitingForPlayers';
-
+import waitingForPlayers from '../components/game/waitingForPlayers';
 import gameButtonsDummy from '../components/game/gameButtonsDummy';
-import Nick from '../components/game/Nick';
-import Score from '../components/game/Score';
-import DisplayRandomChar from '../components/game/DisplayRandomChar';
-import DisplayAvatar from '../components/game/DisplayAvatar';
 
-import GetReady from '../components/game/mechanism/GetReady';           /** GET READY - Need {...this.props} from parent -> active suitable btn */
-// import Timer from '../components/game/mechanism/Timer';                 /** PREPARE GAME TIME - Need {...this.props} from parent -> redirection */
-import GameButtons from '../components/game/mechanism/GameButtons';     /** THE MECHANISM OF GAME */
+import randomChar from '../components/other/randomChar';
 
-
-//--- VARIABLES
-let induceTimerOnce = true;
-let showHideReadyBtns = true;
+import countdownPrepare from '../sound/countdown.wav';
+import countdownTime from '../sound/countdown.mp3';
+import good from '../sound/good.wav';
+import wrong from '../sound/wrong.mp3';
 
 
-/** PREPARE GAME TIME - Need {...this.props} from parent for redirection */
-class Timer extends Component {
+/** 
+ * "idPlayer" is arr with 2 objects
+ * 1st key: id current player, 
+ * 2nd key: bool, checks at what address the player is 
+ * */
+
+ /** 
+  * Test >                  create "idPlayer", RedirectToHomeMechanism
+  * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
+  * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, RedirectToGameOver
+  * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
+  * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
+  * */
+
+class Game extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
-            ready: false,
-            prepareTime: 3,
+            isInGame: [],
+            disconnect: null
         }
-        this.endPrepare = null; //construktor odswieza caly komponent, dlatego to jest poza
-        this.countdownPrepare = new Audio(countdownPrepare);
-        this.countdownPrepare.volume = .3;
+        // this.closeBrowser = () => {
+        //     this.dropDataBase();
+        // }
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+        if ( !this._isMounted ) { return null; }
+
+        firebase.database().ref('/users').on('value', snap => {
+
+            const val = snap.val();
+            const changeOnArr = this.changeOnArr( val, this._isMounted );
+            this.redirectToHome( changeOnArr, this._isMounted );
+            
+            /** Test of memory leak */
+            // console.log( 'Zaleznosc z przekierowaniem z this.props.history podczas dropDB. Przeciek pamieci, gdy null: ' + changeOnArr );
+        })
     }
 
     componentDidUpdate() {
-        if (induceTimerOnce && this.props.users.length === 2 && this.props.users[0].readyPlayer && this.props.users[1].readyPlayer) {
-            this.prepareToCount();
+        if ( !this._isMounted ) { return null; }
 
-            induceTimerOnce = false;
-            showHideReadyBtns = false;
-        }
+        /** For a case where someone manually enters the address */
+        firebase.database().ref('/users').on('value', snap => {
+
+            const val = snap.val();
+            const changeOnArr = this.changeOnArr( val, this._isMounted );
+            this.redirectToHome( changeOnArr, this._isMounted );
+        })
     }
 
     componentWillUnmount() {
-        clearInterval(this.endPrepare);
-        this.countdownPrepare.pause();
-    };
-
-    /**
-     * Prepare counter of game
-     * Unlock buttons */
-    prepareToCount = () => {
-        this.setState({ ready: true })
-        this.countdownPrepare.play();
-
-
-        this.endPrepare = setInterval( () => {
-
-            if (this.props.users.length > 1 && this.state.ready) {
-
-                this.setState( (prevState) => {
-                    return { prepareTime: prevState.prepareTime - 1 }
-                })
-            }
-
-            if (this.state.prepareTime < 0) {
-                clearInterval(this.endPrepare);
-
-                // Hide div prepare
-                this.setState({
-                    ready: false,
-                })
-
-                /** Start Real-Time Game from component Game */
-                if (typeof this.props.sendMethod === "function") {
-                    this.props.sendMethod(true);
-                }
-                if (typeof this.props.sendMethodTimer === "function") {
-                    this.props.sendMethodTimer();
-                }
-            }
-        }, 1000)
+        this._isMounted = false;
+        // window.removeEventListener('beforeunload', this.closeBrowser);
     }
 
+    /** Remove all players & set disconnect in '/game' on true, when someone:
+     * 1.refreshes(F5)
+     * 2.press 'back' in browser - COS NIE TRYBI? ???????????????????????????????????/ */
+    // dropDataBase = () => {
+    //     firebase.database().ref('/game').update({ disconnect: true });
+    //     firebase.database().ref('/users').remove();
+    // }
+
+    /** Redirect to: GameDisconnect */
+    // redirectToGameDisconnect = bool => {
+
+    //     if (bool === false) {
+    //         return null;
+    //     } else {
+    //         this.props.history.push('/gamedisconnect');
+    //     }
+    // }
+
+    changeOnArr = (val, isMounted) => {
+        if (!isMounted || !val) { return null; }
+
+        const returnArr = [];
+        for ( let key in val) {
+            returnArr.push({
+                who: key,
+                validChars: val[key].validChars
+            })
+        }
+
+        return returnArr;
+    }
+
+    redirectToHome = (arr, isMounted) => {
+
+        if (!isMounted) { return null; }
+
+        const arrLength = arr ? arr.length : null;
+        const { userId, simpleValid } = this.props.match.params;
+        const { history } = this.props;
+
+        if ( arrLength === null || (arrLength - 1 < Number(userId)) ) {
+
+            return history.push('/gamedisconnect');
+        } 
+        else if (  arr[userId].validChars !== simpleValid ) {
+
+            return history.push('/*');
+        }
+    }
+
+
     render() {
-        const colorTimer = { color:
-                ((this.props.gameTime <= 12 && this.props.gameTime > 5) && 'orange') ||
-                 (this.props.gameTime <= 5 && 'red')
-        };
+        const ID_URL = Number(this.props.match.params.userId);
 
         return (
-            <div className="timer">
-                TIME: <span style={ colorTimer } >{ this.props.gameTime }</span>
-
-                { this.props.users.length > 1 && this.state.ready
-                    ?   <div className='prepare'>{ this.state.prepareTime === 0 ? 'start' : this.state.prepareTime }</div>
-                    :   null
-                }
+            <div className="div-game">
+                <BtnRdy idPlayer={ [0, ID_URL === 0] } />
+                <BtnRdy idPlayer={ [1, ID_URL === 1] } />
             </div>
-        );
+        )
     }
 }
 
+class BtnRdy extends Component {        // + component: "Waiting for all players"
+    _isMounted = false;
 
-
-
-//---  *** REACT MAIN COMPONENT ***  ---//
-class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            users: [],
-            pending: true,
-            game: false,
-            gameTime: 30,
-            disconnect: null,
-        };
-        this.endTime = null;
-        this.countdown = new Audio(countdown);
-        this.countdown.volume = .3;
-        this.closeBrowser = (ev) =>
-        {
-            window.removeEventListener('beforeunload', this.closeBrowser);
-            this.dropDataBase();
+            btnRdy: null,
+            who: null,
+            howManyOnline: 0,
+            arrStatusPlayers: null,
+            displayBtns: true
         }
     }
 
     componentDidMount() {
-        induceTimerOnce = true;
-        showHideReadyBtns = true;
+        this._isMounted = true;
+        const [ id, bool ] = this.props.idPlayer;
 
-        window.addEventListener('beforeunload', this.closeBrowser);
+        firebase.database().ref('/users').on('value', snap => {
+            const val = snap.val();
 
-        /**
-         * Add players to state from Firebase
-         * Redirect if database is empty */
-        firebase.database().ref('users').on('value', snap => {
-            const val = snap.val(); // console.log(val);
-            const usersTable = [];
+            let currentOnline = [];
 
-            if (!val) {
-                this.props.history.push('/gamedisconnect');
+            for (let key in val) {
+                currentOnline.push({ 
+                    readyPlayer: val[key].readyPlayer,
+                    who: key
+                })
             }
+
+            if ( this._isMounted ) {
+
+                this.setState({
+                    btnRdy: id < currentOnline.length ? currentOnline[id].readyPlayer : null,
+                    who: id < currentOnline.length ? currentOnline[id].who : null,
+                    howManyOnline: currentOnline.length,
+                    arrStatusPlayers: currentOnline
+                })
+            }
+        })
+    }
+
+    componentDidUpdate() {
+        const { howManyOnline, displayBtns, arrStatusPlayers } = this.state;
+
+        if ( howManyOnline === 2 && displayBtns && this._isMounted ) {
+            
+            if ( arrStatusPlayers[0].readyPlayer && arrStatusPlayers[1].readyPlayer ) {
+                this.setState({
+                    displayBtns: false
+                })
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    getReadyPlayers = (who, bool, isMounted) => {
+
+        if (!bool || !isMounted) { return null; }
+
+        firebase.database().ref('/users/' + who).update({
+            readyPlayer: !this.state.btnRdy
+        })
+
+        this.setState({
+            btnRdy: !this.state.btnRdy
+        })
+    }
+
+    render() {
+        const [ id, bool ] = this.props.idPlayer;
+        const { who, btnRdy, howManyOnline, displayBtns } = this.state;
+
+        const btnRdyClass = `btn-ready${ id + 1 }`;
+        const btnRdyWithEffect = bool ? `` : ` btn-ready-noEffect`;
+        const btnRdySlowHide = displayBtns ? `` : ` btn-ready-opacity`;        // 2nd option for slow hide btns - conditional "id < howManyOnline"
+        const btnCaption = btnRdy ? 'OK' : 'Ready?';
+        const btnColor = btnRdy ? 'limegreen' : 'tomato';
+        const style = { 
+            color: btnColor, 
+            borderColor: btnColor 
+        };
+
+        return (
+            <>
+                {/* Waiting for players */}
+                { howManyOnline % 2 === 1 && waitingForPlayers }
+
+                {/* { id < howManyOnline && displayBtns */}
+                { id < howManyOnline
+                    ? <button className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide} style={style} onClick={ e => this.getReadyPlayers(who, bool, this._isMounted) }>{ btnCaption }</button> 
+                    : null 
+                }
+
+                <Timer howManyOnline={ howManyOnline } displayBtns={ displayBtns } idPlayer={this.props.idPlayer} />
+            </>
+        )
+    }
+}
+
+class Timer extends Component {
+    _isMounted = false;
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            prepare: 3,
+            time: 2,
+            startPrepare: false,
+            startTime: false
+        }
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+    }
+
+    componentDidUpdate() {
+        let { howManyOnline, displayBtns, idPlayer } = this.props;
+
+        if ( howManyOnline === 2 && idPlayer[1] ) {
+
+            if ( !this.state.startPrepare && !displayBtns ) {
+
+                if ( this._isMounted ) {
+
+                    this.setState({
+                        startPrepare: true
+                    })
+                    this.startPrepareFoo(countdownPrepare, .25);     // startTimeFoo() inside
+                }
+            }
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    startPrepareFoo = (music, volumeParam) => {
+        let audio = new Audio(music);
+        audio.volume = volumeParam;
+        audio.play();
+
+        const preparePlayers = setInterval( () => {
+
+            this.setState( (prevState) => {
+                return { prepare: prevState.prepare - 1 }
+            })
+
+            if (this.state.prepare < 0) {
+
+                this.setState({
+                    startTime: true
+                })
+                audio = null;
+                clearInterval( preparePlayers );
+                this.startTimeFoo( countdownTime, .3 );
+            }
+
+        }, 1000)
+    }
+
+    startTimeFoo = (music, volumeParam) => {
+        let audio = new Audio(music);
+        audio.volume = volumeParam;
+
+        const timePlayers = setInterval( () => {
+
+            this.setState( (prevState) => {
+                return { time: prevState.time - 1 }
+            })
+
+            if (this.state.time === 4) {
+                audio.play();
+            }
+
+            if (this.state.time === 0) {
+                audio = null;
+                clearInterval( timePlayers );
+            }
+
+        }, 1000)
+    }
+
+    renderRedirectToGameOver = (isMounted) => {
+        if (this.state.time === 0 && isMounted) {
+            return <Redirect to='/gameover' />
+        }
+    }
+
+    render() {
+        const { prepare, time, startPrepare, startTime } = this.state;
+        const countPrepare = prepare === 0 ? 'start' : prepare;
+        const timerColor = {
+            color:
+                (time <= 12 && time > 5 && 'darkorange') ||
+                (time <= 5 && 'darkred')
+        };
+
+        return (
+            <>
+                { this.props.idPlayer[1] && 
+                    <div className="timer">
+                        TIME: <span style={ timerColor }>{ time }</span>
+                    </div> 
+                }
+                
+                { (this.props.idPlayer[1] && startPrepare && !startTime) && 
+                    <div className='prepare'>{ countPrepare }</div> 
+                }
+
+                { this.renderRedirectToGameOver( this._isMounted ) }
+
+                <Player startTime={ startTime } idPlayer={this.props.idPlayer} />
+            </>
+        )
+    }
+
+}
+
+class Player extends Component {        // + jsx tag: "gameButtonsDummy"
+    _isMounted = false;
+
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            users: [],
+            pending: true,
+            disconnect: null
+        }
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+
+        /** Saving data from Firebase, to the state */
+        firebase.database().ref('users').on('value', snap => {
+            const val = snap.val(); 
+            const usersTable = [];
 
             for (var key in val) {
                 usersTable.push({
@@ -156,145 +391,154 @@ class Game extends React.Component {
                     char: val[key].char,
                 })
             }
-            this.setState({
-                users: usersTable,
-                pending: false,
-            })
+
+            if ( this._isMounted ) {
+
+                this.setState({
+                    users: usersTable,
+                    pending: false,
+                })
+            }
 
         }, error => { console.log('Error in users: ' + error.code); })
-
-        /** Bool for checking connected 2 players */
-        firebase.database().ref('game').on('value', snap => {
-            const val = snap.val();
-
-            this.setState({
-                disconnect: val.disconnect
-            })
-
-        }, error => { console.log('Error in game: ' + error.code); })
-    }
-
-    componentDidUpdate() {
-        if (this.state.disconnect) {
-            this.props.history.push('/gamedisconnect')
-        }
     }
 
     componentWillUnmount() {
-        clearInterval(this.endTime);
-        this.countdown.pause();
-        window.removeEventListener('beforeunload', this.closeBrowser);
-
-        // Don't delete online players on EndGame
-        if (this.state.gameTime !== 0) { this.dropDataBase() }
+        this._isMounted = false;
     }
 
-    /** GAME START */
-    gameStart = (paramFromTimer) => {
-        this.setState({
-            game: paramFromTimer
-        })
-    }
-
-    /**
-     * Counter of game
-     * Redirection to GameOver */
-    gameTimer = () => {
-        this.endTime = setInterval( () => {
-
-            this.setState( (prevState) => {
-                return { gameTime: prevState.gameTime - 1 }
-            })
-
-            if (this.state.gameTime === 4) {
-                this.countdown.play();
-            }
-
-            if (this.state.gameTime === 0) {
-                clearInterval(this.endTime);
-                this.props.history.push('/gameover')
-            }
-        }, 1000 )
-    }
-
-
-    /** Delete all players and change bool in Firebase, after disconnect one */
-    dropDataBase = () => {
-        firebase.database().ref('game/').update({ disconnect: true })
-        firebase.database().ref('/users').remove();
-    }
-
-    //--- RENDER ---//
     render() {
-        if (this.state.pending) {
-            return null;
-        }
-        let sendStyle = { color: '#548687' }
+        if (this.state.pending) { return null; }
+
+        const [ id, bool ] = this.props.idPlayer;
+        const { users } = this.state;
+        const { startTime } = this.props;
+
+        const rightColor = { color: bool ? '#548687' : 'tomato' };
+        const rightGameBtns = users[id] && bool 
+            ? <MechanismGameButtons 
+                startTime={startTime} 
+                idPlayer={this.props.idPlayer} 
+                who={users[id].id} 
+                correctChar={users[id].char}
+                points={users[id].points} /> 
+            : gameButtonsDummy;
 
         return (
-            <div>
-                <div className="div-game">
+            <div className="half-field" style={rightColor}>
 
-                    {/* PREPARE GAME & TIME & REDIRECTION */}
-                    <Timer { ...this.props } users={this.state.users} gameTime={this.state.gameTime} sendMethod={this.gameStart} sendMethodTimer={this.gameTimer} />
+                <h3>{users[id] ? users[id].nickname : '-'}</h3>
 
-                    {/* Waiting for players */}
-                    { this.state.users.length % 2 === 1 && waitingForPlayers }
+                <div className="scores">
+                    <p>SCORE: {users[id] ? users[id].points : '-'}</p>
+                </div>
 
-                    {/* ----------------------------------**PLAYER 1**---------------------------------- */}
-                    <div className="half-field">
+                <div className="random-char">{users[id] ? users[id].char : '-'}</div>
 
-                        {/* Get ready */}
-                        { showHideReadyBtns && <GetReady users={this.state.users} { ...this.props } nrPlayer={0} /> }
+                {/* MechanismGameButtons */}
+                { rightGameBtns }
 
-                        {/* Nick */}
-                        <Nick sendStyle={ Number(this.props.match.params.userId) === 0 ? sendStyle : null } users={this.state.users} nrPlayer={0} />
-
-                        {/* Score */}
-                        <Score sendStyle={ Number(this.props.match.params.userId) === 0 ? sendStyle : null } users={this.state.users} nrPlayer={0} />
-
-                        {/* Display random char */}
-                        <DisplayRandomChar game={this.state.game} nrPlayer={0} users={this.state.users} />
-
-                        {/* Game buttons - MECHANISM HERE */}
-                        { Number(this.props.match.params.userId) === 0
-                            ? <GameButtons game={this.state.game} { ...this.props } nrPlayer={0} users={this.state.users} />
-                            : gameButtonsDummy }
-
-                        {/* Avatar */}
-                        <DisplayAvatar users={this.state.users} nrPlayer={0} />
-
-                    </div>
-
-                    {/* ----------------------------------**PLAYER 2**---------------------------------- */}
-                    <div className="half-field">
-
-                        {/* Get ready */}
-                        { showHideReadyBtns && <GetReady users={this.state.users} { ...this.props } nrPlayer={1} /> }
-
-                        {/* Nick */}
-                        <Nick sendStyle={ Number(this.props.match.params.userId) === 1 ? sendStyle : null } users={this.state.users} nrPlayer={1}/>
-
-                        {/* Score */}
-                        <Score sendStyle={ Number(this.props.match.params.userId) === 1 ? sendStyle : null } users={this.state.users} nrPlayer={1} />
-
-                        {/* Display random char */}
-                        <DisplayRandomChar game={this.state.game} nrPlayer={1} users={this.state.users} />
-
-                        {/* Game buttons - MECHANISM HERE */}
-                        { Number(this.props.match.params.userId) === 1
-                            ? <GameButtons game={this.state.game} nrPlayer={1} users={this.state.users} />
-                            : gameButtonsDummy }
-
-                        {/* Avatar */}
-                        <DisplayAvatar users={this.state.users} nrPlayer={1} />
-
-                    </div>
-
+                <div className='player'>
+                    <div className={`player-img${id + 1}`} style={{ backgroundImage: users[id] && `url(" ${users[id].imgPlayer} ")` }} >{}</div>
                 </div>
             </div>
         )
     }
 }
-export default Game;
 
+class MechanismGameButtons extends Component {
+    _isMounted = false;
+
+    constructor(props) {
+        super(props);
+      
+        this.good = null;
+        this.bad = null;
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+
+        if ( this._isMounted ) {
+            window.addEventListener('keydown', this.keyEvent);
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        window.removeEventListener('keydown', this.keyEvent);
+    }
+
+    /** Keyboard support */
+    keyEvent = e => {
+        // console.log(`keydown na window - dziala. Props ${this.props.startTime},  State ${this.state.startTime}`);
+        if ( !this.props.startTime ) { 
+            return null;
+        }
+
+        /* a-65, s-83, d-68  ||  x-88, y-89, z-90 */
+        if (e.keyCode === 65 || e.keyCode === 83 || e.keyCode === 68) {
+
+            let clickedChar = null;
+
+            if (e.keyCode === 65)       clickedChar = randomChar[0];
+            else if (e.keyCode === 83)  clickedChar = randomChar[1];
+            else if (e.keyCode === 68)  clickedChar = randomChar[2];
+
+            this.addOrSubtractPoint( clickedChar );
+        }
+    }
+
+    /** Mouse support */
+    mouseEvent = clickedChar => {
+        if (!this.props.startTime) {
+            return null;
+        }
+
+        this.addOrSubtractPoint( clickedChar );
+    }
+
+    /** Main mechanism of the game */
+    addOrSubtractPoint = ( clickedChar ) => {
+
+        const { who, correctChar, points } = this.props;
+
+        if ( clickedChar === correctChar ) {
+
+            let charsetLength = randomChar.length;
+            let newChar = randomChar[ Math.floor(Math.random() * charsetLength + 1) - 1 ];
+
+            firebase.database().ref( '/users/' + who ).update({
+                points: points + 1,
+                char: newChar
+            })
+
+            this.good = new Audio( good ).play();
+            this.good = null;
+        }
+        else {
+            firebase.database().ref('/users/' + who).update({
+                points: points - 1
+            })
+
+            this.wrong = new Audio( wrong ).play();
+            this.wrong = null;
+        }
+    }
+
+    render() {
+        const { startTime } = this.props;
+        const style = { cursor: startTime ? 'pointer' : 'not-allowed' }
+
+        return (
+            <div className="btns">
+                { randomChar.map( char => {
+
+                    return <button onClick={ e => this.mouseEvent(char) } disabled={ !startTime && true } style={style} className='btn-game' key={char}>{ char }</button>   
+                }) }
+            </div>
+        )
+    }
+}
+
+export default Game;
