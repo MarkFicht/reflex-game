@@ -3,8 +3,8 @@ import { Redirect } from 'react-router-dom';
 
 import Player from './Player';
 
-import countdownPrepare from '../../sound/countdown.wav';
-import countdownTime from '../../sound/countdown.mp3';
+import countdownPrepare from '../../sound/countdownPrepare.wav';
+import countdownTime from '../../sound/countdownTime.mp3';
 
 
 class Timer extends Component {

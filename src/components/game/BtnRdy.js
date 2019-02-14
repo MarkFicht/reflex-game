@@ -3,7 +3,7 @@ import * as firebase from 'firebase';
 
 import Timer from './Timer';
 
-import waitingForPlayers from '../../components/game/waitingForPlayers';
+import waitingForPlayers from '../../components/other/waitingForPlayers';
 
 
 /** + component: "Waiting for all players" */

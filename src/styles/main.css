@@ -387,10 +387,10 @@ div.validation {
     font-weight: bold;
     margin-top: 60px;
     letter-spacing: 12px;
-    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black; }
+    text-shadow: -2px 0 5px black, 0 -2px 5px black, 2px 0 5px black, 0 2px 5px black; }
   .half-field > .scores p {
     font-size: 2.3rem;
-    text-shadow: -2px 0 black, 0 -2px black, 2px 0 black, 0 2px black;
+    text-shadow: -2px 0 black, 0 -2px black, 2px 0 black, 0 2px black;
     font-weight: bold;
     letter-spacing: 3px;
     margin: 15px 0; }

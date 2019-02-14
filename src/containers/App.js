@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import '../styles/main.css';
-import Music from './SimpleComponents/Music';
+import Music from '../components/music/Music';
 
 import Login from '../containers/Login';
 import Game from '../containers/Game';
-import GameDisconnect from '../components/GameDisconnect';
-import GameOver from '../components/GameOver.js';
-import NotFound from '../components/NotFound';
+import GameOver from '../containers/GameOver.js';
+import GameDisconnect from '../containers/GameDisconnect';
+import NotFound from '../containers/NotFound';
 
 import { Route, HashRouter, Switch } from 'react-router-dom';
 

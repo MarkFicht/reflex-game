@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import App from './containers/App';
 import * as firebase from 'firebase';
+
 
 //--- from firebase.google.com - Initialize Firebase
 var config = {

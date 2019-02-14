@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import logo from './static/logo';
+import logo from '../components/other/logo';
 
-//---  *** REACT MAIN COMPONENT ***  ---//
+
 class NotFound extends Component {
     constructor(props) {
         super(props);

@@ -3,7 +3,7 @@ import * as firebase from 'firebase';
 
 import MechanismGameButtons from './MechanismGameButtons';
 
-import gameButtonsDummy from '../../components/game/gameButtonsDummy';
+import gameButtonsDummy from '../../components/other/gameButtonsDummy';
 
 
 /** + jsx tag: "gameButtonsDummy" */
