@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
+import { Redirect } from 'react-router-dom';
 
 import waitingForPlayers from '../components/game/waitingForPlayers';
 import gameButtonsDummy from '../components/game/gameButtonsDummy';
@@ -19,9 +20,9 @@ import wrong from '../sound/wrong.mp3';
  * */
 
  /** 
-  * Test >                  create "idPlayer"
+  * Test >                  create "idPlayer", RedirectToHomeMechanism
   * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
-  * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer
+  * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, RedirectToGameOver
   * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
   * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
   * */
@@ -245,7 +246,7 @@ class Timer extends Component {
         super(props);
         this.state = {
             prepare: 3,
-            time: 30,
+            time: 2,
             startPrepare: false,
             startTime: false
         }
@@ -323,6 +324,12 @@ class Timer extends Component {
         }, 1000)
     }
 
+    renderRedirectToGameOver = (isMounted) => {
+        if (this.state.time === 0 && isMounted) {
+            return <Redirect to='/gameover' />
+        }
+    }
+
     render() {
         const { prepare, time, startPrepare, startTime } = this.state;
         const countPrepare = prepare === 0 ? 'start' : prepare;
@@ -343,6 +350,8 @@ class Timer extends Component {
                 { (this.props.idPlayer[1] && startPrepare && !startTime) && 
                     <div className='prepare'>{ countPrepare }</div> 
                 }
+
+                { this.renderRedirectToGameOver( this._isMounted ) }
 
                 <Player startTime={ startTime } idPlayer={this.props.idPlayer} />
             </>
