@@ -11,7 +11,7 @@ import BtnRdy from '../components/game/BtnRdy';
  * */
 
  /**  ---Structure---
-  * Test >                  create "idPlayer", RedirectToHomeMechanism
+  * Test >                  create "idPlayer", RedirectToHomeMechanism, DropDB(F5 or BtnBack)
   * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
   * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, RedirectToGameOver
   * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
@@ -27,15 +27,21 @@ class Game extends Component {
             isInGame: [],
             disconnect: null
         }
-        // this.closeBrowser = () => {
-        //     this.dropDataBase();
-        // }
+
+        this.closeBrowser = ( isMounted ) => { 
+            console.log('this.closeBrowser');
+            this.dropDataBase( isMounted ); 
+        }
     }
 
     componentDidMount() {
         this._isMounted = true;
         if ( !this._isMounted ) { return null; }
 
+        /** For a case where someone refresh page(F5) or click button 'back' in browser */
+        window.addEventListener( 'beforeunload', this.closeBrowser( this._isMounted ) );
+
+        /**  */
         firebase.database().ref('/users').on('value', snap => {
 
             const val = snap.val();
@@ -60,27 +66,22 @@ class Game extends Component {
     }
 
     componentWillUnmount() {
-        this._isMounted = false;
-        // window.removeEventListener('beforeunload', this.closeBrowser);
+        window.removeEventListener( 'beforeunload', this.closeBrowser( this._isMounted ) );
+        this._isMounted = false;    // It must be after 'beforeunload'
     }
 
-    /** Remove all players & set disconnect in '/game' on true, when someone:
+
+    /**  ---Remove all players & set disconnect in '/game' on true, when someone---
      * 1.refreshes(F5)
-     * 2.press 'back' in browser - COS NIE TRYBI? ???????????????????????????????????/ */
-    // dropDataBase = () => {
-    //     firebase.database().ref('/game').update({ disconnect: true });
-    //     firebase.database().ref('/users').remove();
-    // }
+     * 2.press 'back' in browser
+     * */
+    dropDataBase = ( isMounted ) => {
+        if ( !isMounted ) { return null; }
 
-    /** Redirect to: GameDisconnect */
-    // redirectToGameDisconnect = bool => {
-
-    //     if (bool === false) {
-    //         return null;
-    //     } else {
-    //         this.props.history.push('/gamedisconnect');
-    //     }
-    // }
+        console.log('drop db');
+        // firebase.database().ref('/game').update({ disconnect: true });
+        // firebase.database().ref('/users').remove();
+    }
 
     changeOnArr = (val, isMounted) => {
         if (!isMounted || !val) { return null; }
