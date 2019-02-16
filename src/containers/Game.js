@@ -11,8 +11,8 @@ import BtnRdy from '../components/game/BtnRdy';
  * */
 
  /**  ---Structure---
-  * Test >                  create "idPlayer", RedirectToHomeMechanism, DropDB(F5 or BtnBack)
-  * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
+  * Test >                  create "idPlayer", RedirectToHomeMechanism, DropDB(BtnBack)
+  * BtnRdy >                who, bool for btnRdy, idPlayer, DropDB(F5), (REFERENCE TO SELECTED DATA IN FIREBASE)
   * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, RedirectToGameOver
   * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
   * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
@@ -28,8 +28,9 @@ class Game extends Component {
             disconnect: null
         }
 
-        this.closeBrowser = ( isMounted ) => { 
-            console.log('this.closeBrowser');
+        this.btnBackBrowser = ( isMounted ) => { 
+            console.log('this.btnBackBrowser'); 
+            
             this.dropDataBase( isMounted ); 
         }
     }
@@ -38,15 +39,15 @@ class Game extends Component {
         this._isMounted = true;
         if ( !this._isMounted ) { return null; }
 
-        /** For a case where someone refresh page(F5) or click button 'back' in browser */
-        window.addEventListener( 'beforeunload', this.closeBrowser( this._isMounted ) );
-
-        /**  */
         firebase.database().ref('/users').on('value', snap => {
 
             const val = snap.val();
+
             const changeOnArr = this.changeOnArr( val, this._isMounted );
             this.redirectToHome( changeOnArr, this._isMounted );
+
+            // /** For a case where someone refresh page(F5) or click button 'back' in browser */
+            // window.addEventListener( 'beforeunload', this.btnBackBrowser( this._isMounted, val ) );
             
             /** Test of memory leak */
             // console.log( 'Zaleznosc z przekierowaniem z this.props.history podczas dropDB. Przeciek pamieci, gdy null: ' + changeOnArr );
@@ -66,7 +67,11 @@ class Game extends Component {
     }
 
     componentWillUnmount() {
-        window.removeEventListener( 'beforeunload', this.closeBrowser( this._isMounted ) );
+
+        /** For a case where someone refresh page(F5) or click button 'back' in browser */
+        window.addEventListener( 'beforeunload', this.btnBackBrowser( this._isMounted ) );
+
+        window.removeEventListener( 'beforeunload', this.btnBackBrowser( this._isMounted ) );
         this._isMounted = false;    // It must be after 'beforeunload'
     }
 
@@ -76,14 +81,16 @@ class Game extends Component {
      * 2.press 'back' in browser
      * */
     dropDataBase = ( isMounted ) => {
-        if ( !isMounted ) { return null; }
 
-        console.log('drop db');
-        // firebase.database().ref('/game').update({ disconnect: true });
-        // firebase.database().ref('/users').remove();
+        if ( !isMounted ) { return null; }
+        else {
+            firebase.database().ref('/game').update({ disconnect: true });
+            firebase.database().ref('/users').remove();
+        }
     }
 
     changeOnArr = (val, isMounted) => {
+        
         if (!isMounted || !val) { return null; }
 
         const returnArr = [];
