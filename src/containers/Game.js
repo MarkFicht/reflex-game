@@ -12,7 +12,7 @@ import BtnRdy from '../components/game/BtnRdy';
 
  /**  ---Structure---
   * Test >                  create "idPlayer", RedirectToHomeMechanism, DropDB(BtnBack)
-  * BtnRdy >                who, bool for btnRdy, idPlayer, DropDB(F5), (REFERENCE TO SELECTED DATA IN FIREBASE)
+  * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
   * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, RedirectToGameOver
   * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
   * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
@@ -33,11 +33,25 @@ class Game extends Component {
             
             this.dropDataBase( isMounted ); 
         }
+        this.btnRefreshBrowser = ( isMounted ) => {
+            console.log('this.btnRefreshBrowser'); 
+            
+            this.dropDataBase( isMounted ); 
+        }
     }
 
     componentDidMount() {
         this._isMounted = true;
         if ( !this._isMounted ) { return null; }
+
+        /**  */
+        window.onbeforeunload = () => {
+            // return console.log('f5');
+            return this.dropDataBase( true );
+        }
+
+        // /**  */
+        // window.onbeforeunload = this.btnBackBrowser( this._isMounted );
 
         firebase.database().ref('/users').on('value', snap => {
 
