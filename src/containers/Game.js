@@ -11,12 +11,16 @@ import BtnRdy from '../components/game/BtnRdy';
  * */
 
  /**  ---Structure---
-  * Test >                  create "idPlayer", RedirectToHomeMechanism, DropDB(BtnBack)
+  * Test >                  create "idPlayer", RedirectToHomeMechanism
   * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
   * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, RedirectToGameOver
   * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
   * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
   * */
+
+/**  ---In Construction--- 
+ * DropDB in right moments
+ * */
 
 class Game extends Component {
     _isMounted = false;
@@ -31,12 +35,7 @@ class Game extends Component {
         this.btnBackBrowser = ( isMounted ) => { 
             console.log('this.btnBackBrowser'); 
             
-            this.dropDataBase( isMounted ); 
-        }
-        this.btnRefreshBrowser = ( isMounted ) => {
-            console.log('this.btnRefreshBrowser'); 
-            
-            this.dropDataBase( isMounted ); 
+            // this.dropDataBase( isMounted ); 
         }
     }
 
@@ -44,14 +43,16 @@ class Game extends Component {
         this._isMounted = true;
         if ( !this._isMounted ) { return null; }
 
-        /**  */
-        window.onbeforeunload = () => {
-            // return console.log('f5');
-            return this.dropDataBase( true );
-        }
+        /** */
+        // if (this.props.history.action === "POP") {
+        //     console.log(this.props.history);
+        // }
 
-        // /**  */
-        // window.onbeforeunload = this.btnBackBrowser( this._isMounted );
+        /**  */
+        // window.onbeforeunload = () => {
+        //     // return console.log('f5');
+        //     return this.dropDataBase( true );
+        // }
 
         firebase.database().ref('/users').on('value', snap => {
 
