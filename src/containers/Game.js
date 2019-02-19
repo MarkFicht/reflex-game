@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
+import { Redirect } from 'react-router-dom';
 
 import BtnRdy from '../components/game/BtnRdy';
 
@@ -11,16 +12,12 @@ import BtnRdy from '../components/game/BtnRdy';
  * */
 
  /**  ---Structure---
-  * Test >                  create "idPlayer", RedirectToHomeMechanism
+  * Test >                  create "idPlayer", Redirect to GameDisconnect/NotFound, (REFERENCE TO SELECTED DATA IN FIREBASE)
   * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
-  * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, RedirectToGameOver
+  * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, Redirect to GameOver
   * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
   * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
   * */
-
-/**  ---In Construction--- 
- * DropDB in right moments
- * */
 
 class Game extends Component {
     _isMounted = false;
@@ -29,13 +26,7 @@ class Game extends Component {
         super(props);
         this.state = {
             isInGame: [],
-            disconnect: null
-        }
-
-        this.btnBackBrowser = ( isMounted ) => { 
-            console.log('this.btnBackBrowser'); 
-            
-            // this.dropDataBase( isMounted ); 
+            disconnect: false
         }
     }
 
@@ -43,97 +34,74 @@ class Game extends Component {
         this._isMounted = true;
         if ( !this._isMounted ) { return null; }
 
-        /** */
-        // if (this.props.history.action === "POP") {
-        //     console.log(this.props.history);
-        // }
-
-        /**  */
-        // window.onbeforeunload = () => {
-        //     // return console.log('f5');
-        //     return this.dropDataBase( true );
-        // }
-
-        firebase.database().ref('/users').on('value', snap => {
-
-            const val = snap.val();
-
-            const changeOnArr = this.changeOnArr( val, this._isMounted );
-            this.redirectToHome( changeOnArr, this._isMounted );
-
-            // /** For a case where someone refresh page(F5) or click button 'back' in browser */
-            // window.addEventListener( 'beforeunload', this.btnBackBrowser( this._isMounted, val ) );
+        /** Save disconnect bool from DB */
+        firebase.database().ref('/game').on('value', snap => {
             
-            /** Test of memory leak */
-            // console.log( 'Zaleznosc z przekierowaniem z this.props.history podczas dropDB. Przeciek pamieci, gdy null: ' + changeOnArr );
+            const val = snap.val();
+            this.setState({ disconnect: val.disconnect });
         })
-    }
 
-    componentDidUpdate() {
-        if ( !this._isMounted ) { return null; }
-
-        /** For a case where someone manually enters the address */
+        /** Save current player from DB for valid */
         firebase.database().ref('/users').on('value', snap => {
 
             const val = snap.val();
-            const changeOnArr = this.changeOnArr( val, this._isMounted );
-            this.redirectToHome( changeOnArr, this._isMounted );
+            const usersValid = [];
+
+            for (let key in val) {
+                usersValid.push({
+                    who: key,
+                    validChars: val[key].validChars
+                })
+            }
+
+            this.setState({ isInGame: usersValid });
         })
+
+        /** */
+        if (window.performance) {
+
+            /** ---For a case: refresh/F5--- */
+            if (performance.navigation.type == 1 && this._isMounted) {
+
+                firebase.database().ref('/game').update({
+                    disconnect: true,
+                })
+            } 
+        }
     }
 
     componentWillUnmount() {
-
-        /** For a case where someone refresh page(F5) or click button 'back' in browser */
-        window.addEventListener( 'beforeunload', this.btnBackBrowser( this._isMounted ) );
-
-        window.removeEventListener( 'beforeunload', this.btnBackBrowser( this._isMounted ) );
-        this._isMounted = false;    // It must be after 'beforeunload'
+        this._isMounted = false;
     }
 
 
-    /**  ---Remove all players & set disconnect in '/game' on true, when someone---
-     * 1.refreshes(F5)
-     * 2.press 'back' in browser
-     * */
-    dropDataBase = ( isMounted ) => {
+    /** ---For a case: refresh/F5---
+     * 1.DropDB
+     * 2.Redirect do GameDisconnect
+     */
+    redirectToGameDisconnect = (isMounted) => {
+        if (isMounted) {
 
-        if ( !isMounted ) { return null; }
-        else {
-            firebase.database().ref('/game').update({ disconnect: true });
             firebase.database().ref('/users').remove();
+            return <Redirect to='/gamedisconnect' />
         }
     }
 
-    changeOnArr = (val, isMounted) => {
-        
-        if (!isMounted || !val) { return null; }
+    /** ---For a case---
+     * Wrong url 
+     * Someone manually enter the address 
+     * */
+    redirectToNotFound = (isMounted) => {
+        if (isMounted) {
 
-        const returnArr = [];
-        for ( let key in val) {
-            returnArr.push({
-                who: key,
-                validChars: val[key].validChars
-            })
-        }
+            const { isInGame } = this.state;
+            const usersLength = isInGame ? isInGame.length : null;
+            const { userId, simpleValid } = this.props.match.params;
 
-        return returnArr;
-    }
+            if ( usersLength === null || (usersLength - 1 < Number(userId)) || isInGame[userId].validChars !== simpleValid ) {
 
-    redirectToHome = (arr, isMounted) => {
-
-        if (!isMounted) { return null; }
-
-        const arrLength = arr ? arr.length : null;
-        const { userId, simpleValid } = this.props.match.params;
-        const { history } = this.props;
-
-        if ( arrLength === null || (arrLength - 1 < Number(userId)) ) {
-
-            return history.push('/gamedisconnect');
-        } 
-        else if (  arr[userId].validChars !== simpleValid ) {
-
-            return history.push('/*');
+                return <Redirect to='/*' />
+            }
         }
     }
 
@@ -143,6 +111,11 @@ class Game extends Component {
 
         return (
             <div className="div-game">
+            
+                { this.state.disconnect && this.redirectToGameDisconnect( this._isMounted ) }
+
+                { this.redirectToNotFound( this._isMounted ) }
+                
                 <BtnRdy idPlayer={ [0, ID_URL === 0] } />
                 <BtnRdy idPlayer={ [1, ID_URL === 1] } />
             </div>

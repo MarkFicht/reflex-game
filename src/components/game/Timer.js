@@ -21,7 +21,8 @@ class Timer extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
+        const [id, bool] = this.props.idPlayer;
+        this._isMounted = bool ? true : false;
     }
 
     componentDidUpdate() {
