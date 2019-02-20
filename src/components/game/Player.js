@@ -83,7 +83,7 @@ class Player extends Component {
                 <div className="random-char">{users[id] ? users[id].char : '-'}</div>
 
                 {/* MechanismGameButtons */}
-                {rightGameBtns}
+                { rightGameBtns }
 
                 <div className='player'>
                     <div className={`player-img${id + 1}`} style={{ backgroundImage: users[id] && `url(" ${users[id].imgPlayer} ")` }} >{}</div>

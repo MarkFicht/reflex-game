@@ -40,13 +40,14 @@ class Game extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        if ( !this._isMounted ) { return null; }
 
         /** Save disconnect bool from DB */
         firebase.database().ref('/game').on('value', snap => {
             
             const val = snap.val();
-            this.setState({ disconnect: val.disconnect });
+            if ( this._isMounted ) {
+                this.setState({ disconnect: val.disconnect });
+            }
         })
 
         /** Save current player from DB for valid */
@@ -62,7 +63,9 @@ class Game extends Component {
                 })
             }
 
-            this.setState({ isInGame: usersValid });
+            if ( this._isMounted ) {
+                this.setState({ isInGame: usersValid }); 
+            }
         })
 
 
