@@ -12,11 +12,18 @@ import BtnRdy from '../components/game/BtnRdy';
  * */
 
  /**  ---Structure---
-  * Test >                  create "idPlayer", Redirect to GameDisconnect/NotFound, (REFERENCE TO SELECTED DATA IN FIREBASE)
-  * BtnRdy >                who, bool for btnRdy, idPlayer, (REFERENCE TO SELECTED DATA IN FIREBASE)
-  * Timer >                 allPlayers, btnsRdyHide - whenToStart, time, idPlayer, Redirect to GameOver
-  * Player >                whenToStart, time, idPlayer, (MAIN REFERENCE TO FIREBASE) + (LAYOUT PLAYER)
-  * MechanismGameButtons >  whenToStart, idPlayer, selectedDataFromFirebase, (UPDATING DATA IN FIREBASE)
+  * Test >                  create "idPlayer", (!)GameDisconnect/NotFound, (*)'F5/refresh', (1)(2)
+  * BtnRdy >                who, bool for btnRdy, idPlayer, (1)(2)
+  * Timer >                 allPlayers, btnsRdyHide, time, idPlayer, (!)GameOver, (*)'Back btn', (2)
+  * Player >                whenToStart, time, idPlayer, (3)'LAYOUT PLAYER'
+  * MechanismGameButtons >  whenToStart, idPlayer, (1)(2)
+  * 
+  * LEGEND:
+  * (!) - Redirect MECHANISM
+  * (*) - Case for Redirect MECHANISM
+  * (1) - REFERENCE TO SELECTED DATA IN FIREBASE
+  * (2) - UPDATING DATA IN FIREBASE
+  * (3) - MAIN REFERENCE TO FIREBASE
   * */
 
 class Game extends Component {
@@ -26,7 +33,8 @@ class Game extends Component {
         super(props);
         this.state = {
             isInGame: [],
-            disconnect: false
+            disconnect: false,
+            val: null
         }
     }
 
@@ -57,7 +65,8 @@ class Game extends Component {
             this.setState({ isInGame: usersValid });
         })
 
-        /** */
+
+        /** Updating in Firebase - in this case don't need componentDidUpdate() */
         if (window.performance) {
 
             /** ---For a case: refresh/F5--- */
@@ -67,6 +76,8 @@ class Game extends Component {
                     disconnect: true,
                 })
             } 
+
+            /** ---For a case 'Back Btn', looking to Timer.js--- */
         }
     }
 
@@ -75,7 +86,7 @@ class Game extends Component {
     }
 
 
-    /** ---For a case: refresh/F5---
+    /** ---For a case when disconnect === true---
      * 1.DropDB
      * 2.Redirect do GameDisconnect
      */

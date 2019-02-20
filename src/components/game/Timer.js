@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as firebase from 'firebase';
 import { Redirect } from 'react-router-dom';
 
 import Player from './Player';
@@ -21,13 +22,28 @@ class Timer extends Component {
     }
 
     componentDidMount() {
-        const [id, bool] = this.props.idPlayer;
-        this._isMounted = bool ? true : false;
+        this._isMounted = true;
     }
 
     componentDidUpdate() {
         let { howManyOnline, displayBtns, idPlayer } = this.props;
 
+        /** ---For a case: Back Btn in browser--- */
+        window.onpopstate = () => {
+
+            if ( this._isMounted ) { 
+                const { time } = this.state;
+
+                if (time !== 0) {
+                    firebase.database().ref('/game').update({
+                        disconnect: true,
+                    })
+                }
+                // console.log('Time ' + time);
+            }
+        }
+
+        /** ---Start game--- */
         if (howManyOnline === 2 && idPlayer[1]) {
 
             if (!this.state.startPrepare && !displayBtns) {
@@ -120,7 +136,7 @@ class Timer extends Component {
                     <div className='prepare'>{countPrepare}</div>
                 }
 
-                {this.renderRedirectToGameOver(this._isMounted)}
+                { this.renderRedirectToGameOver(this._isMounted) }
 
                 <Player startTime={startTime} idPlayer={this.props.idPlayer} />
             </>
