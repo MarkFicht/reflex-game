@@ -14,13 +14,14 @@ import BtnRdy from '../components/game/BtnRdy';
  /**  ---Structure---
   * Test >                  create "idPlayer", (!)GameDisconnect/NotFound, (*)'F5/refresh', (1)(2)
   * BtnRdy >                who, bool for btnRdy, idPlayer, (1)(2)
-  * Timer >                 allPlayers, btnsRdyHide, time, idPlayer, (!)GameOver, (*)'Back btn', (2)
+  * Timer >                 allPlayers, btnsRdyHide, time, idPlayer, (!)GameOver, (*)'Back btn', (2), (s)
   * Player >                whenToStart, time, idPlayer, (3)'LAYOUT PLAYER'
-  * MechanismGameButtons >  whenToStart, idPlayer, (1)(2)
+  * MechanismGameButtons >  whenToStart, idPlayer, (1)(2), (s)
   * 
   * LEGEND:
   * (!) - Redirect MECHANISM
   * (*) - Case for Redirect MECHANISM
+  * (s) - Sounds
   * (1) - REFERENCE TO SELECTED DATA IN FIREBASE
   * (2) - UPDATING DATA IN FIREBASE
   * (3) - MAIN REFERENCE TO FIREBASE

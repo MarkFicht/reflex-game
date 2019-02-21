@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import avatarList from '../other/avatarList';
 
-class SelectAvatar extends React.Component {
+class SelectAvatar extends Component {
     constructor(props) {
         super(props);
         this.state = {

@@ -23,7 +23,7 @@ class BtnRdy extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        const [id, bool] = this.props.idPlayer;
+        const [id] = this.props.idPlayer;
 
         firebase.database().ref('/users').on('value', snap => {
             const val = snap.val();

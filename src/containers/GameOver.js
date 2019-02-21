@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import * as firebase from 'firebase';
 
 import WhoWin from '../components/gameover/WhoWin';
