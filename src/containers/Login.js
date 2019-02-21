@@ -7,7 +7,7 @@ import randomChar from '../components/other/randomChar';
 
 import ChooseNick from '../components/login/ChooseNick';
 import SelectAvatar from '../components/login/SelectAvatar';
-import Instruction from '../components/login/Instruction';
+import InstructionBtn from '../components/login/InstructionBtn';
 import BestScore from '../components/login/BestScore';
 import Validation from '../components/login/Validation';
 import ShowOnline from '../components/login/ShowOnline';
@@ -16,6 +16,8 @@ const randomstring = require("randomstring");
 
 
 class Login extends Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
 
@@ -25,13 +27,10 @@ class Login extends Component {
             urlImg: '',
             containerValidation: false,
             onlinePlayer: 0,
-            instruction: false,
             bestScore: false,
         };
         this.showValidation = null;
     };
-
-    _isMounted = false;
 
     componentDidMount() {
         this._isMounted = true;
@@ -49,10 +48,10 @@ class Login extends Component {
             }
         })
 
-        /** Restart: Bool for checking connected 2 players */
-        firebase.database().ref('/game').update({
-            disconnect: false,
-        })
+        // /** Restart: Bool for checking connected 2 players */
+        // firebase.database().ref('/game').update({
+        //     disconnect: false,
+        // })
     }
 
     componentWillUnmount() {
@@ -113,10 +112,6 @@ class Login extends Component {
         }
     }
 
-    showInstruction = (e) => {
-        this.setState({ instruction: e })
-    }
-
     showBestScore = e => {
         this.setState({ bestScore: e })
     }
@@ -140,7 +135,7 @@ class Login extends Component {
 
                     {/* Buttons */}
                     <button className='btn-login' onClick={e => this.prepareGame(this._isMounted)}> Graj </button>
-                    <button className='btn-login' onClick={e => this.showInstruction(true)}> Instrukcja </button>
+                    <InstructionBtn />
                     <button className='btn-login' onClick={e => this.showBestScore(true)}> Rekordy </button>
 
                     {/* Validation */}
@@ -152,9 +147,6 @@ class Login extends Component {
                     {/* Footer */}
                     { createBy }
                 </div>
-
-                {/* ----------------------------------**INSTRUCTION CONTAINER**---------------------------------- */}
-                { this.state.instruction && <Instruction sendMethod={this.showInstruction} /> }
 
                 {/* ----------------------------------**SCORE-BOARD CONTAINER**---------------------------------- */}
                 { this.state.bestScore && <BestScore sendMethod={this.showBestScore} /> }
