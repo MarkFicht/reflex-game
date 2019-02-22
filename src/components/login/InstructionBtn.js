@@ -33,6 +33,7 @@ class InstructionBtn extends Component {
             </div>)
             : null;
 
+        /** MAIN RENDER */
         return (
             <>
                 <button className='btn-login' onClick={ this.showOrHideInstruction }> Instrukcja </button>

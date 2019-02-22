@@ -301,7 +301,8 @@ div.validation {
   display: inline-block;
   animation: logo-move infinite 2s linear; }
 
-.instruction-background {
+.instruction-background,
+.best-scores-background {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -310,7 +311,8 @@ div.validation {
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 1; }
 
-.instruction-container {
+.instruction-container,
+.best-scores-container {
   position: relative;
   background-color: #f9df76;
   width: 500px;
@@ -321,14 +323,17 @@ div.validation {
   flex-direction: column;
   justify-content: center;
   animation: getOut .6s forwards ease-out; }
-  .instruction-container h2 {
+  .instruction-container h2,
+  .best-scores-container h2 {
     font-size: 2.4rem;
     margin-bottom: 12px; }
-  .instruction-container ol {
+  .instruction-container ol,
+  .best-scores-container ol {
     font-size: 28px;
     list-style: none;
     text-align: start; }
-    .instruction-container ol li {
+    .instruction-container ol li,
+    .best-scores-container ol li {
       padding: 10px 40px; }
 
 @keyframes getOut {
@@ -345,7 +350,8 @@ div.validation {
   to {
     top: 0; } }
 
-.instruction-close {
+.instruction-close,
+.best-scores-close {
   position: absolute;
   font-size: 65px;
   top: 0;
@@ -353,7 +359,8 @@ div.validation {
   transition: .2s all;
   z-index: 2;
   color: #333; }
-  .instruction-close:hover {
+  .instruction-close:hover,
+  .best-scores-close:hover {
     transform: scale(1.2);
     color: tomato;
     cursor: pointer; }

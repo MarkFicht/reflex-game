@@ -8,7 +8,7 @@ import randomChar from '../components/other/randomChar';
 import ChooseNick from '../components/login/ChooseNick';
 import SelectAvatar from '../components/login/SelectAvatar';
 import InstructionBtn from '../components/login/InstructionBtn';
-import BestScore from '../components/login/BestScore';
+import BestScoresBtn from '../components/login/BestScoresBtn';
 import Validation from '../components/login/Validation';
 import ShowOnline from '../components/login/ShowOnline';
 
@@ -24,12 +24,10 @@ class Login extends Component {
         this.state = {
             name: '',
             value: 'bardock',
-            urlImg: '',
             containerValidation: false,
             onlinePlayer: 0,
-            bestScore: false,
         };
-        this.showValidation = null;
+        this.fooValidation = null;
     };
 
     componentDidMount() {
@@ -39,27 +37,20 @@ class Login extends Component {
             const val = snap.val();
 
             let currentOnline = [];
-            for (let key in val) {
-                currentOnline.push({ nickname: val[key].nickname })
-            }
+            for (let key in val) { currentOnline.push({ nickname: val[key].nickname }) }
 
+            /** How many online */
             if ( this._isMounted ) {
                 this.setState({ onlinePlayer: currentOnline.length });
             }
         })
-
-        // /** Restart: Bool for checking connected 2 players */
-        // firebase.database().ref('/game').update({
-        //     disconnect: false,
-        // })
     }
 
     componentWillUnmount() {
         this._isMounted = false;
-        clearTimeout(this.showValidation);
+        clearTimeout( this.fooValidation );
     }
 
-    //--- MY FUNCTIONS ---//
     nickText = e => {
         this.setState({ name: e.target.value });
     }
@@ -68,57 +59,50 @@ class Login extends Component {
         this.setState({ value: e.target.value });
     }
 
-    /**
-     * Add new player to Firebase
-     * Redirection to /game/#
-     * Choosing avatar in game */
-    prepareGame = ( _isMounted ) => {
+    /** ---Main function---
+     * Add new player to Firebase + Choosing avatar
+     * Redirection to '/game/id/validChars'
+     * */
+    prepareGame = (_isMounted ) => {
+        const { name, onlinePlayer } = this.state;
 
-        if ( !_isMounted ) return null;
-
-        if (this.state.name.length >= 3 && this.state.name.length < 10 && this.state.onlinePlayer < 2) {
+        if ( name.length >= 3 && name.length < 10 && onlinePlayer < 2 && _isMounted ) {
 
             const { history } = this.props;
             const storageImgPlayer = firebase.storage().ref('/imgPlayers/');
             const validChars = randomstring.generate(10);
 
-            storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (url) => {
-
-                this.setState({ urlImg:  url});
-
+            storageImgPlayer.child(`${this.state.value}.gif`).getDownloadURL().then( (selectedUrlImg) => {
                 let newChar = randomChar[Math.floor( Math.random() * 3 + 1 ) - 1];
 
                 firebase.database().ref('/users').push({
                     nickname: this.state.name,
                     points: 0,
-                    imgPlayer: this.state.urlImg,
                     readyPlayer: false,
+                    imgPlayer: selectedUrlImg,
                     char: newChar,
                     validChars: validChars,
-                    disconnectPlayer: false,
-                }).then( (e) => history.push(`/game/${this.state.onlinePlayer - 1}/${validChars}`) )
+                }).then( (e) => { 
+                    history.push(`/game/${this.state.onlinePlayer - 1}/${validChars}`) 
+                })
 
-            }).catch( (error) => {
-                console.log(`Error: ${ error.code }`)
-            })
-        }
-        else {
+            }).catch( (error) => { console.log(`Error: ${error.code}`) });
+
+        } else {
+            /** Display of messages validation */
             this.setState({ containerValidation: true })
-            clearTimeout(this.showValidation);
+            clearTimeout( this.fooValidation );
 
-            this.showValidation = setTimeout( () => {
+            this.fooValidation = setTimeout( () => {
                 this.setState({ containerValidation: false })
             }, 2000)
         }
     }
 
-    showBestScore = e => {
-        this.setState({ bestScore: e })
-    }
-
     //--- RENDER ---//
     render() {
-        const nickValidation = this.state.name.length >= 3 && this.state.name.length < 10;
+        const { name, containerValidation, onlinePlayer } = this.state;
+        const nickValidation = name.length >= 3 && name.length < 10;
 
         return (
             <div>
@@ -128,28 +112,25 @@ class Login extends Component {
                 <div className="div-login">
 
                     {/* Nick */}
-                    <ChooseNick sendMethod={this.nickText} nickValidation={ nickValidation } />
+                    <ChooseNick sendMethod={ this.nickText } nickValidation={ nickValidation } />
 
                     {/* Select Avatar */}
-                    <SelectAvatar sendMethod={this.selectTag}/>
+                    <SelectAvatar sendMethod={ this.selectTag }/>
 
                     {/* Buttons */}
-                    <button className='btn-login' onClick={e => this.prepareGame(this._isMounted)}> Graj </button>
+                    <button className='btn-login' onClick={ e => this.prepareGame( this._isMounted ) }> Graj </button>
                     <InstructionBtn />
-                    <button className='btn-login' onClick={e => this.showBestScore(true)}> Rekordy </button>
+                    <BestScoresBtn />
 
                     {/* Validation */}
-                    <Validation containerValidation={ this.state.containerValidation } onlinePlayer={ this.state.onlinePlayer } nickValidation={ nickValidation }/>
+                    <Validation containerValidation={ containerValidation } onlinePlayer={ onlinePlayer } nickValidation={ nickValidation }/>
 
                     {/* Online players */}
-                    <ShowOnline onlinePlayer={this.state.onlinePlayer}/>
+                    <ShowOnline onlinePlayer={ onlinePlayer }/>
 
                     {/* Footer */}
                     { createBy }
                 </div>
-
-                {/* ----------------------------------**SCORE-BOARD CONTAINER**---------------------------------- */}
-                { this.state.bestScore && <BestScore sendMethod={this.showBestScore} /> }
             </div>
         );
     }
