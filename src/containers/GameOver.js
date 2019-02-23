@@ -8,16 +8,26 @@ import gameover from '../sound/gameover.mp3';
 
 
 class GameOver extends React.Component {
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
             players: [],
+            playersFromGame: [],
             pending: true
         }
         this.gameOverId = null;
     }
 
     componentDidMount() {
+        this._isMounted = true;
+
+        if (this._isMounted) {
+            this.setState({
+                playersFromGame: this.props.location.state,
+            })
+        }
 
         firebase.database().ref('/users').on('value', snap => {
             const value = snap.val();
@@ -53,7 +63,7 @@ class GameOver extends React.Component {
     }
 
     playAgain = () => {
-        firebase.database().ref('/users').remove();
+        // firebase.database().ref('/users').remove();
     };
 
     //--- RENDER ---//

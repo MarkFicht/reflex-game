@@ -17,12 +17,31 @@ class Timer extends Component {
             prepare: 3,
             time: 10,
             startPrepare: false,
-            startTime: false
+            startTime: false,
+            scoresPlayers: []
         }
     }
 
     componentDidMount() {
         this._isMounted = true;
+
+        firebase.database().ref('/users').on('value', snap => {
+
+            const val = snap.val();
+            const usersScores = [];
+
+            for (let key in val) {
+                usersScores.push({
+                    who: key,
+                    nickname: val[key].nickname,
+                    points: val[key].points
+                })
+            }
+
+            if ( this._isMounted ) {
+                this.setState({ scoresPlayers: usersScores });
+            }
+        })
     }
 
     componentDidUpdate() {
@@ -111,7 +130,10 @@ class Timer extends Component {
 
     renderRedirectToGameOver = (isMounted) => {
         if (this.state.time === 0 && isMounted) {
-            return <Redirect to='/gameover' />
+            return <Redirect to={{
+                pathname: '/gameover',
+                state: this.state.scoresPlayers
+            }} />
         }
     }
 

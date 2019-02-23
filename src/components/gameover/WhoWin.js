@@ -1,10 +1,24 @@
 import React, { Component } from 'react';
 
-
 class WhoWin extends Component {
+    state = {
+        players: [],
+        pending: true
+    }
+
+    componentDidMount() {
+
+        this.setState({
+            players: this.props.players,
+            pending: false
+        })
+    }
+
     render() {
-        let player1 = this.props.players[0];
-        let player2 = this.props.players[1];
+        if ( this.state.pending ) { return null; }
+
+        let player1 = this.state.players ? this.state.players[0] : null;
+        let player2 = this.state.players ? this.state.players[1] : null;
 
         let playerA = player1.points > player2.points ? player1 : player2;
         let playerB = player1.points < player2.points ? player1 : player2;
