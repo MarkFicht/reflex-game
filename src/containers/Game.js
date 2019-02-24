@@ -34,8 +34,7 @@ class Game extends Component {
         super(props);
         this.state = {
             isInGame: [],
-            disconnect: false,
-            val: null
+            disconnect: false
         }
     }
 

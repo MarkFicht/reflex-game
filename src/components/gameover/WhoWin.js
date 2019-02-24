@@ -1,47 +1,62 @@
 import React, { Component } from 'react';
 
 class WhoWin extends Component {
+    _isMounted = false;
+
     state = {
         players: [],
         pending: true
-    }
+    };
 
     componentDidMount() {
+        this._isMounted = true;
 
-        this.setState({
-            players: this.props.players,
-            pending: false
-        })
+        if ( this._isMounted ) {
+
+            this.setState({
+                players: this.props.players,
+                pending: false
+            })
+        }
+    }
+    
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
+    
     render() {
-        if ( this.state.pending ) { return null; }
+        if ( this.state.pending && !this.props.playersFromGame ) { return null; };
 
-        let player1 = this.state.players ? this.state.players[0] : null;
-        let player2 = this.state.players ? this.state.players[1] : null;
+        const player1 = this.props.playersFromGame[0];
+        const player2 = this.props.playersFromGame[1];
 
-        let playerA = player1.points > player2.points ? player1 : player2;
-        let playerB = player1.points < player2.points ? player1 : player2;
-        let wasDraw = player1.points === player2.points ? true : false;
+        const playerA = player1.points > player2.points ? player1 : player2;
+        const playerB = player1.points < player2.points ? player1 : player2;
+        const wasDraw = player1.points === player2.points ? true : false;
 
-        return (
-            <div className='game-winner'>
-                {wasDraw
-                    ? <div>
-                        DRAW: <span className='text-winner'>{player1.nickname}</span> & <span className='text-winner'>{player2.nickname}</span>
-                        <br />
-                        SCORE: <span className='text-winner'>{player1.points}</span>
-                    </div>
-
-                    : <div>
-                        WINNER: <span className='text-winner'>{playerA.nickname}</span> SCORE: <span className='text-winner'>{playerA.points}</span>
-                        <br />
-                        looser: <span className='text-looser'>{playerB.nickname}</span> score: <span className='text-looser'>{playerB.points}</span>
-                    </div>
-                }
+        const displayDraw = (
+            <div>
+                DRAW: <span className='text-winner'>{player1.nickname}</span> & <span className='text-winner'>{player2.nickname}</span>
+                <br />
+                SCORE: <span className='text-winner'>{player1.points}</span>
             </div>
         );
-    }
-}
+        const displayWinner = (
+            <div>
+                WINNER: <span className='text-winner'>{playerA.nickname}</span> SCORE: <span className='text-winner'>{playerA.points}</span>
+                <br />
+                looser: <span className='text-looser'>{playerB.nickname}</span> score: <span className='text-looser'>{playerB.points}</span>
+            </div>
+        );
+
+        /**  */
+        return (
+            <div className='game-winner'>
+                { wasDraw ? displayDraw : displayWinner }
+            </div>
+        );
+    };
+};
 
 export default WhoWin;

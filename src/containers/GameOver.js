@@ -17,53 +17,44 @@ class GameOver extends React.Component {
             playersFromGame: [],
             pending: true
         }
-        this.gameOverId = null;
+        this.gameOverVoice = null;
     }
 
     componentDidMount() {
         this._isMounted = true;
 
-        if (this._isMounted) {
-            this.setState({
-                playersFromGame: this.props.location.state,
-            })
+        /** Redirect to HOME */
+        if ( !this.props.location.state ) {
+            this.props.history.push('/');
         }
 
-        firebase.database().ref('/users').on('value', snap => {
-            const value = snap.val();
-
-            if(!value) {
-                this.props.history.push('/');
-            }
-
-            const players = [];
-            for(var key in value) {
-                players.push(value[key]);
-            }
+        /**  */
+        if (this._isMounted) {
 
             this.setState({
-                players: players,
+                playersFromGame: this.props.location.state,
                 pending: false
-            })
-        });
+            });
 
-        this.gameOverId = setTimeout( () => {
-            this.gameover = new Audio(gameover).play();
-            this.gameover.volume = .4;
-        }, 1500)
+            this.gameOverVoice = setTimeout( () => {
 
-        window.addEventListener('beforeunload', (e) => {
-            this.playAgain();
-        });
-    };
+                this.gameover = new Audio(gameover).play();
+                this.gameover.volume = .4;
+                clearTimeout( this.gameOverVoice );
+            }, 1500);
+
+            firebase.database().ref('/users').remove();
+        }
+    }
 
     componentWillUnmount() {
-        this.playAgain();
-        clearTimeout(this.gameOverId);
+        clearTimeout( this.gameOverVoice );
     }
 
     playAgain = () => {
-        // firebase.database().ref('/users').remove();
+        if ( this._isMounted ) {
+            this.props.history.push('/');
+        }
     };
 
     //--- RENDER ---//
@@ -77,15 +68,12 @@ class GameOver extends React.Component {
             <div>
                 <div className="div-gameover">
 
-                    {/* Logo */}
                     { logo }
-                    {/* GameOver - Text */}
                     <p className='game-over'> GAME OVER </p>
-                    {/* Winner */}
-                    <WhoWin players={this.state.players} />
-                    {/* Play again + Drop DataBase */}
-                    <button className="btn-gameover" onClick={this.playAgain}>Play again?</button>
 
+                    <WhoWin playersFromGame={this.state.playersFromGame} />
+
+                    <button className="btn-gameover" onClick={ this.playAgain }>Play again?</button>
                 </div>
             </div>
         );
