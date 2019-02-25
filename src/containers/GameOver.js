@@ -21,12 +21,13 @@ class GameOver extends React.Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
-
+        
         /** Redirect to HOME */
-        if ( !this.props.location.state ) {
+        if (!this.props.location.state) {
             this.props.history.push('/');
         }
+
+        this._isMounted = true;
 
         /**  */
         if (this._isMounted) {

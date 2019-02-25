@@ -14,12 +14,14 @@ class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            prepare: 0,
-            time: 1,
+            prepare: 3,
+            time: 10,
             startPrepare: false,
             startTime: false,
             scoresPlayers: []
         }
+        this.countdownPrepareSound = new Audio( countdownPrepare );
+        this.countdownTimeSound = new Audio( countdownTime );
     }
 
     componentDidMount() {
@@ -53,7 +55,7 @@ class Timer extends Component {
             if ( this._isMounted ) { 
                 const { time } = this.state;
 
-                if (time !== 0) {
+                if (time > 3) {       /** ----------------------TEST-------------------- */
                     firebase.database().ref('/game').update({
                         disconnect: true,
                     })
@@ -72,20 +74,25 @@ class Timer extends Component {
                     this.setState({
                         startPrepare: true
                     })
-                    this.startPrepareFoo(countdownPrepare, .25);     // startTimeFoo() inside
+                    this.startPrepareFoo( this.countdownPrepareSound, .25 );     // startTimeFoo() inside
                 }
             }
         }
     }
 
     componentWillUnmount() {
+        this.countdownPrepareSound = null;
+        this.countdownTimeSound = null;
         this._isMounted = false;
     }
 
     startPrepareFoo = (music, volumeParam) => {
-        let audio = new Audio(music);
-        audio.volume = volumeParam;
-        audio.play();
+        // let audio = new Audio(music);
+        // audio.volume = volumeParam;
+        // audio.play();
+
+        music.volume = volumeParam;
+        music.play();
 
         const preparePlayers = setInterval(() => {
 
@@ -98,17 +105,19 @@ class Timer extends Component {
                 this.setState({
                     startTime: true
                 })
-                audio = null;
+                music = null;
                 clearInterval(preparePlayers);
-                this.startTimeFoo(countdownTime, .3);
+                this.startTimeFoo( this.countdownTimeSound, .3 );
             }
 
         }, 1000)
     }
 
     startTimeFoo = (music, volumeParam) => {
-        let audio = new Audio(music);
-        audio.volume = volumeParam;
+        // let audio = new Audio(music);
+        // audio.volume = volumeParam;
+
+        music.volume = volumeParam;
 
         const timePlayers = setInterval(() => {
 
@@ -117,11 +126,11 @@ class Timer extends Component {
             })
 
             if (this.state.time === 4) {
-                audio.play();
+                music.play();                
             }
 
             if (this.state.time === 0) {
-                audio = null;
+                music = null;
                 clearInterval(timePlayers);
             }
 

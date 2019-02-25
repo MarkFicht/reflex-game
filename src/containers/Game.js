@@ -12,7 +12,7 @@ import BtnRdy from '../components/game/BtnRdy';
  * */
 
  /**  ---Structure---
-  * Test >                  create "idPlayer", (!)GameDisconnect/NotFound, (*)'F5/refresh', (1)(2)
+  * Game >                  create "idPlayer", (!)GameDisconnect/NotFound, (*)'F5/refresh', (1)(2)
   * BtnRdy >                who, bool for btnRdy, idPlayer, (1)(2)
   * Timer >                 allPlayers, btnsRdyHide, time, idPlayer, (!)GameOver + state, (*)'Back btn', (2), (s)
   * Player >                whenToStart, time, idPlayer, (3)'LAYOUT PLAYER'

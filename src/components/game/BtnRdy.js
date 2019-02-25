@@ -25,19 +25,19 @@ class BtnRdy extends Component {
         this._isMounted = true;
         const [id] = this.props.idPlayer;
 
-        firebase.database().ref('/users').on('value', snap => {
-            const val = snap.val();
+        if (this._isMounted) {
 
-            let currentOnline = [];
+            firebase.database().ref('/users').on('value', snap => {
+                const val = snap.val();
 
-            for (let key in val) {
-                currentOnline.push({
-                    readyPlayer: val[key].readyPlayer,
-                    who: key
-                })
-            }
+                let currentOnline = [];
 
-            if (this._isMounted) {
+                for (let key in val) {
+                    currentOnline.push({
+                        readyPlayer: val[key].readyPlayer,
+                        who: key
+                    })
+                }
 
                 this.setState({
                     btnRdy: id < currentOnline.length ? currentOnline[id].readyPlayer : null,
@@ -45,8 +45,8 @@ class BtnRdy extends Component {
                     howManyOnline: currentOnline.length,
                     arrStatusPlayers: currentOnline
                 })
-            }
-        })
+            })
+        }
     }
 
     componentDidUpdate() {
