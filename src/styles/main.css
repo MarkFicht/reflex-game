@@ -400,6 +400,9 @@ div.validation {
     font-weight: bold;
     letter-spacing: 3px;
     margin: 15px 0; }
+    .half-field > .scores p > .scores-style {
+      text-shadow: 3px 0 tomato, 0 3px tomato, -3px 0 tomato, 0 -3px tomato;
+      color: #f5c814; }
   .half-field > .random-char {
     width: 60px;
     height: 60px;

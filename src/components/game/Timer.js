@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 
 import Player from './Player';
 
-import countdownPrepare from '../../sound/countdownPrepare.wav';
+import countdownPrepare from '../../sound/countdownPrepare.mp3';
 import countdownTime from '../../sound/countdownTime.mp3';
 
 

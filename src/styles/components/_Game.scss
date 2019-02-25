@@ -46,6 +46,14 @@
     font-weight: bold;
     letter-spacing: 3px;
     margin: 15px 0;
+
+    & > .scores-style {
+    text-shadow:  3px 0 tomato,
+                0 3px tomato,
+                -3px 0 tomato,
+                0 -3px tomato;
+    color: darken($panelColor, 20%);
+    }
   }
 
   & > .random-char {

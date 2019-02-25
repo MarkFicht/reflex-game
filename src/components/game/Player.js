@@ -77,7 +77,7 @@ class Player extends Component {
                 <h3>{users[id] ? users[id].nickname : '-'}</h3>
 
                 <div className="scores">
-                    <p>SCORE: {users[id] ? users[id].points : '-'}</p>
+                    <p>SCORE: <span className="scores-style">{users[id] ? users[id].points : '-'}</span></p>
                 </div>
 
                 <div className="random-char">{users[id] ? users[id].char : '-'}</div>

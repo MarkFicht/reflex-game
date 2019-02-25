@@ -3,7 +3,6 @@ import { Component } from "react";
 import bgSong1 from "../../sound/bg_dynamic.m4a";
 import bgSong2 from "../../sound/bg_dynamic2.mp3";
 import bgSong3 from "../../sound/bg_dynamic3.mp3";
-import bgSong4 from "../../sound/bg_voyage.wav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class Music extends Component {

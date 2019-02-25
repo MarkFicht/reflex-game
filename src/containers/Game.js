@@ -115,6 +115,7 @@ class Game extends Component {
             if ( usersLength === null || (usersLength - 1 < Number(userId)) || isInGame[userId].validChars !== simpleValid ) {
 
                 return <Redirect to='/*' />
+                // this.props.history.push('/*');
             }
         }
     }
