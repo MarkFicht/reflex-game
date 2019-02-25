@@ -87,10 +87,6 @@ class Timer extends Component {
     }
 
     startPrepareFoo = (music, volumeParam) => {
-        // let audio = new Audio(music);
-        // audio.volume = volumeParam;
-        // audio.play();
-
         music.volume = volumeParam;
         music.play();
 
@@ -114,9 +110,6 @@ class Timer extends Component {
     }
 
     startTimeFoo = (music, volumeParam) => {
-        // let audio = new Audio(music);
-        // audio.volume = volumeParam;
-
         music.volume = volumeParam;
 
         const timePlayers = setInterval(() => {
