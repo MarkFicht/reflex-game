@@ -49,19 +49,21 @@ class Timer extends Component {
     componentDidUpdate() {
         let { howManyOnline, displayBtns, idPlayer } = this.props;
 
-        /** ---For a case: Back Btn in browser--- */
         window.onpopstate = () => {
 
-            if ( this._isMounted ) { 
+            /** ---For a case: 'Back Btn'--- */
+            if ( this._isMounted ) {
                 const { time } = this.state;
 
-                if (time > 3) {       /** ----------------------TEST-------------------- */
+                if (time !== 0) {
+
                     firebase.database().ref('/game').update({
                         disconnect: true,
                     })
                 }
-                // console.log('Time ' + time);
             }
+            
+            /** ---For a case: 'refresh/F5' --> looking to Game.js--- */
         }
 
         /** ---Start game--- */

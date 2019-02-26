@@ -41,6 +41,26 @@ class Game extends Component {
     componentDidMount() {
         this._isMounted = true;
 
+        /** Redirect to GameDisconnect.js */
+        window.onbeforeunload = function () {
+
+            /** ---For a case: 'refresh/F5'--- */
+            firebase.database().ref('/game').update({
+                disconnect: true,
+            })
+            this.props.history.push('/gamedisconnect');
+
+            /** ---For a case: 'Back Btn' --> looking to Timer.js--- */
+        }
+
+
+        /** Redirect to NotFound.js */
+        if ( !this.props.location.state || this.props.location.state.validChars !== this.props.match.params.simpleValid ) {
+
+            this.props.history.push('/*');
+        } 
+
+
         /** Save disconnect bool from DB */
         firebase.database().ref('/game').on('value', snap => {
             
@@ -69,19 +89,19 @@ class Game extends Component {
         })
 
 
-        /** Updating in Firebase - in this case don't need componentDidUpdate() */
-        if (window.performance) {
+        // /** Updating in Firebase - in this case don't need componentDidUpdate() */
+        // if (window.performance) {
 
-            /** ---For a case: refresh/F5--- */
-            if (performance.navigation.type == 1 && this._isMounted) {
+        //     /** ---For a case: refresh/F5--- */
+        //     if (performance.navigation.type == 1 && this._isMounted) {
 
-                firebase.database().ref('/game').update({
-                    disconnect: true,
-                })
-            } 
+        //         firebase.database().ref('/game').update({
+        //             disconnect: true,
+        //         })
+        //     } 
 
-            /** ---For a case 'Back Btn', looking to Timer.js--- */
-        }
+        //     /** ---For a case 'Back Btn', looking to Timer.js--- */
+        // }
     }
 
     componentWillUnmount() {
@@ -89,7 +109,7 @@ class Game extends Component {
     }
 
 
-    /** ---For a case when disconnect === true---
+    /** ---When 'disconnect === true' from Firebase---
      * 1.DropDB
      * 2.Redirect do GameDisconnect
      */
@@ -101,24 +121,24 @@ class Game extends Component {
         }
     }
 
-    /** ---For a case---
-     * Wrong url 
-     * Someone manually enter the address 
-     * */
-    redirectToNotFound = (isMounted) => {
-        if (isMounted) {
+    // /** ---For a case---
+    //  * Wrong url 
+    //  * Someone manually enter the address 
+    //  * */
+    // redirectToNotFound = (isMounted) => {
+    //     if (isMounted) {
 
-            const { isInGame } = this.state;
-            const usersLength = isInGame ? isInGame.length : null;
-            const { userId, simpleValid } = this.props.match.params;
+    //         const { isInGame } = this.state;
+    //         const usersLength = isInGame ? isInGame.length : null;
+    //         const { userId, simpleValid } = this.props.match.params;
 
-            if ( usersLength === null || (usersLength - 1 < Number(userId)) || isInGame[userId].validChars !== simpleValid ) {
+    //         if ( usersLength === null || (usersLength - 1 < Number(userId)) || isInGame[userId].validChars !== simpleValid ) {
 
-                return <Redirect to='/*' />
-                // this.props.history.push('/*');
-            }
-        }
-    }
+    //             return <Redirect to='/*' />
+    //             // this.props.history.push('/*');
+    //         }
+    //     }
+    // }
 
 
     render() {
@@ -129,7 +149,7 @@ class Game extends Component {
             
                 { this.state.disconnect && this.redirectToGameDisconnect( this._isMounted ) }
 
-                { this.redirectToNotFound( this._isMounted ) }
+                {/* { this.redirectToNotFound( this._isMounted ) } */}
                 
                 <BtnRdy idPlayer={ [0, ID_URL === 0] } />
                 <BtnRdy idPlayer={ [1, ID_URL === 1] } />

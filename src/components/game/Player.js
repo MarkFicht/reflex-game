@@ -14,8 +14,7 @@ class Player extends Component {
         super(props, context);
         this.state = {
             users: [],
-            pending: true,
-            disconnect: null
+            pending: true
         }
     }
 

@@ -44,6 +44,11 @@ class Login extends Component {
                 this.setState({ onlinePlayer: currentOnline.length });
             }
         })
+
+        /** Restart: Bool for checking connected 2 players */
+        firebase.database().ref('/game').update({
+            disconnect: false,
+        })
     }
 
     componentWillUnmount() {
@@ -83,7 +88,12 @@ class Login extends Component {
                     char: newChar,
                     validChars: validChars,
                 }).then( (e) => { 
-                    history.push(`/game/${this.state.onlinePlayer - 1}/${validChars}`) 
+
+                    // history.push(`/game/${this.state.onlinePlayer - 1}/${validChars}`) 
+                    history.push({
+                        pathname: `/game/${this.state.onlinePlayer - 1}/${validChars}`,
+                        state: { validChars }
+                    })
                 })
 
             }).catch( (error) => { console.log(`Error: ${error.code}`) });

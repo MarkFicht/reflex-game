@@ -44,7 +44,7 @@ class GameOver extends React.Component {
                 clearTimeout( this.gameOverVoice );
             }, 1500);
 
-            firebase.database().ref('/users').remove();
+            // firebase.database().ref('/users').remove();
         }
     }
 
