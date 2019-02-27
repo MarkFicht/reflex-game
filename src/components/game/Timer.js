@@ -36,7 +36,8 @@ class Timer extends Component {
                 usersScores.push({
                     who: key,
                     nickname: val[key].nickname,
-                    points: val[key].points
+                    points: val[key].points,
+                    validChars: val[key].validChars
                 })
             }
 
@@ -62,7 +63,7 @@ class Timer extends Component {
                     })
                 }
             }
-            
+
             /** ---For a case: 'refresh/F5' --> looking to Game.js--- */
         }
 
@@ -134,8 +135,11 @@ class Timer extends Component {
 
     renderRedirectToGameOver = (isMounted) => {
         if (this.state.time === 0 && isMounted) {
+            const { idPlayer } = this.props;
+            const currentPlayer = idPlayer[0];
+
             return <Redirect to={{
-                pathname: '/gameover',
+                pathname: `/gameover/${ currentPlayer }/${ this.state.scoresPlayers[ currentPlayer ].validChars }`,
                 state: this.state.scoresPlayers
             }} />
         }

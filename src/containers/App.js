@@ -29,7 +29,7 @@ class App extends Component {
                 <Route exact path="/" component={Login} />
                 <Route exact path="/game/:userId/:simpleValid" component={Game} />
                 <Route exact path="/gamedisconnect" component={GameDisconnect} />
-                <Route exact path="/gameover" component={GameOver} />
+                <Route exact path="/gameover/:userId/:simpleValid" component={GameOver} />
                 <Route exact path="*" component={NotFound} />
             </Switch>
           </div>

@@ -13,7 +13,10 @@ class GameOver extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            players: [],
+            whenDropDB: [
+                { validChars: null }, 
+                { validChars: null }
+            ],
             playersFromGame: [],
             pending: true
         }
