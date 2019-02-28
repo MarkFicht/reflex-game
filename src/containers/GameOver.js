@@ -13,10 +13,7 @@ class GameOver extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            whenDropDB: [
-                { validChars: null }, 
-                { validChars: null }
-            ],
+            whenDropDB: [],
             playersFromGame: [],
             pending: true
         }
@@ -24,17 +21,69 @@ class GameOver extends React.Component {
     }
 
     componentDidMount() {
-        
-        /** Redirect to HOME */
-        if (!this.props.location.state) {
-            this.props.history.push('/');
-        }
 
         this._isMounted = true;
 
-        /**  */
-        if (this._isMounted) {
+        console.log('GameOver.js, czy cWU sie wykonuje podczas renderu (bez this.props.history)');
 
+        /** Redirect to HOME */
+        if (!this.props.location.state && this._isMounted) {
+            this._isMounted = false;
+            this.props.history.push('/');
+        }
+
+        /**  */
+        if ( this._isMounted ) {
+            const { userId, simpleValid } = this.props.match.params;
+
+            firebase.database().ref('/users').on('value', snap => {
+
+                const val = snap.val();
+                const prepareDropDB = [];
+
+                for (let key in val) {
+                    prepareDropDB.push({
+                        validChars: val[key].validChars
+                    })
+                }
+
+                if ( this._isMounted ) {
+
+                    // this.setState({
+                    //     whenDropDB: prepareDropDB
+                    // });
+
+                    const validChars = prepareDropDB[userId] ? prepareDropDB[userId].validChars : null;
+
+                    console.log(this.state.whenDropDB, prepareDropDB, validChars)
+
+                    if (validChars === simpleValid) {
+
+                        const endPlayer = `endPlayer${Number(userId) + 1}`;
+
+                        firebase.database().ref('/game').update({
+                            [endPlayer]: true,
+                        })
+                    }
+                }
+            })     
+            
+            /** */
+            firebase.database().ref('/game').on('value', snap => {
+                const val = snap.val();
+                
+                if ( this._isMounted && val.endPlayer1 && val.endPlayer2 ) {
+
+                    firebase.database().ref('/game').update({
+                        endPlayer1: false,
+                        endPlayer2: false
+                    })
+
+                    firebase.database().ref('/users').remove();
+                }
+            })
+
+            /**  */
             this.setState({
                 playersFromGame: this.props.location.state,
                 pending: false
@@ -46,17 +95,18 @@ class GameOver extends React.Component {
                 this.gameover.volume = .4;
                 clearTimeout( this.gameOverVoice );
             }, 1500);
-
-            // firebase.database().ref('/users').remove();
         }
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
         clearTimeout( this.gameOverVoice );
     }
 
     playAgain = () => {
         if ( this._isMounted ) {
+
+            this._isMounted = false;
             this.props.history.push('/');
         }
     };
