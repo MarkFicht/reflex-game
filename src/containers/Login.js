@@ -89,7 +89,6 @@ class Login extends Component {
                     validChars: validChars,
                 }).then( (e) => { 
 
-                    // history.push(`/game/${this.state.onlinePlayer - 1}/${validChars}`) 
                     history.push({
                         pathname: `/game/${this.state.onlinePlayer - 1}/${validChars}`,
                         state: { validChars }

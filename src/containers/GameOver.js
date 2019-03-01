@@ -22,8 +22,6 @@ class GameOver extends React.Component {
     componentDidMount() {
         this._isMounted = true;
 
-        // console.log('GameOver.js, czy cWU sie wykonuje podczas renderu (bez this.props.history)');
-
         /** Redirect to HOME */
         if (!this.props.location.state && this._isMounted) {
             this._isMounted = false;
@@ -47,8 +45,6 @@ class GameOver extends React.Component {
 
                 if ( this._isMounted ) {
                     const validChars = prepareDropDB[userId] ? prepareDropDB[userId].validChars : null;
-
-                    // console.log(prepareDropDB, validChars);
 
                     if (validChars === simpleValid) {
                         const endPlayer = `endPlayer${Number(userId) + 1}`;

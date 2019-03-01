@@ -12,8 +12,8 @@ class MechanismGameButtons extends Component {
     constructor(props) {
         super(props);
 
-        this.good = null;
-        this.bad = null;
+        this.good = new Audio(good);
+        this.bad = new Audio(wrong);
     }
 
     componentDidMount() {

@@ -87,21 +87,6 @@ class Game extends Component {
                 this.setState({ isInGame: usersValid }); 
             }
         })
-
-
-        // /** Updating in Firebase - in this case don't need componentDidUpdate() */
-        // if (window.performance) {
-
-        //     /** ---For a case: refresh/F5--- */
-        //     if (performance.navigation.type == 1 && this._isMounted) {
-
-        //         firebase.database().ref('/game').update({
-        //             disconnect: true,
-        //         })
-        //     } 
-
-        //     /** ---For a case 'Back Btn', looking to Timer.js--- */
-        // }
     }
 
     componentWillUnmount() {
@@ -120,26 +105,7 @@ class Game extends Component {
             return <Redirect to='/gamedisconnect' />
         }
     }
-
-    // /** ---For a case---
-    //  * Wrong url 
-    //  * Someone manually enter the address 
-    //  * */
-    // redirectToNotFound = (isMounted) => {
-    //     if (isMounted) {
-
-    //         const { isInGame } = this.state;
-    //         const usersLength = isInGame ? isInGame.length : null;
-    //         const { userId, simpleValid } = this.props.match.params;
-
-    //         if ( usersLength === null || (usersLength - 1 < Number(userId)) || isInGame[userId].validChars !== simpleValid ) {
-
-    //             return <Redirect to='/*' />
-    //             // this.props.history.push('/*');
-    //         }
-    //     }
-    // }
-
+    
 
     render() {
         const ID_URL = Number(this.props.match.params.userId);
