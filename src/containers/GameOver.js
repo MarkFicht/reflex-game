@@ -13,7 +13,6 @@ class GameOver extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            whenDropDB: [],
             playersFromGame: [],
             pending: true
         }
@@ -21,10 +20,9 @@ class GameOver extends React.Component {
     }
 
     componentDidMount() {
-
         this._isMounted = true;
 
-        console.log('GameOver.js, czy cWU sie wykonuje podczas renderu (bez this.props.history)');
+        // console.log('GameOver.js, czy cWU sie wykonuje podczas renderu (bez this.props.history)');
 
         /** Redirect to HOME */
         if (!this.props.location.state && this._isMounted) {
@@ -48,17 +46,11 @@ class GameOver extends React.Component {
                 }
 
                 if ( this._isMounted ) {
-
-                    // this.setState({
-                    //     whenDropDB: prepareDropDB
-                    // });
-
                     const validChars = prepareDropDB[userId] ? prepareDropDB[userId].validChars : null;
 
-                    console.log(this.state.whenDropDB, prepareDropDB, validChars)
+                    // console.log(prepareDropDB, validChars);
 
                     if (validChars === simpleValid) {
-
                         const endPlayer = `endPlayer${Number(userId) + 1}`;
 
                         firebase.database().ref('/game').update({

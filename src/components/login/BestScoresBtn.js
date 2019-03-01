@@ -1,9 +1,27 @@
 import React, { Component } from 'react';
 
 class BestScoresBtn extends Component {
+
+    _isMounted = false;
     
     state = {
+        scores: [
+            { n: 'Marek', s: 100 }, { n: null, s: 0 }, 
+            { n: null, s: 0 }, { n: null, s: 0 }, 
+            { n: null, s: 0 }, { n: null, s: 0 },
+            { n: null, s: 0 }, { n: null, s: 0 },
+            { n: null, s: 0 }, { n: null, s: 0 }
+        ],
+        pending: true,
         showBestScores: false
+    }
+
+    componentDidMount() {
+        this._isMounted = true;
+
+        if ( this._isMounted ) {
+
+        }
     }
 
     showOrHideBestScores = () => {
@@ -11,12 +29,16 @@ class BestScoresBtn extends Component {
     }
 
     render() {
-        const { showBestScores } = this.state;
+        const { showBestScores, scores } = this.state;
 
         const textBestScores = (<>
-            <h2>W BUDOWIE :)</h2>
+            <h2>TOP 10 SCORES</h2>
             <ol>
-                <li><strong>1.</strong> Wersja Beta. Rekordy beda pobierane z Firebase</li>
+                { scores.map( (player, index) => { 
+                    return player.n !== null 
+                        ? <li><strong>{index + 1}.</strong>{ `${player.n}: ${player.s}` }</li> 
+                        : <li><strong>{index + 1}.</strong>{ `-` }</li>
+                } ) }
             </ol>
         </>);
 

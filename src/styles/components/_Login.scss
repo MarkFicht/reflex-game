@@ -203,19 +203,38 @@ div.validation {
   justify-content: center;
   animation: getOut .6s forwards ease-out;
 
-  h2 {
+  & h2 {
     font-size: 2.4rem;
     margin-bottom: 12px;
   }
+}
 
-  ol {
-    font-size: 28px;
-    list-style: none;
-    text-align: start;
+.best-scores-container ol li:nth-child(2n-1) {
+  color: darken(tomato, 40%);
+}
 
-    li {
-      padding: 10px 40px;
+.best-scores-container ol {
+  font-size: 28px;
+  list-style: none;
+  text-align: start;
+
+  li {
+    padding: 5px 0 1px 120px;
+  }
+
+  strong {
+      width: 60px;
+      display: inline-block;
     }
+}
+
+.instruction-container ol {
+  font-size: 28px;
+  list-style: none;
+  text-align: start;
+
+  & > li {
+    padding: 10px 40px;
   }
 }
 
