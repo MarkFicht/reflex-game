@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import * as firebase from 'firebase';
+
 
 class BestScoresBtn extends Component {
 
@@ -12,6 +14,7 @@ class BestScoresBtn extends Component {
             { n: null, s: 0 }, { n: null, s: 0 },
             { n: null, s: 0 }, { n: null, s: 0 }
         ],
+        testBestScores: [],
         pending: true,
         showBestScores: false
     }
@@ -21,6 +24,15 @@ class BestScoresBtn extends Component {
 
         if ( this._isMounted ) {
 
+            firebase.database().ref('/game/bestScores').on('value', snap => {
+                console.log(snap.val());
+
+                this.setState({
+                    testBestScores: snap.val(),
+                })
+
+                console.log(this.state.testBestScores, snap.val().sort( (a, b) => { return b.score - a.score } ));
+            })
         }
     }
 
@@ -29,7 +41,7 @@ class BestScoresBtn extends Component {
     }
 
     render() {
-        const { showBestScores, scores } = this.state;
+        const { showBestScores, scores, testBestScores } = this.state;
 
         const textBestScores = (<>
             <h2>TOP 10 SCORES</h2>
@@ -42,11 +54,22 @@ class BestScoresBtn extends Component {
             </ol>
         </>);
 
+        const textBestScores2 = (<>
+            <h2>TOP 10 SCORES</h2>
+            <ol>
+                { testBestScores.map( (val, index) => { 
+                    return val.name !== null 
+                        ? <li key={index}><strong>{index + 1}.</strong>{ `${val.name}: ${val.score}` }</li> 
+                        : <li key={index}><strong>{index + 1}.</strong>{ `-` }</li>
+                } ) }
+            </ol>
+        </>);
+
         const bestScores = showBestScores
             ? (<div className='best-scores-background'>
                 <div className='best-scores-container'>
                     <div className='best-scores-close' onClick={ this.showOrHideBestScores }> x </div>
-                    { textBestScores }
+                    { textBestScores2 }
                 </div>
             </div>)
             : null;
