@@ -7,14 +7,8 @@ class BestScoresBtn extends Component {
     _isMounted = false;
     
     state = {
-        scores: [
-            { n: 'Marek', s: 100 }, { n: null, s: 0 }, 
-            { n: null, s: 0 }, { n: null, s: 0 }, 
-            { n: null, s: 0 }, { n: null, s: 0 },
-            { n: null, s: 0 }, { n: null, s: 0 },
-            { n: null, s: 0 }, { n: null, s: 0 }
-        ],
-        testBestScores: [],
+        displayTop10: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+        bestScores: [],
         pending: true,
         showBestScores: false
     }
@@ -27,13 +21,19 @@ class BestScoresBtn extends Component {
             firebase.database().ref('/game/bestScores').on('value', snap => {
                 console.log(snap.val());
 
-                this.setState({
-                    testBestScores: snap.val(),
-                })
+                if ( this._isMounted ) {
+                    this.setState({
+                        bestScores: snap.val(),
+                    })
+                }
 
-                console.log(this.state.testBestScores, snap.val().sort( (a, b) => { return b.score - a.score } ));
+                // console.log(this.state.bestScores, snap.val().sort( (a, b) => { return b.score - a.score } ));
             })
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     showOrHideBestScores = () => {
@@ -41,35 +41,26 @@ class BestScoresBtn extends Component {
     }
 
     render() {
-        const { showBestScores, scores, testBestScores } = this.state;
+        const { showBestScores, bestScores, displayTop10 } = this.state;
 
-        const textBestScores = (<>
+        const listBestScores = (<>
             <h2>TOP 10 SCORES</h2>
             <ol>
-                { scores.map( (player, index) => { 
-                    return player.n !== null 
-                        ? <li><strong>{index + 1}.</strong>{ `${player.n}: ${player.s}` }</li> 
-                        : <li><strong>{index + 1}.</strong>{ `-` }</li>
-                } ) }
-            </ol>
-        </>);
+                { displayTop10.map( (val, index) => { 
+                    let player = bestScores[index]; 
 
-        const textBestScores2 = (<>
-            <h2>TOP 10 SCORES</h2>
-            <ol>
-                { testBestScores.map( (val, index) => { 
-                    return val.name !== null 
-                        ? <li key={index}><strong>{index + 1}.</strong>{ `${val.name}: ${val.score}` }</li> 
+                    return player !== undefined 
+                        ? <li key={index}><strong>{index + 1}.</strong>{ `${player.name}: ${player.score}` }</li> 
                         : <li key={index}><strong>{index + 1}.</strong>{ `-` }</li>
                 } ) }
             </ol>
         </>);
 
-        const bestScores = showBestScores
+        const containerBestScores = showBestScores
             ? (<div className='best-scores-background'>
                 <div className='best-scores-container'>
                     <div className='best-scores-close' onClick={ this.showOrHideBestScores }> x </div>
-                    { textBestScores2 }
+                    { listBestScores }
                 </div>
             </div>)
             : null;
@@ -78,7 +69,7 @@ class BestScoresBtn extends Component {
         return (
             <>
                 <button className='btn-login' onClick={ this.showOrHideBestScores }> Rekordy </button>
-                { bestScores }
+                { containerBestScores }
             </>
         );
     }

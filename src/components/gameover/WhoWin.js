@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Winner from './Winner';
+
 class WhoWin extends Component {
     _isMounted = false;
 
@@ -54,6 +56,8 @@ class WhoWin extends Component {
         return (
             <div className='game-winner'>
                 { wasDraw ? displayDraw : displayWinner }
+
+                <Winner winner={ playerA } looser={ playerB } isDraw={ wasDraw }/>
             </div>
         );
     };
