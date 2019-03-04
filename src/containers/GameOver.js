@@ -72,28 +72,28 @@ class GameOver extends React.Component {
             })
 
             /**  */
-            firebase.database().ref('/game/bestScores').on('value', snap => {
+            // firebase.database().ref('/game/bestScores').on('value', snap => {
 
-                console.log('polaczono z best scores', snap.val())
-                const val = snap.val();
-                let arr = [];
+            //     console.log('polaczono z best scores', snap.val())
+            //     const val = snap.val();
+            //     let arr = [];
 
-                if ( !val ) {
-                    arr.push({
-                        name: '123',
-                        score: 1
-                    })
-                } else {
+            //     if ( !val ) {
+            //         arr.push({
+            //             name: '123',
+            //             score: 1
+            //         })
+            //     } else {
                     
-                    console.log( 'wykonuje elsa', val[ val.length - 1 ].score, this.props.location.state[0].points )
-                    if ( val[ val.length - 1 ].score < this.props.location.state[0].points ) {
-                        console.log('Dodaje rekord', arr);
-                        arr = [ ...val, { name: this.props.location.state[0].nickname, score: this.props.location.state[0].points } ].sort( (a, b) => { return b.score - a.score } );
-                        console.log('Dodano i posortowano', arr);
-                    }
+            //         console.log( 'wykonuje elsa', val[ val.length - 1 ].score, this.props.location.state[0].points )
+            //         if ( val[ val.length - 1 ].score < this.props.location.state[0].points ) {
+            //             console.log('Dodaje rekord', arr);
+            //             arr = [ ...val, { name: this.props.location.state[0].nickname, score: this.props.location.state[0].points } ].sort( (a, b) => { return b.score - a.score } );
+            //             console.log('Dodano i posortowano', arr);
+            //         }
 
-                }
-            })
+            //     }
+            // })
 
             /**  */
             this.setState({
@@ -137,7 +137,7 @@ class GameOver extends React.Component {
                     { logo }
                     <p className='game-over'> GAME OVER </p>
 
-                    <WhoWin playersFromGame={this.state.playersFromGame} />
+                    <WhoWin playersFromGame={this.state.playersFromGame} simpleValid={this.props.match.params.simpleValid} />
 
                     <button className="btn-gameover" onClick={ this.playAgain }>Play again?</button>
                 </div>

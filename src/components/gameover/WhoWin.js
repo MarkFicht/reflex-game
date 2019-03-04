@@ -6,7 +6,6 @@ class WhoWin extends Component {
     _isMounted = false;
 
     state = {
-        players: [],
         pending: true
     };
 
@@ -16,7 +15,6 @@ class WhoWin extends Component {
         if ( this._isMounted ) {
 
             this.setState({
-                players: this.props.players,
                 pending: false
             })
         }
@@ -33,22 +31,23 @@ class WhoWin extends Component {
         const player1 = this.props.playersFromGame[0];
         const player2 = this.props.playersFromGame[1];
 
-        const playerA = player1.points > player2.points ? player1 : player2;
-        const playerB = player1.points < player2.points ? player1 : player2;
+        const winner = player1.points > player2.points ? player1 : player2;
+        const looser = player1.points < player2.points ? player1 : player2;
         const wasDraw = player1.points === player2.points ? true : false;
 
         const displayDraw = (
             <div>
-                DRAW: <span className='text-winner'>{player1.nickname}</span> & <span className='text-winner'>{player2.nickname}</span>
+                DRAW: <span className='text-winner'>{ player1.nickname }</span> & <span className='text-winner'>{ player2.nickname }</span>
                 <br />
-                SCORE: <span className='text-winner'>{player1.points}</span>
+                SCORE: <span className='text-winner'>{ player1.points }</span>
             </div>
         );
+        
         const displayWinner = (
             <div>
-                WINNER: <span className='text-winner'>{playerA.nickname}</span> SCORE: <span className='text-winner'>{playerA.points}</span>
+                WINNER: <span className='text-winner'>{ winner.nickname }</span> SCORE: <span className='text-winner'>{ winner.points }</span>
                 <br />
-                looser: <span className='text-looser'>{playerB.nickname}</span> score: <span className='text-looser'>{playerB.points}</span>
+                looser: <span className='text-looser'>{ looser.nickname }</span> score: <span className='text-looser'>{ looser.points }</span>
             </div>
         );
 
@@ -57,7 +56,7 @@ class WhoWin extends Component {
             <div className='game-winner'>
                 { wasDraw ? displayDraw : displayWinner }
 
-                <Winner winner={ playerA } looser={ playerB } isDraw={ wasDraw }/>
+                <Winner simpleValid={ this.props.simpleValid } winner={ winner } isDraw={ wasDraw } playersFromGame={ this.props.playersFromGame }/>
             </div>
         );
     };

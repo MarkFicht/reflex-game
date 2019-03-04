@@ -21,7 +21,7 @@ class BestScoresBtn extends Component {
             firebase.database().ref('/game/bestScores').on('value', snap => {
                 console.log(snap.val());
 
-                if ( this._isMounted ) {
+                if ( this._isMounted && snap.val() ) {
                     this.setState({
                         bestScores: snap.val(),
                     })
