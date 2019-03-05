@@ -7,225 +7,124 @@ class Winner extends Component {
 
     state = {
         pending: true,
+        pendingForNewArr: true,
         arrFromFB: [],
-        arr: []
+        arrWithNewScores: []
     };
 
     componentDidMount() {
         this._isMounted = true;
         const { simpleValid, winner, isDraw, playersFromGame } = this.props;
-        const { arr } = this.state;
-        console.log(simpleValid, winner, isDraw, playersFromGame, arr);
+        // console.log(simpleValid, winner, isDraw, playersFromGame);
 
         if ( this._isMounted && (simpleValid === winner.validChars) ) {
-            console.log('Wykonuje referencje do fb raz.')
+            console.log('Wykonuje referencje do fb raz - w wybranym id')
 
             /**  */
             firebase.database().ref('/game/bestScores').on('value', snap => {
 
                 console.log('polaczono z best scores', snap.val())
                 const val = snap.val();
-                // let arr = [];
 
                 if ( this._isMounted ) {
+
                     this.setState({
                         arrFromFB: val,
                         pending: false
                     })
                 }
-
-                
-                // if ( !val ) {
-
-                //     this.setState({
-                //         arr: [{ name: playersFromGame[0].nickname, score: playersFromGame[0].points }, { name: playersFromGame[1].nickname, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }),
-                //         pending: false
-                //     })
-
-                //     // arr = [{ name: playersFromGame[0].nickname, score: playersFromGame[0].points }, { name: playersFromGame[1].nickname, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score });
-
-                //     console.log('Rekordy byly puste, dodanie 2 pierwszych', arr)
-
-                //     // if ( this._isMounted ) {
-                //     //     return firebase.database().ref('/game').update({
-                //     //         bestScores: arr
-                //     //     })
-                //     // }
-                    
-                // } else if ( val.length < 10 ) {
-
-                //     this.setState({
-                //         arr: [ ...val, { name: winner.nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10),
-                //         pending: false
-                //     })
-
-                //     //  arr = [ ...val, { name: winner.nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10);
-
-                //     console.log('Zapleninanie rekordow do 10', arr)
-
-                //     // if ( this._isMounted ) {
-                //     //     return firebase.database().ref('/game').update({
-                //     //         bestScores: arr
-                //     //     })
-                //     // }
-
-                // } else {
-                    
-                //     console.log( 'wykonuje elsa, val z 10 rekordami istnial', val[ val.length - 1 ].score, winner.points )
-                //     if ( val[ val.length - 1 ].score < winner.points ) {
-                //         console.log('Dodaje rekord + tu podejmuje decyzje czy byl 1 winner czy draw');
-
-                //         if ( !isDraw ) {
-
-                //             this.setState({
-                //                 arr: [ ...val, { name: winner.nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10),
-                //                 pending: false
-                //             })
-                            
-                //             // arr = [ ...val, { name: winner.nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10);
-                //             console.log('Dodano 1 winnera i posortowano', arr);
-
-                //             // if ( this._isMounted ) {
-                //             //     return firebase.database().ref('/game').update({
-                //             //         bestScores: arr
-                //             //     })
-                //             // }
-                //         } else {
-
-                //             this.setState({
-                //                 arr: [ ...val, { name: playersFromGame[0].nickname, score: winner.points }, { name: playersFromGame[1].nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10),
-                //                 pending: false
-                //             })
-                //             // arr = [ ...val, { name: playersFromGame[0].nickname, score: winner.points }, { name: playersFromGame[1].nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10);
-                //             console.log('Dodano 2 i posortowano', arr);
-
-                //             // if ( this._isMounted ) {
-                //             //     return firebase.database().ref('/game').update({
-                //             //         bestScores: arr
-                //             //     })
-                //             // }
-                //         }
-                //     }
-                // }
-
-                console.log(arr)
-
-                // if ( this._isMounted ) {
-                //     return firebase.database().ref('/game').update({
-                //         bestScores: arr
-                //     })
-                // }
             })
-
-            /**  */
-            // if ( this._isMounted ) {
-            //     return firebase.database().ref('/game').update({
-            //         bestScores: this.state.arr
-            //     })
-            // }
-
         }
     }
 
     componentDidUpdate() {
 
-        /**  */
-        if (!this.state.pending) {
-            this.shouldAddToBestScores( this.state.arrFromFB );
-        }
+        const { simpleValid, winner } = this.props;     // 'winner' in case draw === still exist!
 
-        if ( this._isMounted ) {
-            return firebase.database().ref('/game').update({
-                bestScores: this.state.arr
-            })
+        if ( simpleValid === winner.validChars ) {
+
+            /**  */
+            if ( !this.state.pending && this._isMounted ) {
+                this.shouldAddToBestScores(this.state.arrFromFB);
+            }
+
+            if ( !this.state.pendingForNewArr && this._isMounted ) {
+
+                return firebase.database().ref('/game').update({
+                    bestScores: this.state.arrWithNewScores
+                })
+            }
         }
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
+    /**  */
     shouldAddToBestScores = ( val ) => {
 
         if ( !this._once ) { return null; }
 
-        const { simpleValid, winner, isDraw, playersFromGame } = this.props;
-        const { arr } = this.state;
+        const { winner, isDraw, playersFromGame } = this.props;
+        const { arrWithNewScores } = this.state;
 
-        if (!val) {
-
-            this.setState({
-                arr: [{ name: playersFromGame[0].nickname, score: playersFromGame[0].points }, { name: playersFromGame[1].nickname, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }),
-                pending: false
-            })
-
-            // arr = [{ name: playersFromGame[0].nickname, score: playersFromGame[0].points }, { name: playersFromGame[1].nickname, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score });
-
-            console.log('Rekordy byly puste, dodanie 2 pierwszych', arr)
-
-            // if ( this._isMounted ) {
-            //     return firebase.database().ref('/game').update({
-            //         bestScores: arr
-            //     })
-            // }
-
-        } else if (val.length < 10) {
+        /** Case 1: Best scores are empty */
+        if ( !val ) {
 
             this.setState({
-                arr: [...val, { name: winner.nickname, score: winner.points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
-                pending: false
+                arrWithNewScores: [{ name: playersFromGame[0].nickname, score: playersFromGame[0].points }, { name: playersFromGame[1].nickname, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }),
+                pendingForNewArr: false
             })
+            console.log('Rekordy byly puste, dodanie 2 pierwszych', arrWithNewScores)
 
-            //  arr = [ ...val, { name: winner.nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10);
+        /** Case 2: Free space up to 10 */
+        } else if ( val.length < 10 ) {
 
-            console.log('Zapleninanie rekordow do 10', arr)
-
-            // if ( this._isMounted ) {
-            //     return firebase.database().ref('/game').update({
-            //         bestScores: arr
-            //     })
-            // }
+            this.setState({
+                arrWithNewScores: [...val, { name: playersFromGame[0].nickname, score: playersFromGame[0].points }, { name: playersFromGame[1].nickname, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
+                pendingForNewArr: false
+            })
+            console.log('Zapleninanie rekordow do 10', arrWithNewScores)
 
         } else {
 
-            console.log('wykonuje elsa, val z 10 rekordami istnial', val[val.length - 1].score, winner.points)
-            if (val[val.length - 1].score < winner.points) {
-                console.log('Dodaje rekord + tu podejmuje decyzje czy byl 1 winner czy draw');
+            console.log('Jest 10 rekordow + Sprawdzam czy jest sens dodawac rekordy', val[val.length - 1].score, winner.points)
 
-                if (!isDraw) {
+            if ( val[val.length - 1].score < winner.points ) {
+
+                /** Case 3: Winner and Looser scores were the best  */
+                if ( !isDraw && (val[val.length - 1].score < playersFromGame[0].points) && (val[val.length - 1].score < playersFromGame[1].points) ) {
 
                     this.setState({
-                        arr: [...val, { name: winner.nickname, score: winner.points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
-                        pending: false
+                        arrWithNewScores: [...val, { name: playersFromGame[0].nickname, score: playersFromGame[0].points }, { name: playersFromGame[1].nickname, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),                        
+                        pendingForNewArr: false
                     })
+                    console.log('Dodano 2: winnera i loosera + posortowano', arrWithNewScores);
 
-                    // arr = [ ...val, { name: winner.nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10);
-                    console.log('Dodano 1 winnera i posortowano', arr);
+                /** Case 4: Winner score was the best */
+                } else if ( !isDraw ) {
 
-                    // if ( this._isMounted ) {
-                    //     return firebase.database().ref('/game').update({
-                    //         bestScores: arr
-                    //     })
-                    // }
+                    this.setState({
+                        arrWithNewScores: [...val, { name: winner.nickname, score: winner.points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
+                        pendingForNewArr: false
+                    })
+                    console.log('Dodano 1 winnera + posortowano', arrWithNewScores);
+
+                /** Case 5: Was draw, 2 results were the best */
                 } else {
 
                     this.setState({
-                        arr: [...val, { name: playersFromGame[0].nickname, score: winner.points }, { name: playersFromGame[1].nickname, score: winner.points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
-                        pending: false
+                        arrWithNewScores: [...val, { name: playersFromGame[0].nickname, score: winner.points }, { name: playersFromGame[1].nickname, score: winner.points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
+                        pendingForNewArr: false
                     })
-                    // arr = [ ...val, { name: playersFromGame[0].nickname, score: winner.points }, { name: playersFromGame[1].nickname, score: winner.points } ].sort( (a, b) => { return b.score - a.score } ).slice(0, 10);
-                    console.log('Dodano 2 i posortowano', arr);
-
-                    // if ( this._isMounted ) {
-                    //     return firebase.database().ref('/game').update({
-                    //         bestScores: arr
-                    //     })
-                    // }
+                    console.log('Dodano 2 przy remisie + posortowano', arrWithNewScores);
                 }
             }
         }
 
+        /** Case 6:No changes === this.state.pendingForNewArr: true  */
         this._once = false;
-    }
-    
-    componentWillUnmount() {
-        this._isMounted = false;
     }
 
     

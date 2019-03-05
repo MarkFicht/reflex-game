@@ -55,45 +55,6 @@ class GameOver extends React.Component {
                     }
                 }
             })     
-            
-            /**  */
-            firebase.database().ref('/game').on('value', snap => {
-                const val = snap.val();
-                
-                if ( this._isMounted && val.endPlayer1 && val.endPlayer2 ) {
-
-                    firebase.database().ref('/game').update({
-                        endPlayer1: false,
-                        endPlayer2: false
-                    })
-
-                    firebase.database().ref('/users').remove();
-                }
-            })
-
-            /**  */
-            // firebase.database().ref('/game/bestScores').on('value', snap => {
-
-            //     console.log('polaczono z best scores', snap.val())
-            //     const val = snap.val();
-            //     let arr = [];
-
-            //     if ( !val ) {
-            //         arr.push({
-            //             name: '123',
-            //             score: 1
-            //         })
-            //     } else {
-                    
-            //         console.log( 'wykonuje elsa', val[ val.length - 1 ].score, this.props.location.state[0].points )
-            //         if ( val[ val.length - 1 ].score < this.props.location.state[0].points ) {
-            //             console.log('Dodaje rekord', arr);
-            //             arr = [ ...val, { name: this.props.location.state[0].nickname, score: this.props.location.state[0].points } ].sort( (a, b) => { return b.score - a.score } );
-            //             console.log('Dodano i posortowano', arr);
-            //         }
-
-            //     }
-            // })
 
             /**  */
             this.setState({

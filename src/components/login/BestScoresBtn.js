@@ -19,15 +19,14 @@ class BestScoresBtn extends Component {
         if ( this._isMounted ) {
 
             firebase.database().ref('/game/bestScores').on('value', snap => {
-                console.log(snap.val());
+                console.log(snap.val(), 'Memory leak :P');
 
                 if ( this._isMounted && snap.val() ) {
+                    
                     this.setState({
                         bestScores: snap.val(),
                     })
                 }
-
-                // console.log(this.state.bestScores, snap.val().sort( (a, b) => { return b.score - a.score } ));
             })
         }
     }
