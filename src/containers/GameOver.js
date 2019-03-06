@@ -54,7 +54,22 @@ class GameOver extends React.Component {
                         })
                     }
                 }
-            })     
+            }) 
+            
+            /**  */
+            firebase.database().ref('/game').on('value', snap => {
+                const val = snap.val();
+
+                if ( this._isMounted && val.endPlayer1 && val.endPlayer2 ) {
+
+                    firebase.database().ref('/game').update({
+                        endPlayer1: false,
+                        endPlayer2: false
+                    })
+
+                    firebase.database().ref('/users').remove();
+                }
+            })
 
             /**  */
             this.setState({
@@ -96,7 +111,7 @@ class GameOver extends React.Component {
                 <div className="div-gameover">
 
                     { logo }
-                    <p className='game-over'> GAME OVER </p>
+                    <p className='text-game-over'> GAME OVER </p>
 
                     <WhoWin playersFromGame={this.state.playersFromGame} simpleValid={this.props.match.params.simpleValid} />
 

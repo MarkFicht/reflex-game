@@ -42,7 +42,7 @@ class WhoWin extends Component {
                 SCORE: <span className='text-winner'>{ player1.points }</span>
             </div>
         );
-        
+
         const displayWinner = (
             <div>
                 WINNER: <span className='text-winner'>{ winner.nickname }</span> SCORE: <span className='text-winner'>{ winner.points }</span>
@@ -53,7 +53,7 @@ class WhoWin extends Component {
 
         /**  */
         return (
-            <div className='game-winner'>
+            <div className='game-winner-container'>
                 { wasDraw ? displayDraw : displayWinner }
 
                 <Winner simpleValid={ this.props.simpleValid } winner={ winner } isDraw={ wasDraw } playersFromGame={ this.props.playersFromGame }/>

@@ -129,13 +129,11 @@ class Winner extends Component {
 
     
     render() {
-        if ( this.state.pending ) { return null; };
+        if ( this.state.pending || this.props.isDraw ) { return null; };
 
         /**  */
         return (
-            <div className='game-winner'>
-                
-            </div>
+            <div className='who-win'>YOU WIN!</div>
         );
     };
 };
