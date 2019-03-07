@@ -27,7 +27,7 @@ class InstructionBtn extends Component {
         const instruction = showInstruction
             ? (<div className='instruction-background'>
                 <div className='instruction-container'>
-                    <div className='instruction-close' onClick={ this.showOrHideInstruction }> x </div>
+                    <button className='instruction-close' onClick={ this.showOrHideInstruction }> x </button>
                     { textInstruction }
                 </div>
             </div>)

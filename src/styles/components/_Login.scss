@@ -9,6 +9,11 @@
   background-color: $panelColor;
   border-radius: 10px;
   cursor: pointer;
+  z-index: 1;
+
+  &:focus {
+    background-color: black;
+  }
 }
 
 //fieldset.under-audio {
@@ -96,6 +101,17 @@
   border: 2px solid $borderColor;
   outline: none;
   position: relative;
+}
+
+input#nick,
+select#selectAvatar {
+  transition: all .2s;
+
+  &hover, &:focus {
+    border: 2px solid tomato;
+    background-color: lighten($inputColor, 2%);
+    cursor: pointer;
+  }
 }
 
 .validation-icon {
@@ -245,21 +261,4 @@ div.validation {
   60% { top: 10px; }
   75% { top: -5px; }
   to { top: 0; }
-}
-
-.instruction-close,
-.best-scores-close {
-  position: absolute;
-  font-size: 65px;
-  top: 0;
-  right: 25px;
-  transition: .2s all;
-  z-index: 2;
-  color: #333;
-
-  &:hover {
-    transform: scale(1.2);
-    color: $backgroundColor;
-    cursor: pointer;
-  }
 }

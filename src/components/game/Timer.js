@@ -14,8 +14,8 @@ class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            prepare: 1,
-            time: 5,
+            prepare: 3,
+            time: 30,
             startPrepare: false,
             startTime: false,
             scoresPlayers: []

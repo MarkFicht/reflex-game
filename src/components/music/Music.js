@@ -48,6 +48,12 @@ class Music extends Component {
         return (
             <div>
                 <div className="audio" onClick={this.audioOnOff}>{ this.music }</div>
+
+                {/* <idv className="audio">
+                    <label htmlFor="music">Music</label>
+                    <input type="checkbox" id="music" />
+                </idv> */}
+                
                 {/*<fieldset className='under-audio'>*/}
 
                     {/*<legend>Music</legend>*/}

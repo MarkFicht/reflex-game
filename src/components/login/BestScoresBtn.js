@@ -22,7 +22,7 @@ class BestScoresBtn extends Component {
                 console.log(snap.val(), 'Memory leak :P');
 
                 if ( this._isMounted && snap.val() ) {
-                    
+
                     this.setState({
                         bestScores: snap.val(),
                     })
@@ -58,7 +58,7 @@ class BestScoresBtn extends Component {
         const containerBestScores = showBestScores
             ? (<div className='best-scores-background'>
                 <div className='best-scores-container'>
-                    <div className='best-scores-close' onClick={ this.showOrHideBestScores }> x </div>
+                    <button className='best-scores-close' onClick={ this.showOrHideBestScores }> x </button>
                     { listBestScores }
                 </div>
             </div>)

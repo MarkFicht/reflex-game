@@ -71,15 +71,38 @@ h1.logo {
   border: 0;
   border-radius: 15px;
   cursor: pointer;
-  transition: background-color .3s, color .3s; }
+  transition: all .3s; }
   .btn-login:nth-child(3) {
     margin-top: 15px; }
-  .btn-login:hover {
-    transform: scale(1.01);
+  .btn-login:hover, .btn-login:focus {
+    transform: scale(1.07);
     color: #742c20;
-    background-color: #ff745b; }
+    background-color: #ff8e7a; }
   .btn-login:active {
-    transform: scale(0.95); }
+    transform: scale(1.02); }
+
+.instruction-close,
+.best-scores-close {
+  position: absolute;
+  font-size: 65px;
+  font-family: 'VT323', monospace;
+  background-color: transparent;
+  border: none;
+  top: 0;
+  right: 25px;
+  transition: .2s all;
+  z-index: 2;
+  color: #333; }
+  .instruction-close:hover, .instruction-close:focus,
+  .best-scores-close:hover,
+  .best-scores-close:focus {
+    transform: scale(1.2);
+    color: tomato;
+    cursor: pointer;
+    outline: none; }
+  .instruction-close:active,
+  .best-scores-close:active {
+    transform: scale(1.05); }
 
 .btn-game {
   width: 60px;
@@ -98,7 +121,7 @@ h1.logo {
   cursor: pointer;
   box-shadow: 0 0 5px black;
   transition: all .2s; }
-  .btn-game:hover {
+  .btn-game:hover, .btn-game:focus {
     box-shadow: 0 0 15px black; }
   .btn-game:active {
     transform: scale(0.85);
@@ -134,7 +157,7 @@ h1.logo {
   cursor: pointer;
   transition: transform .5s, border .3s, color .3s;
   z-index: 1; }
-  .btn-ready1:hover, .btn-ready2:hover {
+  .btn-ready1:hover, .btn-ready1:focus, .btn-ready2:hover, .btn-ready2:focus {
     transform: scale(1.07);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); }
   .btn-ready1:active, .btn-ready2:active {
@@ -171,7 +194,7 @@ h1.logo {
   border-radius: 15px;
   cursor: pointer;
   transition: all .3s, color .3s; }
-  .btn-gameover:hover {
+  .btn-gameover:hover, .btn-gameover:focus {
     transform: scale(1.05);
     color: #742c20;
     background-color: #ff745b; }
@@ -188,7 +211,10 @@ h1.logo {
   font-size: 28px;
   background-color: #f9df76;
   border-radius: 10px;
-  cursor: pointer; }
+  cursor: pointer;
+  z-index: 1; }
+  .audio:focus {
+    background-color: black; }
 
 .div-login {
   background-color: #f9df76;
@@ -232,6 +258,16 @@ h1.logo {
   border: 2px solid #993b2a;
   outline: none;
   position: relative; }
+
+input#nick,
+select#selectAvatar {
+  transition: all .2s; }
+  input#nickhover, input#nick:focus,
+  select#selectAvatarhover,
+  select#selectAvatar:focus {
+    border: 2px solid tomato;
+    background-color: #ffc9bf;
+    cursor: pointer; }
 
 .validation-icon {
   position: absolute;
@@ -361,21 +397,6 @@ div.validation {
     top: -5px; }
   to {
     top: 0; } }
-
-.instruction-close,
-.best-scores-close {
-  position: absolute;
-  font-size: 65px;
-  top: 0;
-  right: 25px;
-  transition: .2s all;
-  z-index: 2;
-  color: #333; }
-  .instruction-close:hover,
-  .best-scores-close:hover {
-    transform: scale(1.2);
-    color: tomato;
-    cursor: pointer; }
 
 .div-game {
   background: url("../images/background/bg-dbz2.png") no-repeat -220px;

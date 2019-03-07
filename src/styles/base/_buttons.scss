@@ -13,20 +13,45 @@
   border: 0;
   border-radius: 15px;
   cursor: pointer;
-  transition: background-color .3s, color .3s;
+  transition: all .3s;
 
   &:nth-child(3){
     margin-top: 15px;
   }
 
-  &:hover {
-    transform: scale(1.01);
+  &:hover, &:focus {
+    transform: scale(1.07);
     color: lighten($textColor, 10%);
-    background-color: lighten($backgroundColor, 4%);
+    background-color: lighten($backgroundColor, 10%);
   }
 
   &:active {
-    transform: scale(.95);
+    transform: scale(1.02);
+  }
+}
+
+.instruction-close,
+.best-scores-close {
+  position: absolute;
+  font-size: 65px;
+  font-family: 'VT323', monospace;
+  background-color: transparent;
+  border: none;
+  top: 0;
+  right: 25px;
+  transition: .2s all;
+  z-index: 2;
+  color: #333;
+
+  &:hover, &:focus {
+    transform: scale(1.2);
+    color: $backgroundColor;
+    cursor: pointer;
+    outline: none;
+  }
+
+  &:active {
+    transform: scale(1.05);
   }
 }
 
@@ -49,7 +74,7 @@
   box-shadow: 0 0 5px black;
   transition: all .2s;
 
-  &:hover {
+  &:hover, &:focus {
     box-shadow: 0 0 15px black;
   }
 
@@ -94,7 +119,7 @@
   transition: transform .5s, border .3s, color .3s;
   z-index: 1;
 
-  &:hover {
+  &:hover, &:focus {
     transform: scale(1.07);
     box-shadow: 0 0 15px rgba($color: #000000, $alpha: .4);
   }
@@ -141,7 +166,7 @@
   cursor: pointer;
   transition: all .3s, color .3s;
 
-  &:hover {
+  &:hover, &:focus {
     transform: scale(1.05);
     color: lighten($textColor, 10%);
     background-color: lighten($backgroundColor, 4%);
