@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
 import Timer from './Timer';
+import { GameConsumer } from '../../context/GameContext'
 
 import waitingForPlayers from '../../components/other/waitingForPlayers';
 
@@ -94,18 +95,22 @@ class BtnRdy extends Component {
         };
 
         return (
-            <>
-                {/* Waiting for players */}
-                {howManyOnline % 2 === 1 && waitingForPlayers}
+            <GameConsumer>
+                {({ test }) => (
+                    <>
+                        {/* Waiting for players */}
+                        {howManyOnline % 2 === 1 && waitingForPlayers}
+                        <div>{test}</div>
+                        {/* { id < howManyOnline && displayBtns */}
+                        {id < howManyOnline
+                            ? <button className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide} style={style} onClick={e => this.getReadyPlayers(who, bool, this._isMounted)}>{btnCaption}</button>
+                            : null
+                        }
 
-                {/* { id < howManyOnline && displayBtns */}
-                {id < howManyOnline
-                    ? <button className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide} style={style} onClick={e => this.getReadyPlayers(who, bool, this._isMounted)}>{btnCaption}</button>
-                    : null
-                }
-
-                <Timer howManyOnline={howManyOnline} displayBtns={displayBtns} idPlayer={this.props.idPlayer} />
-            </>
+                        <Timer howManyOnline={howManyOnline} displayBtns={displayBtns} idPlayer={this.props.idPlayer} />
+                    </>
+                )}
+            </GameConsumer>
         )
     }
 }

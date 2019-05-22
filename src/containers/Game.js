@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import { Redirect } from 'react-router-dom';
+import GameProvider from '../context/GameContext'
 
 import BtnRdy from '../components/game/BtnRdy';
 
@@ -112,13 +113,14 @@ class Game extends Component {
 
         return (
             <div className="div-game">
-            
-                { this.state.disconnect && this.redirectToGameDisconnect( this._isMounted ) }
+                <GameProvider>
+                    { this.state.disconnect && this.redirectToGameDisconnect( this._isMounted ) }
 
-                {/* { this.redirectToNotFound( this._isMounted ) } */}
-                
-                <BtnRdy idPlayer={ [0, ID_URL === 0] } />
-                <BtnRdy idPlayer={ [1, ID_URL === 1] } />
+                    {/* { this.redirectToNotFound( this._isMounted ) } */}
+                    
+                    <BtnRdy idPlayer={ [0, ID_URL === 0] } />
+                    <BtnRdy idPlayer={ [1, ID_URL === 1] } />
+                </GameProvider>
             </div>
         )
     }
