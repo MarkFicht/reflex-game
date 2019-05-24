@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import * as firebase from 'firebase';
+import React, { Component } from 'react'
+import * as firebase from 'firebase'
 
-import Timer from './Timer';
+import Timer from './Timer'
 import { GameConsumer } from '../../context/GameContext'
 
-import waitingForPlayers from '../../components/other/waitingForPlayers';
+import waitingForPlayers from '../../components/other/waitingForPlayers'
 
 
 /** + component: "Waiting for all players" */

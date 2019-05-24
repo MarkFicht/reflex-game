@@ -57,7 +57,14 @@ export default class GameProvider extends Component {
                 })
             }
 
-            if (this._isMounted) { this.setState({ players: usersGame, pending: false }) }
+            if (this._isMounted) { 
+                
+                this.setState({ 
+                    players: usersGame,
+                    howManyOnline: usersGame.length,
+                    pending: false 
+                }) 
+            }
         })
 
         /** Download Game State */
@@ -68,23 +75,17 @@ export default class GameProvider extends Component {
         })
 
         /** Redirect to GameDisconnect.js -> CASE: 'refresh/F5' */
-        window.onbeforeunload = () => {
+        window.onbeforeunload = () => firebase.database().ref('/game').update({ disconnect: true })
 
-            firebase.database().ref('/game').update({ disconnect: true })
-            this.props.history.push('/gamedisconnect')
-        }
-
-        /** Redirect to NotFound.js -> CASE: 'Back Btn' */
+        /** Redirect to GameDisconnect.js -> CASE: 'Back Btn' */
         window.onpopstate = () => {
-
             if (this._isMounted) {
-                const { time } = this.state
 
-                if (time !== 0) { firebase.database().ref('/game').update({ disconnect: true }) }
+                if (this.state.time !== 0) { firebase.database().ref('/game').update({ disconnect: true }) }
             }
         }
 
-        /** Redirect to GameDisconnect.js -> CASE: 'Not found props location from Login.js' */
+        /** Redirect to NotFound.js -> CASE: 'Not found props location from Login.js' */
         if (!this.props.location.state || this.props.location.state.validChars !== this.props.match.params.simpleValid) {
 
             this.props.history.push('/*')
@@ -102,7 +103,20 @@ export default class GameProvider extends Component {
         if (isMounted) {
 
             firebase.database().ref('/users').remove()
+            firebase.database().ref('/game').update({ disconnect: false })
             return <Redirect to='/gamedisconnect' />
+        }
+    }
+
+    redirectToGameOver = (isMounted) => {
+        if (this.state.time === 0 && isMounted) {
+            // const { idPlayer } = this.props;
+            // const currentPlayer = idPlayer[0];
+
+            // return <Redirect to={{
+            //     pathname: `/gameover/${currentPlayer}/${this.state.scoresPlayers[currentPlayer].validChars}`,
+            //     state: this.state.scoresPlayers
+            // }} />
         }
     }
 
@@ -112,6 +126,10 @@ export default class GameProvider extends Component {
 
         return (
             <GameContext.Provider value={{
+                _RedirectToGameDisconnect: this.redirectToGameDisconnect,
+                _RedirectToGameOver: this.redirectToGameOver,
+                disconnect: this.state.disconnect,
+                howManyOnline: this.state.howManyOnline,
                 test: this.state.test,
                 players: this.state.players
             }}>

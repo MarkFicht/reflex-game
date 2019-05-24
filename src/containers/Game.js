@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
-import * as firebase from 'firebase';
-import { Redirect } from 'react-router-dom';
+import React, { Component } from 'react'
+import * as firebase from 'firebase'
+import { Redirect } from 'react-router-dom'
 import GameProvider from '../context/GameContext'
+import GameTimer from '../components/game/GameTimer'
+import RedirectSystem from '../components/game/RedirectSystem'
+import PlayerSide from '../components/game/PlayerSide'
 
-import BtnRdy from '../components/game/BtnRdy';
+import BtnRdy from '../components/game/BtnRdy'
 
 
 /**  ---Current Player---
@@ -29,97 +32,102 @@ import BtnRdy from '../components/game/BtnRdy';
   * */
 
 class Game extends Component {
-    _isMounted = false;
+    // _isMounted = false;
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isInGame: [],
-            disconnect: false
-        }
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         isInGame: [],
+    //         disconnect: false
+    //     }
+    // }
 
-    componentDidMount() {
-        this._isMounted = true;
+    // componentDidMount() {
+    //     this._isMounted = true
 
         /** Redirect to GameDisconnect.js */
-        window.onbeforeunload = function () {
+        // window.onbeforeunload = function () {
 
-            /** ---For a case: 'refresh/F5'--- */
-            firebase.database().ref('/game').update({
-                disconnect: true,
-            })
-            this.props.history.push('/gamedisconnect');
+        //     /** ---For a case: 'refresh/F5'--- */
+        //     firebase.database().ref('/game').update({
+        //         disconnect: true,
+        //     })
+        //     this.props.history.push('/gamedisconnect');
 
-            /** ---For a case: 'Back Btn' --> looking to Timer.js--- */
-        }
+        //     /** ---For a case: 'Back Btn' --> looking to Timer.js--- */
+        // }
 
 
         /** Redirect to NotFound.js */
-        if ( !this.props.location.state || this.props.location.state.validChars !== this.props.match.params.simpleValid ) {
+        // if ( !this.props.location.state || this.props.location.state.validChars !== this.props.match.params.simpleValid ) {
 
-            this.props.history.push('/*');
-        } 
+        //     this.props.history.push('/*');
+        // } 
 
 
         /** Save disconnect bool from DB */
-        firebase.database().ref('/game').on('value', snap => {
+        // firebase.database().ref('/game').on('value', snap => {
             
-            const val = snap.val();
-            if ( this._isMounted ) {
-                this.setState({ disconnect: val.disconnect });
-            }
-        })
+        //     const val = snap.val();
+        //     if ( this._isMounted ) {
+        //         this.setState({ disconnect: val.disconnect });
+        //     }
+        // })
 
         /** Save current player from DB for valid */
-        firebase.database().ref('/users').on('value', snap => {
+        // firebase.database().ref('/users').on('value', snap => {
 
-            const val = snap.val();
-            const usersValid = [];
+        //     const val = snap.val();
+        //     const usersValid = [];
 
-            for (let key in val) {
-                usersValid.push({
-                    who: key,
-                    validChars: val[key].validChars
-                })
-            }
+        //     for (let key in val) {
+        //         usersValid.push({
+        //             who: key,
+        //             validChars: val[key].validChars
+        //         })
+        //     }
 
-            if ( this._isMounted ) {
-                this.setState({ isInGame: usersValid }); 
-            }
-        })
-    }
+        //     if ( this._isMounted ) {
+        //         this.setState({ isInGame: usersValid }); 
+        //     }
+        // })
+    // }
 
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
+    // componentWillUnmount() {
+    //     this._isMounted = false
+    // }
 
 
     /** ---When 'disconnect === true' from Firebase---
      * 1.DropDB
      * 2.Redirect do GameDisconnect
      */
-    redirectToGameDisconnect = (isMounted) => {
-        if (isMounted) {
+    // redirectToGameDisconnect = (isMounted) => {
+    //     if (isMounted) {
 
-            firebase.database().ref('/users').remove();
-            return <Redirect to='/gamedisconnect' />
-        }
-    }
+    //         firebase.database().ref('/users').remove();
+    //         return <Redirect to='/gamedisconnect' />
+    //     }
+    // }
     
 
     render() {
-        const ID_URL = Number(this.props.match.params.userId);
+        const ID_URL = Number(this.props.match.params.userId)
 
         return (
             <div className="div-game">
-                <GameProvider>
-                    { this.state.disconnect && this.redirectToGameDisconnect( this._isMounted ) }
-
-                    {/* { this.redirectToNotFound( this._isMounted ) } */}
+                <GameProvider {...this.props}>
+                    {/* { this.state.disconnect && this.redirectToGameDisconnect( this._isMounted ) } */}
                     
-                    <BtnRdy idPlayer={ [0, ID_URL === 0] } />
-                    <BtnRdy idPlayer={ [1, ID_URL === 1] } />
+                    <RedirectSystem />
+                    <GameTimer />
+
+                    <PlayerSide />
+                    <PlayerSide />
+
+
+                    {/* <BtnRdy idPlayer={ [0, ID_URL === 0] } /> */}
+                    {/* <BtnRdy idPlayer={ [1, ID_URL === 1] } /> */}
                 </GameProvider>
             </div>
         )
