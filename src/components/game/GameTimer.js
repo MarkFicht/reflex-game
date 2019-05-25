@@ -7,7 +7,7 @@ export default class GameTimer extends Component {
     render() {
         return (
             <GameConsumer>
-                {({ howManyOnline }) => (
+                {({ howManyOnline, time, prepare }) => (
                     <>
                         { howManyOnline % 2 === 1 && waitingForPlayers }
 

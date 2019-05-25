@@ -96,11 +96,10 @@ class BtnRdy extends Component {
 
         return (
             <GameConsumer>
-                {({ test, players }) => (
+                {({ players }) => (
                     <>
                         {/* Waiting for players */}
                         {howManyOnline % 2 === 1 && waitingForPlayers}
-                        <div>{test}</div>
                         <div>{ players[0] ? players[0].nick : 'nie ma'}</div>
                         {/* { id < howManyOnline && displayBtns */}
                         {id < howManyOnline

@@ -3,7 +3,7 @@ import * as firebase from 'firebase'
 import { Redirect } from 'react-router-dom'
 import GameProvider from '../context/GameContext'
 import GameTimer from '../components/game/GameTimer'
-import RedirectSystem from '../components/game/RedirectSystem'
+import RedirectSystemWrapper from '../components/game/RedirectSystemWrapper'
 import PlayerSide from '../components/game/PlayerSide'
 
 import BtnRdy from '../components/game/BtnRdy'
@@ -116,10 +116,9 @@ class Game extends Component {
 
         return (
             <div className="div-game">
-                <GameProvider {...this.props}>
-                    {/* { this.state.disconnect && this.redirectToGameDisconnect( this._isMounted ) } */}
+                <GameProvider>
                     
-                    <RedirectSystem />
+                    <RedirectSystemWrapper match={this.props.match} location={this.props.location} history={this.props.history}/>
                     <GameTimer />
 
                     <PlayerSide />
