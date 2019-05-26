@@ -7,7 +7,6 @@ export default class GameProvider extends Component {
     _isMounted = false
 
     state = {
-        test: 'tescik',
         players: [{
             who: null,
             nick: null,
@@ -82,8 +81,6 @@ export default class GameProvider extends Component {
 
         return (
             <GameContext.Provider value={{
-                _RedirectToGameDisconnect: this.redirectToGameDisconnect,
-                _RedirectToGameOver: this.redirectToGameOver,
                 disconnect: this.state.disconnect,
                 time: this.state.time,
                 prepare: this.state.prepare,

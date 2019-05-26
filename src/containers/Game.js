@@ -121,8 +121,8 @@ class Game extends Component {
                     <RedirectSystemWrapper match={this.props.match} location={this.props.location} history={this.props.history}/>
                     <GameTimer />
 
-                    <PlayerSide />
-                    <PlayerSide />
+                    <PlayerSide side={0} ID_URL={ID_URL} />
+                    <PlayerSide side={1} ID_URL={ID_URL} />
 
 
                     {/* <BtnRdy idPlayer={ [0, ID_URL === 0] } /> */}
