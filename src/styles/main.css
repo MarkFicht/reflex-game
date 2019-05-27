@@ -144,6 +144,7 @@ h1.logo {
   height: 70px;
   display: flex;
   justify-content: center;
+  align-items: center;
   position: absolute;
   top: 170px;
   font-size: 1.5rem;

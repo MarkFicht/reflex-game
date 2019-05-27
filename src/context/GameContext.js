@@ -75,17 +75,37 @@ export default class GameProvider extends Component {
 
     componentWillUnmount = () => this._isMounted = false
 
+    /** 
+     * Change State Function
+     */
+    startGame = () => this.setState({ startTime: true })
+
+
+    /** 
+     * Firebase Function 
+     * */
+    playerRdy = (objPlayers, ID_URL, bool, isMounted) => {
+        let playerExist = objPlayers[ID_URL] ? objPlayers[ID_URL] : false
+
+        if (!bool || !isMounted || !playerExist) return null
+
+        firebase.database().ref('/users/' + playerExist.who).update({
+            readyPlayer: !playerExist.btnRdy
+        })
+    }
+
     render() {
 
         if (this.state.pending) return null
 
         return (
             <GameContext.Provider value={{
+                __playerRdy: this.playerRdy,
+                __startGame: this.startGame,
                 disconnect: this.state.disconnect,
                 time: this.state.time,
                 prepare: this.state.prepare,
                 howManyOnline: this.state.howManyOnline,
-                test: this.state.test,
                 players: this.state.players
             }}>
                 { this.props.children }
