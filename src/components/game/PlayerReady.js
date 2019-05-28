@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { GameConsumer } from '../../context/GameContext'
 
 export default class PlayerReady extends Component {
     _isMounted = false
@@ -11,14 +10,14 @@ export default class PlayerReady extends Component {
     componentDidMount = () => this._isMounted = true
 
     componentDidUpdate = () => {
-        const { players, howManyOnline, __startGame } = this.props
+        const { players, howManyOnline, __prepareTimeBool } = this.props
 
         // Effect for hiding btns slow
         if ( !this.state.hideBtns && this._isMounted && howManyOnline === 2 ) {
 
             if (players[0].btnRdy && players[1].btnRdy) {
                 this.setState({ hideBtns: true })
-                __startGame()
+                __prepareTimeBool()     // Should be change on TRUE, once
             }
         }
     }
@@ -27,7 +26,7 @@ export default class PlayerReady extends Component {
 
     render() {
 
-        const { players, side, appropriatePlayer, ID_URL, howManyOnline } = this.props
+        const { players, side, appropriatePlayer, ID_URL, howManyOnline, __playerRdy } = this.props
 
         const btnRdyClass = `btn-ready${side + 1}`
         const btnRdyWithEffect = appropriatePlayer ? `` : ` btn-ready-noEffect`
@@ -39,20 +38,16 @@ export default class PlayerReady extends Component {
         const style = { color: btnColor, borderColor: btnColor }
 
         return (
-            <GameConsumer>
-                {({ __playerRdy }) => (
-                    <>
-                        {side < howManyOnline
-                            ? <button 
-                                className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide}  
-                                onClick={e => __playerRdy(players, ID_URL, appropriatePlayer, this._isMounted)}
-                                style={style}
-                            >{ btnCaption }</button>
-                            : null
-                        }
-                    </>
-                )}
-            </GameConsumer>
+            <>
+                {side < howManyOnline
+                    ? <button 
+                        className={btnRdyClass + btnRdyWithEffect + btnRdySlowHide}  
+                        onClick={e => __playerRdy(players, ID_URL, appropriatePlayer, this._isMounted)}
+                        style={style}
+                    >{ btnCaption }</button>
+                    : null
+                }
+            </>
         )
     }
 }

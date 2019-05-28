@@ -23,9 +23,18 @@ export default class PlayerSide extends Component {
 
         return (
             <GameConsumer>
-                {({ players, howManyOnline, __startGame }) => (
+                {({ players, howManyOnline, __playerRdy, __prepareTimeBool }) => (
                     <div className="half-field" style={rightColor}>
-                        <PlayerReady side={side} appropriatePlayer={appropriatePlayer} howManyOnline={howManyOnline} players={players} ID_URL={ID_URL} __startGame={__startGame} />
+                        
+                        <PlayerReady 
+                            side={side} 
+                            appropriatePlayer={appropriatePlayer} 
+                            howManyOnline={howManyOnline} 
+                            players={players} 
+                            ID_URL={ID_URL}
+                            __playerRdy={__playerRdy} 
+                            __prepareTimeBool={__prepareTimeBool} 
+                        />
 
                         <h3>{players[side] ? players[side].nick : '-'}</h3>
 

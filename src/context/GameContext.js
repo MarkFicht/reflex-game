@@ -73,12 +73,30 @@ export default class GameProvider extends Component {
         })
     }
 
-    componentWillUnmount = () => this._isMounted = false
+    componentWillUnmount = () => {
+        this._isMounted = false
+        clearInterval(this.state.prepareId)
+        clearInterval(this.state.timeId)
+    }
 
     /** 
      * Change State Function
      */
-    startGame = () => this.setState({ startTime: true })
+    prepareTimeBool = () => this.setState({ startPrepare: true })
+    realTimeBool = () => this.setState({ startTime: true })
+
+    countdownPrepare = () => this.setState({ prepare: this.state.prepare - 1 })
+    countdownTime = () => this.setState({ time: this.state.time - 1 })
+
+    startPrepareCountdown = () => {
+        // const prepareId = setInterval(this.countdownPrepare, 1000)
+        // this.setState({ prepareId })
+    }
+
+    startRealCountdown = () => {
+        // const timeId = setInterval(this.countdownTime, 1000)
+        // this.setState({ timeId })
+    }
 
 
     /** 
@@ -101,10 +119,15 @@ export default class GameProvider extends Component {
         return (
             <GameContext.Provider value={{
                 __playerRdy: this.playerRdy,
-                __startGame: this.startGame,
+                __prepareTimeBool: this.prepareTimeBool,
+                __realTimeBool: this.realTimeBool,
+                __startPrepareCountdown: this.startPrepareCountdown,
+                __startRealCountdown: this.startRealCountdown,
                 disconnect: this.state.disconnect,
                 time: this.state.time,
                 prepare: this.state.prepare,
+                startTime: this.state.startTime,
+                startPrepare: this.state.startPrepare,
                 howManyOnline: this.state.howManyOnline,
                 players: this.state.players
             }}>

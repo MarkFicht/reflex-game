@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import * as firebase from 'firebase'
 import { Redirect } from 'react-router-dom'
 import GameProvider from '../context/GameContext'
-import GameTimer from '../components/game/GameTimer'
+import GameTimerWrapper from '../components/game/GameTimerWrapper'
 import RedirectSystemWrapper from '../components/game/RedirectSystemWrapper'
 import PlayerSide from '../components/game/PlayerSide'
 
@@ -119,7 +119,7 @@ class Game extends Component {
                 <GameProvider>
                     
                     <RedirectSystemWrapper match={this.props.match} location={this.props.location} history={this.props.history}/>
-                    <GameTimer />
+                    <GameTimerWrapper />
 
                     <PlayerSide side={0} ID_URL={ID_URL} />
                     <PlayerSide side={1} ID_URL={ID_URL} />
