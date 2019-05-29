@@ -1,3 +1,4 @@
-const randomChar = ['A', 'S', 'D'];
+export const randomChar = ['A', 'S', 'D']
+export const fakeChars = ['X', 'X', 'X']
 
-export default randomChar;
+export const randomCharLength = randomChar.length

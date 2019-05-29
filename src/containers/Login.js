@@ -3,7 +3,7 @@ import * as firebase from 'firebase';
 
 import logo from '../components/other/logo';
 import createBy from '../components/other/createBy';
-import randomChar from '../components/other/randomChar';
+import { randomChar } from '../components/other/randomChar';
 
 import ChooseNick from '../components/login/ChooseNick';
 import SelectAvatar from '../components/login/SelectAvatar';

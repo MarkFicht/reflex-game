@@ -10,7 +10,7 @@ export default class RedirectSystemWrapper extends Component {
 
         return (
             <GameConsumer>
-                {({ disconnect, time }) => <RedirectSystem disconnect={disconnect} time={time} location={location} match={match} history={history} />}
+                {({ disconnect, gameOver, time }) => <RedirectSystem disconnect={disconnect} gameOver={gameOver} time={time} location={location} match={match} history={history} />}
             </GameConsumer>
         )
     }
@@ -29,7 +29,7 @@ class RedirectSystem extends Component {
         window.onpopstate = () => {
             if (this._isMounted) {
 
-                if (this.props.time !== 0) { firebase.database().ref('/game').update({ disconnect: true }) }
+                if (this.props.time !== 0 || !this.props.gameOver) { firebase.database().ref('/game').update({ disconnect: true }) }
             }
         }
 
@@ -61,7 +61,9 @@ class RedirectSystem extends Component {
     * 2.Send data in this.props.lacation.state
     */
     redirectToGameOver = (isMounted) => {
-        if (this.props.time === 0 && isMounted) {
+        const { time, gameOver } = this.props
+        if (isMounted && (time === 0 || gameOver)) {
+            console.log('przekierowanie do GameOver')
             // const { idPlayer } = this.props;
             // const currentPlayer = idPlayer[0];
 
@@ -73,7 +75,10 @@ class RedirectSystem extends Component {
     }
 
     render() {
-        return <>{ this.props.disconnect && this.redirectToGameDisconnect( this._isMounted ) }</>
+        return <>
+            { this.props.disconnect && this.redirectToGameDisconnect( this._isMounted ) }
+            { this.props.gameOver && this.redirectToGameOver( this._isMounted ) }
+        </>
     }
 }
 

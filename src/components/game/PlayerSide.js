@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PlayerReady from './PlayerReady'
 import { GameConsumer } from '../../context/GameContext'
-import MechanismGameButtons from '../game/MechanismGameButtons'
-import gameButtonsDummy from '../../components/other/gameButtonsDummy'
+import GameButtonsAppropriate from '../game/GameButtonsAppropriate'
+import GameButtonsDummy from '../../components/other/GameButtonsDummy'
 
 export default class PlayerSide extends Component {
 
@@ -10,22 +10,14 @@ export default class PlayerSide extends Component {
 
         const { side, ID_URL } = this.props
         const appropriatePlayer = (side === ID_URL) ? true : false
-        // console.log(side, ID_URL, typeof side, typeof ID_URL, appropriatePlayer)
         const rightColor = { color: appropriatePlayer ? '#548687' : 'tomato' }
-        // const rightGameBtns = users[id] && bool
-        //     ? <MechanismGameButtons
-        //         startTime={startTime}
-        //         idPlayer={this.props.idPlayer}
-        //         who={users[id].id}
-        //         correctChar={users[id].char}
-        //         points={users[id].points} />
-        //     : gameButtonsDummy
+        // console.log(side, ID_URL, typeof side, typeof ID_URL, appropriatePlayer)
 
         return (
             <GameConsumer>
-                {({ players, howManyOnline, __playerRdy, __prepareTimeBool }) => (
+                {({ players, howManyOnline, startTime, __playerRdy, __prepareTimeBool }) => (
                     <div className="half-field" style={rightColor}>
-                        
+
                         <PlayerReady 
                             side={side} 
                             appropriatePlayer={appropriatePlayer} 
@@ -44,17 +36,15 @@ export default class PlayerSide extends Component {
 
                         <div className="random-char">{players[side] ? players[side].charInGame : '-'}</div>
 
-                        {/* MechanismGameButtons */}
-                        {/* {(players[side] && appropriatePlayer)
-                            ? <MechanismGameButtons />
-                            : gameButtonsDummy
-                        } */}
-
-                        <div className="btns">
-                            <button className='btn-game'>a</button>
-                            <button className='btn-game'>s</button>
-                            <button className='btn-game'>d</button>
-                        </div>
+                        {(players[side] && appropriatePlayer)
+                            ? <GameButtonsAppropriate
+                                startTime={startTime}
+                                who={players[side].who}
+                                correctChar={players[side].charInGame}
+                                points={players[side].points}
+                            />
+                            : GameButtonsDummy 
+                        }
 
                         <div className='player'>
                             <div className={`player-img${side + 1}`} style={{ backgroundImage: players[side] && `url(" ${players[side].imgPlayer} ")` }} >{}</div>

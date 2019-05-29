@@ -29,9 +29,10 @@ export default class GameProvider extends Component {
         disconnect: false,
         pending: true,
         prepare: 3,
-        time: 30,
+        time: 5,
         startPrepare: false,
         startTime: false,
+        gameOver: false
     }
 
     componentDidMount = () => {
@@ -69,14 +70,21 @@ export default class GameProvider extends Component {
         firebase.database().ref('/game').on('value', snap => {
 
             const val = snap.val()
-            if (this._isMounted) { this.setState({ disconnect: val.disconnect }) }
+            if (this._isMounted) { 
+                this.setState({ 
+                    disconnect: val.disconnect,
+                    gameOver: val.gameOver
+                    //prepare: val.prepare,
+                    //time: val.time
+                }) 
+            }
         })
     }
 
     componentWillUnmount = () => {
         this._isMounted = false
-        clearInterval(this.state.prepareId)
-        clearInterval(this.state.timeId)
+        this.startPrepareCountdown = null
+        this.startRealCountdown = null
     }
 
     /** 
@@ -85,17 +93,35 @@ export default class GameProvider extends Component {
     prepareTimeBool = () => this.setState({ startPrepare: true })
     realTimeBool = () => this.setState({ startTime: true })
 
-    countdownPrepare = () => this.setState({ prepare: this.state.prepare - 1 })
-    countdownTime = () => this.setState({ time: this.state.time - 1 })
-
     startPrepareCountdown = () => {
-        // const prepareId = setInterval(this.countdownPrepare, 1000)
-        // this.setState({ prepareId })
+
+        const prepareId = setInterval(() => {
+
+            this.setState(prevState => {
+                return { prepare: prevState.prepare - 1 }
+            })
+
+            if (this.state.prepare < 0) {
+
+                this.setState({ startTime: true })
+                clearInterval(prepareId)
+            }
+        }, 1000)
     }
 
     startRealCountdown = () => {
-        // const timeId = setInterval(this.countdownTime, 1000)
-        // this.setState({ timeId })
+
+        const timeId = setInterval(() => {
+
+            this.setState((prevState) => {
+                return { time: prevState.time - 1 }
+            })
+
+            if (this.state.time === 0) {
+
+                clearInterval(timeId)
+            }
+        }, 1000)
     }
 
 
@@ -112,6 +138,9 @@ export default class GameProvider extends Component {
         })
     }
 
+    gameOverBool = () => firebase.database().ref('/game').update({ gameOver: true })
+    
+
     render() {
 
         if (this.state.pending) return null
@@ -119,11 +148,13 @@ export default class GameProvider extends Component {
         return (
             <GameContext.Provider value={{
                 __playerRdy: this.playerRdy,
+                __gameOverBool: this.gameOverBool,
                 __prepareTimeBool: this.prepareTimeBool,
                 __realTimeBool: this.realTimeBool,
                 __startPrepareCountdown: this.startPrepareCountdown,
                 __startRealCountdown: this.startRealCountdown,
                 disconnect: this.state.disconnect,
+                gameOver: this.state.gameOver,
                 time: this.state.time,
                 prepare: this.state.prepare,
                 startTime: this.state.startTime,

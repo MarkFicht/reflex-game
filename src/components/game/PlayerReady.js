@@ -17,7 +17,9 @@ export default class PlayerReady extends Component {
 
             if (players[0].btnRdy && players[1].btnRdy) {
                 this.setState({ hideBtns: true })
-                __prepareTimeBool()     // Should be change on TRUE, once
+
+                // Should be change 'startPrepare' on TRUE, once.
+                __prepareTimeBool()     
             }
         }
     }

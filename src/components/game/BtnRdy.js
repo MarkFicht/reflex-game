@@ -4,7 +4,7 @@ import * as firebase from 'firebase'
 import Timer from './Timer'
 import { GameConsumer } from '../../context/GameContext'
 
-import waitingForPlayers from '../../components/other/waitingForPlayers'
+import waitingForPlayers from '../../components/other/waitingForPlayers.jsx'
 
 
 /** + component: "Waiting for all players" */

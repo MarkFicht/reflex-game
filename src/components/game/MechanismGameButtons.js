@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
-import randomChar from '../../components/other/randomChar';
+import { randomChar } from '../../components/other/randomChar';
 import good from '../../sound/good.wav';
 import wrong from '../../sound/wrong.mp3';
 

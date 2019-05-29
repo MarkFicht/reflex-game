@@ -9,14 +9,15 @@ export default class GameTimerWrapper extends Component {
     render() {
         return (
             <GameConsumer>
-                {({ howManyOnline, time, prepare, startTime, startPrepare, __startPrepareCountdown, __startRealCountdown, __realTimeBool }) => (
+                {({ howManyOnline, time, prepare, startTime, startPrepare, __gameOverBool, __startPrepareCountdown, __startRealCountdown, __realTimeBool }) => (
                     <>
                         { (howManyOnline % 2 === 1) && WaitingForPlayers }
 
                         <RealTime 
                             time={time} 
                             startTime={startTime}
-                            __startRealCountdown={__startRealCountdown} 
+                            __startRealCountdown={__startRealCountdown}
+                            __gameOverBool={__gameOverBool}
                         />
 
                         <PrepareTime 
@@ -38,21 +39,23 @@ class RealTime extends Component {
     useOnce = true
     
     componentDidUpdate = () => {
+
         if (this.useOnce && this.props.startTime) {
-            this.props.__startRealCountdown()            
+
+            this.props.__startRealCountdown()   
+
             this.countdownTimeSound.volume = .3
-            this.countdownTimeSound.play()
+
             this.useOnce = false
         }
 
         if (this.props.time === 4) {
+            
             this.countdownTimeSound.volume = .3
             this.countdownTimeSound.play()
         }
 
-        if (this.props.time === 0) {
-            this.countdownTimeSound = null
-        }
+        if (this.props.time === 0) this.props.__gameOverBool()
     }
 
     componentWillUnmount = () => this.countdownTimeSound = null
@@ -78,16 +81,16 @@ class PrepareTime extends Component {
     }
 
     componentDidUpdate = () => {
+
         if (this.useOnce && this.props.startPrepare) {
+
             this.props.__startPrepareCountdown()
+
             this.countdownPrepareSound.volume = .3
             this.countdownPrepareSound.play()
-            this.useOnce = false
-        }
-
-        if (this.props.prepare === 0) {
             this.countdownPrepareSound = null
-            // this.props.__realTimeBool()
+
+            this.useOnce = false
         }
     }
 
@@ -98,10 +101,5 @@ class PrepareTime extends Component {
 
         if (startPrepare && prepare >= 0) return <div className='prepare'>{prepare === 0 ? 'start' : prepare}</div>
         else return null
-
-        // return ( startPrepare && prepare >= 0
-        //     ? <div className='prepare'>{ prepare === 0 ? 'start' : prepare }</div>
-        //     : null
-        // )
     }
 }
