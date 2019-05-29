@@ -3,7 +3,7 @@ import * as firebase from 'firebase';
 
 import WhoWin from '../components/gameover/WhoWin';
 
-import logo from '../components/other/logo';
+import Logo from '../components/other/Logo';
 import gameover from '../sound/gameover.mp3';
 
 
@@ -111,7 +111,7 @@ class GameOver extends React.Component {
             <div>
                 <div className="div-gameover">
 
-                    { logo }
+                    { Logo }
                     <p className='text-game-over'> GAME OVER </p>
 
                     <WhoWin playersFromGame={this.state.playersFromGame} simpleValid={this.props.match.params.simpleValid} />

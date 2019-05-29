@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 
-import logo from '../components/other/logo';
-import createBy from '../components/other/createBy';
+import Logo from '../components/other/Logo';
+import CreateBy from '../components/other/CreateBy';
 import { randomChar } from '../components/other/randomChar';
 
 import ChooseNick from '../components/login/ChooseNick';
@@ -115,7 +115,7 @@ class Login extends Component {
 
         return (
             <div>
-                { logo }
+                { Logo }
 
                 {/* ----------------------------------**MAIN CONTAINER - LOGIN**---------------------------------- */}
                 <div className="div-login">
@@ -138,7 +138,7 @@ class Login extends Component {
                     <ShowOnline onlinePlayer={ onlinePlayer }/>
 
                     {/* Footer */}
-                    { createBy }
+                    { CreateBy }
                 </div>
             </div>
         );
