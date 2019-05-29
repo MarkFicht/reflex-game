@@ -37,7 +37,7 @@ class WhoWin extends Component {
 
         const displayDraw = (
             <div>
-                DRAW: <span className='text-winner'>{ player1.nickname }</span> & <span className='text-winner'>{ player2.nickname }</span>
+                DRAW: <span className='text-winner'>{ player1.nick }</span> & <span className='text-winner'>{ player2.nick }</span>
                 <br />
                 SCORE: <span className='text-winner'>{ player1.points }</span>
             </div>
@@ -45,9 +45,9 @@ class WhoWin extends Component {
 
         const displayWinner = (
             <div>
-                WINNER: <span className='text-winner'>{ winner.nickname }</span> SCORE: <span className='text-winner'>{ winner.points }</span>
+                WINNER: <span className='text-winner'>{ winner.nick }</span> SCORE: <span className='text-winner'>{ winner.points }</span>
                 <br />
-                looser: <span className='text-looser'>{ looser.nickname }</span> score: <span className='text-looser'>{ looser.points }</span>
+                looser: <span className='text-looser'>{ looser.nick }</span> score: <span className='text-looser'>{ looser.points }</span>
             </div>
         );
 
@@ -56,7 +56,7 @@ class WhoWin extends Component {
             <div className='game-winner-container'>
                 { wasDraw ? displayDraw : displayWinner }
 
-                <Winner simpleValid={ this.props.simpleValid } winner={ winner } isDraw={ wasDraw } playersFromGame={ this.props.playersFromGame }/>
+                {/* <Winner simpleValid={ this.props.simpleValid } winner={ winner } isDraw={ wasDraw } playersFromGame={ this.props.playersFromGame }/> */}
             </div>
         );
     };

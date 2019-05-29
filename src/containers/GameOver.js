@@ -64,7 +64,8 @@ class GameOver extends React.Component {
 
                     firebase.database().ref('/game').update({
                         endPlayer1: false,
-                        endPlayer2: false
+                        endPlayer2: false,
+                        gameOver: false
                     })
 
                     firebase.database().ref('/users').remove();

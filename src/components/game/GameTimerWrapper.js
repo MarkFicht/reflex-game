@@ -9,7 +9,7 @@ export default class GameTimerWrapper extends Component {
     render() {
         return (
             <GameConsumer>
-                {({ howManyOnline, time, prepare, startTime, startPrepare, __gameOverBool, __startPrepareCountdown, __startRealCountdown, __realTimeBool }) => (
+                {({ howManyOnline, time, prepare, startTime, startPrepare, __gameOverTrue, __startPrepareCountdown, __startRealCountdown, __realTimeBool }) => (
                     <>
                         { (howManyOnline % 2 === 1) && WaitingForPlayers }
 
@@ -17,7 +17,7 @@ export default class GameTimerWrapper extends Component {
                             time={time} 
                             startTime={startTime}
                             __startRealCountdown={__startRealCountdown}
-                            __gameOverBool={__gameOverBool}
+                            __gameOverTrue={__gameOverTrue}
                         />
 
                         <PrepareTime 
@@ -55,7 +55,7 @@ class RealTime extends Component {
             this.countdownTimeSound.play()
         }
 
-        if (this.props.time === 0) this.props.__gameOverBool()
+        if (this.props.time === 0) this.props.__gameOverTrue()
     }
 
     componentWillUnmount = () => this.countdownTimeSound = null

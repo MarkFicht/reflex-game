@@ -6,11 +6,22 @@ import { GameConsumer } from '../../context/GameContext'
 export default class RedirectSystemWrapper extends Component {
 
     render() {
-        const { location, match, history } = this.props
+        const { location, match, history, ID_URL } = this.props
 
         return (
             <GameConsumer>
-                {({ disconnect, gameOver, time }) => <RedirectSystem disconnect={disconnect} gameOver={gameOver} time={time} location={location} match={match} history={history} />}
+                {({ disconnect, gameOver, time, players }) => (
+                    <RedirectSystem 
+                        disconnect={disconnect} 
+                        gameOver={gameOver} 
+                        time={time} 
+                        players={players}
+                        location={location} 
+                        match={match} 
+                        history={history}
+                        ID_URL={ID_URL}
+                    />
+                )}
             </GameConsumer>
         )
     }
@@ -29,7 +40,7 @@ class RedirectSystem extends Component {
         window.onpopstate = () => {
             if (this._isMounted) {
 
-                if (this.props.time !== 0 || !this.props.gameOver) { firebase.database().ref('/game').update({ disconnect: true }) }
+                if (this.props.time > 0 && !this.props.gameOver) { firebase.database().ref('/game').update({ disconnect: true }) }
             }
         }
 
@@ -40,7 +51,10 @@ class RedirectSystem extends Component {
         }
     }
 
-    componentWillUnmount = () => this._isMounted = false
+    componentWillUnmount = () => {
+        window.onbeforeunload = null
+        this._isMounted = false 
+    }
 
 
     /** --- IF 'disconnect === true' from Firebase ---
@@ -56,21 +70,19 @@ class RedirectSystem extends Component {
         }
     }
 
-    /** --- IF 'GameOver' ---
+    /** --- IF 'gameOver === true' from Firebase ---
     * 1.Redirect do GameOver
     * 2.Send data in this.props.lacation.state
     */
     redirectToGameOver = (isMounted) => {
-        const { time, gameOver } = this.props
-        if (isMounted && (time === 0 || gameOver)) {
-            console.log('przekierowanie do GameOver')
-            // const { idPlayer } = this.props;
-            // const currentPlayer = idPlayer[0];
+        const { time, gameOver, players, ID_URL } = this.props
 
-            // return <Redirect to={{
-            //     pathname: `/gameover/${currentPlayer}/${this.state.scoresPlayers[currentPlayer].validChars}`,
-            //     state: this.state.scoresPlayers
-            // }} />
+        if (isMounted && (time === 0 || gameOver)) {
+            
+            return <Redirect to={{
+                pathname: `/gameover/${ID_URL}/${players[ID_URL].validChars}`,
+                state: players
+            }} />
         }
     }
 

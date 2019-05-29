@@ -27,12 +27,12 @@ export default class GameProvider extends Component {
         }],
         howManyOnline: 0,
         disconnect: false,
+        gameOver: false,
         pending: true,
         prepare: 3,
-        time: 5,
+        time: 10,
         startPrepare: false,
         startTime: false,
-        gameOver: false
     }
 
     componentDidMount = () => {
@@ -138,8 +138,7 @@ export default class GameProvider extends Component {
         })
     }
 
-    gameOverBool = () => firebase.database().ref('/game').update({ gameOver: true })
-    
+    gameOverTrue = () => firebase.database().ref('/game').update({ gameOver: true })
 
     render() {
 
@@ -148,7 +147,7 @@ export default class GameProvider extends Component {
         return (
             <GameContext.Provider value={{
                 __playerRdy: this.playerRdy,
-                __gameOverBool: this.gameOverBool,
+                __gameOverTrue: this.gameOverTrue,
                 __prepareTimeBool: this.prepareTimeBool,
                 __realTimeBool: this.realTimeBool,
                 __startPrepareCountdown: this.startPrepareCountdown,
