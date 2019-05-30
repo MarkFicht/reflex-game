@@ -30,7 +30,7 @@ export default class GameProvider extends Component {
         gameOver: false,
         pending: true,
         prepare: 3,
-        time: 10,
+        time: 20,
         startPrepare: false,
         startTime: false,
     }
