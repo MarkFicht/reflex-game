@@ -5,9 +5,7 @@ class SelectAvatar extends Component {
     state = { value: 'bardock' }
 
     selectAvatar = e => {
-        if (typeof this.props.sendMethod === "function") {
-            this.props.sendMethod(e)
-        }
+        if (typeof this.props.sendMethod === "function") { this.props.sendMethod(e) }
 
         // I will create own SelectBox in the future: https://www.youtube.com/watch?v=HvUI8bkLmk4
         this.setState({ value: e.target.value })    
@@ -21,7 +19,7 @@ class SelectAvatar extends Component {
                     { AvatarList }
                 </select>
             </div>
-        );
+        )
     }
 }
 export default SelectAvatar

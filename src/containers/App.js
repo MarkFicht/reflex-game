@@ -14,8 +14,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheckCircle, faTimesCircle, faVolumeUp, faVolumeOff } from '@fortawesome/free-solid-svg-icons'
 library.add(faCheckCircle, faTimesCircle, faVolumeUp, faVolumeOff)
 
-
-//---
 class App extends Component {
 
   render() {

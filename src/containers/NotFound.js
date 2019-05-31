@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import Logo from '../components/other/Logo'
-
+// import * as firebase from 'firebase'
 
 class NotFound extends Component {
     state = { redirectTime: 3 }
@@ -12,6 +12,9 @@ class NotFound extends Component {
 
             this.setState({ redirectTime: this.state.redirectTime - 1 })
         }, 1000)
+
+        /** Restart: disconnect */
+        // firebase.database().ref('/game').update({ disconnect: false })
     }
 
     componentWillUnmount = () => clearTimeout(this.redirectInterval)

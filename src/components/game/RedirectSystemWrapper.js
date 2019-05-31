@@ -30,8 +30,14 @@ export default class RedirectSystemWrapper extends Component {
 class RedirectSystem extends Component {
     _isMounted = false
 
+    /** Important order */
     componentDidMount = () => {
         this._isMounted = true
+
+        /** REDIRECT to NotFound.js -> CASE: 'Not found props location from Login.js' */
+        if (!this.props.location.state || this.props.location.state.validChars !== this.props.match.params.simpleValid) {
+            this.props.history.push('/*')
+        }
 
         /** REDIRECT to GameDisconnect.js -> CASE: 'refresh/F5' */
         window.onbeforeunload = () => firebase.database().ref('/game').update({ disconnect: true })
@@ -42,12 +48,6 @@ class RedirectSystem extends Component {
 
                 if (this.props.time > 0 && !this.props.gameOver) { firebase.database().ref('/game').update({ disconnect: true }) }
             }
-        }
-
-        /** REDIRECT to NotFound.js -> CASE: 'Not found props location from Login.js' */
-        if (!this.props.location.state || this.props.location.state.validChars !== this.props.match.params.simpleValid) {
-
-            this.props.history.push('/*')
         }
     }
 

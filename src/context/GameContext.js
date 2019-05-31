@@ -47,7 +47,7 @@ export default class GameProvider extends Component {
             for (let key in val) {
                 usersGame.push({
                     who: key,
-                    nick: val[key].nickname,
+                    nick: val[key].nick,
                     charInGame: val[key].char,
                     imgPlayer: val[key].imgPlayer,
                     validChars: val[key].validChars,
