@@ -208,14 +208,40 @@ h1.logo {
   left: 35px;
   width: 50px;
   height: 50px;
-  line-height: 54px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 28px;
   background-color: #f9df76;
-  border-radius: 10px;
+  border-radius: 15px;
   cursor: pointer;
   z-index: 1; }
   .audio:focus {
-    background-color: black; }
+    background-color: #f8d95e; }
+
+.check-music {
+  position: fixed;
+  left: 35px;
+  top: 90px;
+  height: 70px;
+  width: 50px;
+  border: none; }
+  .check-music legend {
+    display: none; }
+  .check-music input[type='radio'] {
+    display: none; }
+  .check-music label {
+    margin: 0 2px; }
+  .check-music .check-music__btn {
+    background-color: #f9df76;
+    border-radius: 7px;
+    cursor: pointer;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px; }
+  .check-music input[type="radio"]:checked ~ .check-music__btn {
+    background-color: greenyellow; }
 
 .div-login {
   background-color: #f9df76;

@@ -21,7 +21,7 @@ class App extends Component {
         <HashRouter>
           <div className="App">
 
-              <Music playMusic={false}/>
+              <Music/>
 
               <Switch>
                 <Route exact path="/" component={Login} />

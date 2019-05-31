@@ -15,7 +15,7 @@ class InstructionBtn extends Component {
                 <li><strong>2.</strong> Można używać myszki i klawiatury.</li>
                 <li><strong>3.</strong> Musimy kliknąć właściwy znak (wyświetlany losowo) nad przyciskami: A S D, by dostać punkt.</li>
                 <li><strong>4.</strong> Punkty są odejmowane za pomyłki!</li>
-                <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
+                <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 20 sek.</li>
             </ol>
         </>)
 
