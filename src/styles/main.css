@@ -215,33 +215,48 @@ h1.logo {
   background-color: #f9df76;
   border-radius: 15px;
   cursor: pointer;
-  z-index: 1; }
+  z-index: 2;
+  outline: none; }
   .audio:focus {
     background-color: #f8d95e; }
 
-.check-music {
+.pick-music {
   position: fixed;
   left: 35px;
-  top: 90px;
-  height: 70px;
+  top: 45px;
   width: 50px;
-  border: none; }
-  .check-music legend {
-    display: none; }
-  .check-music input[type='radio'] {
-    display: none; }
-  .check-music label {
-    margin: 0 2px; }
-  .check-music .check-music__btn {
-    background-color: #f9df76;
-    border-radius: 7px;
-    cursor: pointer;
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    line-height: 20px; }
-  .check-music input[type="radio"]:checked ~ .check-music__btn {
-    background-color: greenyellow; }
+  height: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: .13s all;
+  z-index: 1; }
+
+.check-music__btn {
+  width: 14px;
+  height: 14px;
+  background-color: #f9df76;
+  font-weight: bold;
+  border: none;
+  border-radius: 7px;
+  transition: .4s all;
+  outline: none;
+  cursor: pointer; }
+
+.checked-music {
+  background-color: tomato;
+  animation: checkedMusic .7s forwards linear; }
+
+.show-pick-music {
+  top: 85px; }
+
+@keyframes checkedMusic {
+  0% {
+    border: none; }
+  50% {
+    border: 7px solid #ff4523; }
+  100% {
+    border: none; } }
 
 .div-login {
   background-color: #f9df76;
