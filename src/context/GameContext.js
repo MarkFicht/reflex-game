@@ -73,6 +73,8 @@ export default class GameProvider extends Component {
             if (this._isMounted) { 
                 this.setState({ 
                     disconnect: val.disconnect,
+                    // startPrepare: val.startPrepare,
+                    // startTime: val.startTime,
                     gameOver: val.gameOver
                     //prepare: val.prepare,
                     //time: val.time
@@ -166,5 +168,4 @@ export default class GameProvider extends Component {
         )
     }
 }
-
 export const GameConsumer = GameContext.Consumer
