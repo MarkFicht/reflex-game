@@ -6,7 +6,7 @@ const avatars = [
     {value: 'vegeta',   text: 'Vegeta'} 
 ]
 
-const AvatarList = avatars.map(char => {
+const AvatarsList = avatars.map(char => {
     return <option value={char.value} key={char.value}>{ char.text }</option>
 })
-export default AvatarList
+export default AvatarsList

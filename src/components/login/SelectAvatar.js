@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AvatarList from '../other/AvatarList'
+import AvatarsList from '../other/AvatarsList'
 
 class SelectAvatar extends Component {
     state = { value: 'bardock' }
@@ -16,7 +16,7 @@ class SelectAvatar extends Component {
             <div>
                 <label htmlFor="selectAvatar">Wybierz postać:</label>
                 <select id='selectAvatar' className='select-player' value={this.state.value} onChange={this.selectAvatar}>
-                    { AvatarList }
+                    { AvatarsList }
                 </select>
             </div>
         )
