@@ -1,17 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 class InstructionBtn extends Component {
+    state = { showInstruction: false }
 
-    state = {
-        showInstruction: false
-    }
-
-    showOrHideInstruction = () => {
-        this.setState({ showInstruction: !this.state.showInstruction })
-    }
-
+    showOrHideInstruction = () => this.setState({ showInstruction: !this.state.showInstruction })
+    
     render() {
-        const { showInstruction } = this.state;
+        const { showInstruction } = this.state
 
         const textInstruction = (<>
             <h2>Zasady gry:</h2>
@@ -20,27 +15,27 @@ class InstructionBtn extends Component {
                 <li><strong>2.</strong> Można używać myszki i klawiatury.</li>
                 <li><strong>3.</strong> Musimy kliknąć właściwy znak (wyświetlany losowo) nad przyciskami: A S D, by dostać punkt.</li>
                 <li><strong>4.</strong> Punkty są odejmowane za pomyłki!</li>
-                <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 30 sek.</li>
+                <li><strong>5.</strong> Wygyrwa gracz, który uzbiera więcej punktów w czasie 20 sek.</li>
             </ol>
-        </>);
+        </>)
 
         const instruction = showInstruction
-            ? (<div className='instruction-background'>
-                <div className='instruction-container'>
-                    <button className='instruction-close' onClick={ this.showOrHideInstruction }> x </button>
-                    { textInstruction }
+            ? (
+                <div className='instruction-background'>
+                    <div className='instruction-container'>
+                        <button className='instruction-close' onClick={ this.showOrHideInstruction }> x </button>
+                        { textInstruction }
+                    </div>
                 </div>
-            </div>)
-            : null;
+            )
+            : null
 
-        /** MAIN RENDER */
         return (
             <>
                 <button className='btn-login' onClick={ this.showOrHideInstruction }> Instrukcja </button>
                 { instruction }
             </>
-        );
+        )
     }
 }
-
-export default InstructionBtn;
+export default InstructionBtn

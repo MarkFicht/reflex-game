@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 
-const waitingForPlayers = (
+const WaitingForPlayers = (
     <div className="connection-info">
         <p>Oczekiwanie na polaczanie</p>
         <p>gracza</p>
     </div>
-);
+)
 
-export default waitingForPlayers;
+export default WaitingForPlayers

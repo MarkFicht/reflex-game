@@ -144,6 +144,7 @@ h1.logo {
   height: 70px;
   display: flex;
   justify-content: center;
+  align-items: center;
   position: absolute;
   top: 170px;
   font-size: 1.5rem;
@@ -207,14 +208,55 @@ h1.logo {
   left: 35px;
   width: 50px;
   height: 50px;
-  line-height: 54px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 28px;
   background-color: #f9df76;
-  border-radius: 10px;
+  border-radius: 15px;
   cursor: pointer;
-  z-index: 1; }
+  z-index: 2;
+  outline: none; }
   .audio:focus {
-    background-color: black; }
+    background-color: #f8d95e; }
+
+.pick-music {
+  position: fixed;
+  left: 35px;
+  top: 45px;
+  width: 50px;
+  height: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: .13s all;
+  z-index: 1; }
+
+.check-music__btn {
+  width: 14px;
+  height: 14px;
+  background-color: #f9df76;
+  font-weight: bold;
+  border: none;
+  border-radius: 7px;
+  transition: .4s all;
+  outline: none;
+  cursor: pointer; }
+
+.checked-music {
+  background-color: tomato;
+  animation: checkedMusic .7s forwards linear; }
+
+.show-pick-music {
+  top: 85px; }
+
+@keyframes checkedMusic {
+  0% {
+    border: none; }
+  50% {
+    border: 7px solid #ff4523; }
+  100% {
+    border: none; } }
 
 .div-login {
   background-color: #f9df76;
