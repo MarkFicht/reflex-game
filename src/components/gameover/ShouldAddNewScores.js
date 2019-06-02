@@ -45,68 +45,28 @@ class ShouldAddNewScores extends Component {
 
     componentWillUnmount = () => this._isMounted = false
 
-
     /** Change 'pendingForNewArr' of FALSE when add new score/s
      * Mechanism of best scores 
      * */
     shouldAddToBestScores = ( val ) => {
         if ( !this._once ) return null
 
-        const { winner, isDraw, playersFromGame } = this.props
-        const { arrWithNewScores } = this.state
+        const { playersFromGame } = this.props
+        const p1 = { name: playersFromGame[0].nick, score: playersFromGame[0].points }
+        const p2 = { name: playersFromGame[1].nick, score: playersFromGame[1].points }
 
-        /** CASE 1: Best scores are empty */
         if ( !val ) {
             this.setState({
-                arrWithNewScores: [{ name: playersFromGame[0].nick, score: playersFromGame[0].points }, { name: playersFromGame[1].nick, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }),
+                arrWithNewScores: [p1, p2].sort((a, b) => { return b.score - a.score }),
                 pendingForNewArr: false
             })
-            console.log('Rekordy byly puste, dodanie 2 pierwszych', arrWithNewScores)
-
-        /** CASE 2: Free space up to 10 */
-        } else if ( val.length < 10 ) {
+            
+        } else if ( val.length <= 10 ) {
             this.setState({
-                arrWithNewScores: [...val, { name: playersFromGame[0].nick, score: playersFromGame[0].points }, { name: playersFromGame[1].nick, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
+                arrWithNewScores: [...val, p1, p2].sort((a, b) => { return b.score - a.score }).slice(0, 10),
                 pendingForNewArr: false
             })
-            console.log('Zapleninanie rekordow do 10', arrWithNewScores)
-
-        } else {
-
-            /** Is 10 best scores */
-            if ( val[val.length - 1].score < winner.points ) {
-
-                /** CASE 3: Winner and Looser scores were the best  */
-                if ( !isDraw && (val[val.length - 1].score < playersFromGame[0].points) && (val[val.length - 1].score < playersFromGame[1].points) ) {
-
-                    this.setState({
-                        arrWithNewScores: [...val, { name: playersFromGame[0].nick, score: playersFromGame[0].points }, { name: playersFromGame[1].nick, score: playersFromGame[1].points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),                        
-                        pendingForNewArr: false
-                    })
-                    console.log('Dodano 2: winnera i loosera + posortowano', arrWithNewScores)
-
-                /** CASE 4: Winner score was the best */
-                } else if ( !isDraw ) {
-
-                    this.setState({
-                        arrWithNewScores: [...val, { name: winner.nick, score: winner.points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
-                        pendingForNewArr: false
-                    })
-                    console.log('Dodano 1 winnera + posortowano', arrWithNewScores)
-
-                /** CASE 5: Was draw, 2 results were the best */
-                } else {
-
-                    this.setState({
-                        arrWithNewScores: [...val, { name: playersFromGame[0].nick, score: winner.points }, { name: playersFromGame[1].nick, score: winner.points }].sort((a, b) => { return b.score - a.score }).slice(0, 10),
-                        pendingForNewArr: false
-                    })
-                    console.log('Dodano 2 przy remisie + posortowano', arrWithNewScores)
-                }
-            }
         }
-
-        /** CASE 6: No change 'pendingForNewArr' */
         this._once = false
     }
     

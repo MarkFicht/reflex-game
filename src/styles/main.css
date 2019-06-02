@@ -215,7 +215,7 @@ h1.logo {
   background-color: #f9df76;
   border-radius: 15px;
   cursor: pointer;
-  z-index: 2;
+  z-index: 3;
   outline: none; }
   .audio:focus {
     background-color: #f8d95e; }
@@ -230,7 +230,7 @@ h1.logo {
   justify-content: space-between;
   align-items: center;
   transition: .13s all;
-  z-index: 1; }
+  z-index: 2; }
 
 .check-music__btn {
   width: 14px;
