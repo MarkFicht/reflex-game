@@ -1,20 +1,18 @@
 # Multi player reflex game.
 
 This project uses the firebase, for `multiplayer game in real time` :). 
-
 The game is made for the desktop (current without RWD)
-
-<!-- ![Screenshot](todo.png) -->
-<div align="center">
-	<img src="screenshot/g1.png" width="500" alt="Screenshot" />
-	<img src="screenshot/g2.png" width="700" alt="Screenshot2" />
-
 [DEMO here](https://gra-reflex.firebaseapp.com/#/)
-</div>
 
-Mechanism for game is simple. I focused more on correct game play, redirections, bug fixes, etc.
+## Table of contents
+* [What is inside](#what-is-inside)
+* [Screenshots](#screenshots)
+* [Technologies](#technologies)
+* [Under construction](#under-construction)
+* [Setup](#setup)
+* [Status](#status)
 
-## What's inside?
+## What is inside
 * _SPA_
 * _Login panel_
 * _Character selection_
@@ -25,31 +23,34 @@ Mechanism for game is simple. I focused more on correct game play, redirections,
 * _Error checking mechanism, like remove player(drop DB) at the right time_ 
 * _Reacts to the `back button` or `F5`_
 * _2 special containers: `NotFound` and `GameDisconnect`_
-* _Score board (**in the future**)_
+* _Score board_
 
-## Under construction
-- Own select box with avatars
-- Maybe add fetch() and .json
-- Regular expressions for validation
-- Score board
+## Screenshots
+![Example screenshot](./screenshot/g2.png)
 
-## Installation and configuration
-
-1. Install Node.js -> [NodeJS](https://nodejs.org/en/)
-2. Install all dependencies `npm install` -> Other modules are in package.json
-3. Run `npm run start` to start a server and begin developing
-4. Run `npm run build` to create a build
-
-## Built of ...
-
-* React
-* Webpack
-* Sass
+## Technologies
+* React 16
+* React Design Patterns like: Context API, Render Props
 * React Router
 * Firebase
+* NPM like: Styled Components, Randomstring, Fontawesome
+* Webpack
+* Sass
 * HTML, JS, and other..
 
-## Further idea for development
+## Under construction
+- Add Redux
+- TS
+- Unit tests
+- Regular expressions for validation
+- Theme button with Context API
 
-I will add consistent layout and better colors. Possibility to choose theme for user.
-Score board. And more a little details :). <br />
+## Setup
+1. Install Node.js -> [NodeJS](https://nodejs.org/en/)
+2. Install all dependencies `npm install` -> Other modules are in `package.json`
+3. Run `npm run start` to start a server(port 3000) and begin developing
+4. Run `npm run build` to create a build
+
+## Status
+Project is: **Finished**
+Ready to play at the URL: [https://gra-reflex.firebaseapp.com/#/](https://gra-reflex.firebaseapp.com/#/)
