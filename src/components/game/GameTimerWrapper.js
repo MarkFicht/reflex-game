@@ -37,6 +37,8 @@ class RealTime extends Component {
 
     countdownTimeSound = new Audio(countdownTime)
     useOnce = true
+
+    static defaultProps = { time: 'Error in GameTimerWrapper' }
     
     componentDidUpdate = () => {
 
@@ -79,6 +81,8 @@ class PrepareTime extends Component {
         this.countdownPrepareSound = new Audio(countdownPrepare)
         this.useOnce = true
     }
+
+    static defaultProps = { prepare: 3 }
 
     componentDidUpdate = () => {
 

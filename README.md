@@ -1,6 +1,6 @@
 # Multi player reflex game.
 
-This project uses the firebase, for `multiplayer game in real time` :). 
+This project uses the firebase, for `multiplayer game in real time` :).<br/> 
 The game is made for the desktop (current without RWD)
 [DEMO here](https://gra-reflex.firebaseapp.com/#/)
 
@@ -53,4 +53,4 @@ The game is made for the desktop (current without RWD)
 
 ## Status
 Project is: **Finished**
-Ready to play at the URL: [https://gra-reflex.firebaseapp.com/#/](https://gra-reflex.firebaseapp.com/#/)
+<br/> Ready to play at the URL: [https://gra-reflex.firebaseapp.com/#/](https://gra-reflex.firebaseapp.com/#/)

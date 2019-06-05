@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import PlayerReady from './PlayerReady'
 import { GameConsumer } from '../../context/GameContext'
 import GameButtonsAppropriate from '../game/GameButtonsAppropriate'
@@ -54,4 +55,9 @@ export default class PlayerSide extends Component {
             </GameConsumer>
         )
     }
+}
+
+PlayerSide.propTypes = {
+    side: PropTypes.number.isRequired,
+    ID_URL: PropTypes.number.isRequired
 }
