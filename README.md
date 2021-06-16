@@ -1,4 +1,4 @@
-# Multi player reflex game.
+# Multi player reflex game 2018-2019
 
 This project uses the firebase, for `multiplayer game in real time` :).<br/> 
 The game is made for the desktop (current without RWD)
